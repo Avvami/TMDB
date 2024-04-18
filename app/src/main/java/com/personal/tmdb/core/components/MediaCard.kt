@@ -1,4 +1,4 @@
-package com.personal.tmdb.components
+package com.personal.tmdb.core.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -19,7 +19,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import com.personal.tmdb.ui.theme.ExtendedTheme
 
 @Composable
 fun MediaCard(
@@ -34,7 +33,7 @@ fun MediaCard(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .clip(RoundedCornerShape(18.dp))
-            .background(ExtendedTheme.colorScheme.surfaceContainer)
+            .background(MaterialTheme.colorScheme.surfaceContainer)
             .padding(8.dp)
     ) {
         AsyncImage(

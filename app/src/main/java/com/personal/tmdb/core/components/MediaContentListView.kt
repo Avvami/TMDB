@@ -1,4 +1,4 @@
-package com.personal.tmdb.components
+package com.personal.tmdb.core.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
