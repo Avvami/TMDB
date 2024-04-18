@@ -39,6 +39,7 @@ fun HomeScreen() {
     ModalNavigationDrawer(
         drawerContent = {
             HomeModalDrawer(
+                drawerState = drawerState,
                 closeDrawer = { scope.launch { drawerState.close() } }
             )
         },
