@@ -6,7 +6,8 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.material3.Surface
-import com.personal.tmdb.home.presentation.home.HomeScreen
+import androidx.navigation.compose.rememberNavController
+import com.personal.tmdb.core.navigation.RootNavigationGraph
 import com.personal.tmdb.ui.theme.TMDBTheme
 
 class MainActivity : ComponentActivity() {
@@ -21,7 +22,10 @@ class MainActivity : ComponentActivity() {
                 darkTheme = false
             ) {
                 Surface {
-                    HomeScreen()
+                    RootNavigationGraph(
+                        navHostController = rememberNavController(),
+                        mainViewModel = mainViewModel
+                    )
                 }
             }
         }

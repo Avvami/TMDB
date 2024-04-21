@@ -1,6 +1,7 @@
 package com.personal.tmdb.home.presentation.home
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
@@ -27,20 +28,25 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
+import com.personal.tmdb.core.util.ApplySystemBarsTheme
 import com.personal.tmdb.home.presentation.home.components.modal.HomeModalDrawer
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun HomeScreen() {
+fun HomeScreen(
+    navigateToAuthScreen: () -> Unit
+) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
+    ApplySystemBarsTheme(applyLightStatusBars = isSystemInDarkTheme())
     ModalNavigationDrawer(
         drawerContent = {
             HomeModalDrawer(
                 drawerState = drawerState,
-                closeDrawer = { scope.launch { drawerState.close() } }
+                closeDrawer = { scope.launch { drawerState.close() } },
+                navigateToAuthScreen = navigateToAuthScreen
             )
         },
         drawerState = drawerState,
