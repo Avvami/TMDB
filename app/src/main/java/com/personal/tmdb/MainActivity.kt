@@ -9,7 +9,9 @@ import androidx.compose.material3.Surface
 import androidx.navigation.compose.rememberNavController
 import com.personal.tmdb.core.navigation.RootNavigationGraph
 import com.personal.tmdb.ui.theme.TMDBTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
 
     private val mainViewModel: MainViewModel by viewModels()
