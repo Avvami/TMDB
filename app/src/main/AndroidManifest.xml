@@ -18,7 +18,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.TMDB">
+            android:theme="@style/Theme.TMDB.Splash">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
