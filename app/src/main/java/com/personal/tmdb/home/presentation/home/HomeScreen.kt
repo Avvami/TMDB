@@ -1,7 +1,6 @@
 package com.personal.tmdb.home.presentation.home
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
@@ -22,12 +21,15 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
+import com.personal.tmdb.UiEvent
+import com.personal.tmdb.core.presentation.preferences.PreferencesState
 import com.personal.tmdb.core.util.ApplySystemBarsTheme
 import com.personal.tmdb.home.presentation.home.components.modal.HomeModalDrawer
 import kotlinx.coroutines.launch
@@ -35,18 +37,22 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    navigateToAuthScreen: () -> Unit
+    navigateToAuthScreen: () -> Unit,
+    preferencesState: State<PreferencesState>,
+    uiEvent: (UiEvent) -> Unit
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
-    ApplySystemBarsTheme(applyLightStatusBars = isSystemInDarkTheme())
+    ApplySystemBarsTheme(applyLightStatusBars = preferencesState.value.isDark)
     ModalNavigationDrawer(
         drawerContent = {
             HomeModalDrawer(
                 drawerState = drawerState,
                 closeDrawer = { scope.launch { drawerState.close() } },
-                navigateToAuthScreen = navigateToAuthScreen
+                navigateToAuthScreen = navigateToAuthScreen,
+                preferencesState = preferencesState,
+                uiEvent = uiEvent
             )
         },
         drawerState = drawerState,

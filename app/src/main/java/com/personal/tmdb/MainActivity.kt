@@ -6,6 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.material3.Surface
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
 import com.personal.tmdb.core.navigation.RootNavigationGraph
 import com.personal.tmdb.ui.theme.TMDBTheme
@@ -21,7 +22,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             TMDBTheme(
-                darkTheme = false
+                darkTheme = mainViewModel.preferencesState.collectAsStateWithLifecycle().value.isDark
             ) {
                 Surface {
                     RootNavigationGraph(

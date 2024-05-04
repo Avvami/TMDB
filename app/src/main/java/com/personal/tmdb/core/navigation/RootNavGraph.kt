@@ -2,6 +2,7 @@ package com.personal.tmdb.core.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,7 +24,9 @@ fun RootNavigationGraph(
             route = RootNavGraph.HOME
         ) {
             HomeScreen(
-                navigateToAuthScreen = { if (navHostController.canGoBack) navHostController.navigate(RootNavGraph.AUTH) }
+                navigateToAuthScreen = { if (navHostController.canGoBack) navHostController.navigate(RootNavGraph.AUTH) },
+                preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle(),
+                uiEvent = mainViewModel::uiEvent
             )
         }
         composable(

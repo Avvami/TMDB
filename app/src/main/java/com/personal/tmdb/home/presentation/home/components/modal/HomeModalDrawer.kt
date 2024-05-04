@@ -1,6 +1,11 @@
 package com.personal.tmdb.home.presentation.home.components.modal
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedContentTransitionScope
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -23,6 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalDrawerSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,12 +38,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
+import com.personal.tmdb.UiEvent
+import com.personal.tmdb.core.presentation.preferences.PreferencesState
 
 @Composable
 fun HomeModalDrawer(
     drawerState: DrawerState,
     closeDrawer: () -> Unit,
-    navigateToAuthScreen: () -> Unit
+    navigateToAuthScreen: () -> Unit,
+    preferencesState: State<PreferencesState>,
+    uiEvent: (UiEvent) -> Unit
 ) {
     if (drawerState.targetValue == DrawerValue.Open) {
         BackHandler {
@@ -56,7 +66,7 @@ fun HomeModalDrawer(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                        .background(MaterialTheme.colorScheme.surfaceContainer)
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null
@@ -77,7 +87,7 @@ fun HomeModalDrawer(
                             modifier = Modifier
                                 .size(90.dp)
                                 .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.outlineVariant),
+                                .background(MaterialTheme.colorScheme.surfaceContainerHighest),
                             contentAlignment = Alignment.Center
                         ) {
                             Icon(
@@ -92,13 +102,29 @@ fun HomeModalDrawer(
                             fontWeight = FontWeight.Medium
                         )
                     }
-                    IconButton(
-                        onClick = { /*TODO*/ }
-                    ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.icon_dark_mode_fill1_wght400),
-                            contentDescription = stringResource(id = R.string.dark_mode)
-                        )
+                    AnimatedContent(
+                        targetState = preferencesState.value.isDark,
+                        label = "Swap icon button anim",
+                        transitionSpec = {
+                            slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.Start, initialOffset = { it }) + scaleIn() togetherWith
+                                    slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.Start) + scaleOut()
+                        }
+                    ) { targetState ->
+                        if (targetState) {
+                            IconButton(onClick = { uiEvent(UiEvent.SetDarkMode(false)) }) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.icon_light_mode_fill1_wght400),
+                                    contentDescription = stringResource(id = R.string.light_mode)
+                                )
+                            }
+                        } else {
+                            IconButton(onClick = { uiEvent(UiEvent.SetDarkMode(true)) }) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.icon_dark_mode_fill1_wght400),
+                                    contentDescription = stringResource(id = R.string.dark_mode)
+                                )
+                            }
+                        }
                     }
                 }
             }

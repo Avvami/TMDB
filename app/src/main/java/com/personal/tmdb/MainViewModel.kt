@@ -39,4 +39,14 @@ class MainViewModel @Inject constructor(
             }
         }
     }
+
+    fun uiEvent(event: UiEvent) {
+        when (event) {
+            is UiEvent.SetDarkMode -> {
+                viewModelScope.launch {
+                    localRepository.setDarkMode(event.darkMode)
+                }
+            }
+        }
+    }
 }
