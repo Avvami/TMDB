@@ -1,4 +1,4 @@
-package com.personal.tmdb.core.presentation.preferences
+package com.personal.tmdb.core.presentation
 
 data class PreferencesState(
     val isDark: Boolean = false,

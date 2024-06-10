@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
             ) {
                 Surface {
                     RootNavigationGraph(
-                        navHostController = rememberNavController(),
+                        navController = rememberNavController(),
                         mainViewModel = mainViewModel
                     )
                 }

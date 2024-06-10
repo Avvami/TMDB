@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.personal.tmdb.core.domain.repository.LocalRepository
-import com.personal.tmdb.core.presentation.preferences.PreferencesState
+import com.personal.tmdb.core.presentation.PreferencesState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

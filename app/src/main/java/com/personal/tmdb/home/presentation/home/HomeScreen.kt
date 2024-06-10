@@ -29,7 +29,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
 import com.personal.tmdb.UiEvent
-import com.personal.tmdb.core.presentation.preferences.PreferencesState
+import com.personal.tmdb.core.navigation.RootNavGraph
+import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.util.ApplySystemBarsTheme
 import com.personal.tmdb.home.presentation.home.components.modal.HomeModalDrawer
 import kotlinx.coroutines.launch
@@ -37,7 +38,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
-    navigateToAuthScreen: () -> Unit,
+    onNavigateTo: (route: String) -> Unit,
     preferencesState: State<PreferencesState>,
     uiEvent: (UiEvent) -> Unit
 ) {
@@ -50,7 +51,7 @@ fun HomeScreen(
             HomeModalDrawer(
                 drawerState = drawerState,
                 closeDrawer = { scope.launch { drawerState.close() } },
-                navigateToAuthScreen = navigateToAuthScreen,
+                navigateToAuthScreen = { onNavigateTo(RootNavGraph.AUTH) },
                 preferencesState = preferencesState,
                 uiEvent = uiEvent
             )

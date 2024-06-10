@@ -39,7 +39,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
 import com.personal.tmdb.UiEvent
-import com.personal.tmdb.core.presentation.preferences.PreferencesState
+import com.personal.tmdb.core.presentation.PreferencesState
 
 @Composable
 fun HomeModalDrawer(
