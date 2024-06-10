@@ -29,7 +29,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
 import com.personal.tmdb.UiEvent
-import com.personal.tmdb.core.navigation.RootNavGraph
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.util.ApplySystemBarsTheme
 import com.personal.tmdb.home.presentation.home.components.modal.HomeModalDrawer
@@ -49,9 +48,9 @@ fun HomeScreen(
     ModalNavigationDrawer(
         drawerContent = {
             HomeModalDrawer(
+                onNavigateTo = onNavigateTo,
                 drawerState = drawerState,
                 closeDrawer = { scope.launch { drawerState.close() } },
-                navigateToAuthScreen = { onNavigateTo(RootNavGraph.AUTH) },
                 preferencesState = preferencesState,
                 uiEvent = uiEvent
             )

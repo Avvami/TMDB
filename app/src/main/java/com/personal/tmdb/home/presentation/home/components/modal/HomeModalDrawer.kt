@@ -39,13 +39,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
 import com.personal.tmdb.UiEvent
+import com.personal.tmdb.core.navigation.RootNavGraph
 import com.personal.tmdb.core.presentation.PreferencesState
 
 @Composable
 fun HomeModalDrawer(
+    onNavigateTo: (route: String) -> Unit,
     drawerState: DrawerState,
     closeDrawer: () -> Unit,
-    navigateToAuthScreen: () -> Unit,
     preferencesState: State<PreferencesState>,
     uiEvent: (UiEvent) -> Unit
 ) {
@@ -72,7 +73,7 @@ fun HomeModalDrawer(
                             indication = null
                         ) {
                             closeDrawer()
-                            navigateToAuthScreen()
+                            onNavigateTo(RootNavGraph.AUTH)
                         }
                         .statusBarsPadding()
                         .padding(start = 16.dp, top = 4.dp, end = 4.dp, bottom = 16.dp),
@@ -132,7 +133,10 @@ fun HomeModalDrawer(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { /*TODO*/ }
+                        .clickable {
+                            closeDrawer()
+                            onNavigateTo(RootNavGraph.SETTINGS)
+                        }
                         .padding(16.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(12.dp)

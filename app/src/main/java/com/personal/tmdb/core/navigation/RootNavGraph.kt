@@ -9,6 +9,7 @@ import com.personal.tmdb.MainViewModel
 import com.personal.tmdb.auth.presentation.auth.AuthScreen
 import com.personal.tmdb.core.presentation.components.animatedComposable
 import com.personal.tmdb.home.presentation.home.HomeScreen
+import com.personal.tmdb.settings.presentation.settings.SettingsScreen
 
 @Composable
 fun RootNavigationGraph(
@@ -47,6 +48,19 @@ fun RootNavigationGraph(
                 navigateBack = onNavigateBack
             )
         }
+        animatedComposable(
+            route = RootNavGraph.SETTINGS
+        ) {
+            SettingsScreen(
+                navigateBack = onNavigateBack,
+                onNavigateTo = { route ->
+                    navController.navigate(route = route) {
+                        launchSingleTop = true
+                    }
+                },
+                uiEvent = mainViewModel::uiEvent
+            )
+        }
     }
 }
 
@@ -55,6 +69,7 @@ object RootNavGraph {
 
     const val HOME = "home_screen"
     const val AUTH = "auth_screen"
+    const val SETTINGS = "settings_screen"
 }
 
 val NavHostController.canGoBack: Boolean
