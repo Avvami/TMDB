@@ -1,4 +1,4 @@
-package com.personal.tmdb.core.components
+package com.personal.tmdb.core.presentation.components
 
 import android.graphics.BlurMaskFilter
 import androidx.compose.runtime.remember

@@ -1,4 +1,4 @@
-package com.personal.tmdb.core.components
+package com.personal.tmdb.core.presentation.components
 
 import info.movito.themoviedbapi.model.MovieDb
 import info.movito.themoviedbapi.model.tv.TvSeries

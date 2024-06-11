@@ -172,6 +172,24 @@ fun SettingsScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .clickable { /*TODO: Navigate to my lists*/ }
+                            .padding(horizontal = 16.dp, vertical = 12.dp),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.icon_event_list_fill0_wght400),
+                            contentDescription = stringResource(id = R.string.lists)
+                        )
+                        Text(
+                            text = stringResource(id = R.string.lists),
+                            style = MaterialTheme.typography.bodyLarge
+                        )
+                    }
+                    HorizontalDivider(modifier = Modifier.padding(start = 52.dp), thickness = .5.dp)
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
                             .clickable { /*TODO: Navigate to watchlist*/ }
                             .padding(horizontal = 16.dp, vertical = 12.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp),

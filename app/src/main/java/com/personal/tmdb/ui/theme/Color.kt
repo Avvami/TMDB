@@ -13,6 +13,8 @@ val tmdbLightPurple = Color(0xFFEA148C)
 val tmdbRadialDarkPurple = Color(0xFF32112C)
 val tmdbRadialDarkBlue = Color(0xFF0A1526)
 val tmdbRed = Color(0xFFD40242)
+val gradientPurpleLight = Color(0xFFBA5BE7)
+val gradientPurpleDark = Color(0xFF7B40C3)
 
 val primaryLight = Color(0xFF39608F)
 val onPrimaryLight = Color(0xFFFFFFFF)
