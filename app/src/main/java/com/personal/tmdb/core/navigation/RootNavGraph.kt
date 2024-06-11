@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import com.personal.tmdb.MainViewModel
 import com.personal.tmdb.auth.presentation.auth.AuthScreen
 import com.personal.tmdb.core.presentation.components.animatedComposable
+import com.personal.tmdb.detail.presentation.DetailScreen
 import com.personal.tmdb.home.presentation.home.HomeScreen
 import com.personal.tmdb.settings.presentation.settings.SettingsScreen
 
@@ -61,6 +62,18 @@ fun RootNavigationGraph(
                 uiEvent = mainViewModel::uiEvent
             )
         }
+        animatedComposable(
+            route = RootNavGraph.DETAIL
+        ) {
+            DetailScreen(
+                navigateBack = onNavigateBack,
+                onNavigateTo = { route ->
+                    navController.navigate(route = route) {
+                        launchSingleTop = true
+                    }
+                }
+            )
+        }
     }
 }
 
@@ -70,6 +83,7 @@ object RootNavGraph {
     const val HOME = "home_screen"
     const val AUTH = "auth_screen"
     const val SETTINGS = "settings_screen"
+    const val DETAIL = "detail_screen"
 }
 
 val NavHostController.canGoBack: Boolean

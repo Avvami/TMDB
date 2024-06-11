@@ -176,6 +176,9 @@ fun HomeModalDrawer(
                                     .aspectRatio(0.675f)
                                     .clip(MaterialTheme.shapes.medium)
                                     .background(MaterialTheme.colorScheme.outlineVariant)
+                                    .clickable {
+                                        onNavigateTo(RootNavGraph.DETAIL)
+                                    }
                             )
                         }
                     }

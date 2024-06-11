@@ -30,4 +30,6 @@
     <string name="join_today">Join Today</string>
     <string name="join_today_benefits">Get access to maintain your own custom personal lists, track what you\'ve seen and search and filter for what to watch next — regardless if it\'s in theatres, on TV or available on popular streaming services like Netflix, Amazon Prime Video, Disney Plus, Apple TV Plus, and Hulu.</string>
     <string name="sign_up">Sign Up</string>
+    <string name="starring">Starring:</string>
+    <string name="more">more</string>
 </resources>
