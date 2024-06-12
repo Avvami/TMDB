@@ -2,9 +2,7 @@ package com.personal.tmdb.home.presentation.home
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -52,9 +50,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
 import com.personal.tmdb.UiEvent
-import com.personal.tmdb.core.navigation.RootNavGraph
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.GradientButton
+import com.personal.tmdb.core.presentation.components.MediaPoster
 import com.personal.tmdb.core.util.ApplySystemBarsTheme
 import com.personal.tmdb.home.presentation.home.components.drawer.HomeModalDrawer
 import com.personal.tmdb.ui.theme.backgroundLight
@@ -70,6 +68,7 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     onNavigateTo: (route: String) -> Unit,
     preferencesState: State<PreferencesState>,
+    homeState: () -> HomeState,
     uiEvent: (UiEvent) -> Unit
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
@@ -229,17 +228,23 @@ fun HomeScreen(
                             contentPadding = PaddingValues(horizontal = 16.dp),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            items(15) {
-                                Box(
-                                    modifier = Modifier
-                                        .height(150.dp)
-                                        .aspectRatio(0.675f)
-                                        .clip(RoundedCornerShape(18.dp))
-                                        .background(MaterialTheme.colorScheme.outlineVariant)
-                                        .clickable {
-                                            onNavigateTo(RootNavGraph.DETAIL)
-                                        }
-                                )
+                            homeState().trending?.let { trending ->
+                                items(
+                                    count = trending.size,
+                                    key = { trending[it].id }
+                                ) { index ->
+                                    val mediaInfo = trending[index]
+                                    MediaPoster(
+                                        modifier = Modifier
+                                            .height(150.dp)
+                                            .aspectRatio(0.675f)
+                                            .clip(RoundedCornerShape(18.dp)),
+                                        onNavigateTo = onNavigateTo,
+                                        mediaInfo = mediaInfo,
+                                        showTitle = true,
+                                        showVoteAverage = true
+                                    )
+                                }
                             }
                         }
                     }

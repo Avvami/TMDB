@@ -10,7 +10,7 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun MediaContentListView(
-    mediaItems: MediaWrapper,
+//    mediaItems: MediaWrapper,
     isCardsListView: Boolean = false,
     showPostersTitle: Boolean = false,
     postersCount: Int = 3
@@ -20,34 +20,34 @@ fun MediaContentListView(
             contentPadding = PaddingValues(16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            mediaItems.tvSeries?.let { series ->
-                items(
-                    count = series.size,
-                    key = { series[it].id }
-                ) { index ->
-                    val item = series[index]
-                    MediaCard(
-                        posterPath = item.posterPath,
-                        title = item.name,
-                        releaseDate = item.firstAirDate,
-                        overview = item.overview
-                    )
-                }
-            }
-            mediaItems.movies?.let { movies ->
-                items(
-                    count = movies.size,
-                    key = { movies[it].id }
-                ) { index ->
-                    val item = movies[index]
-                    MediaCard(
-                        posterPath = item.posterPath,
-                        title = item.title,
-                        releaseDate = item.releaseDate,
-                        overview = item.overview
-                    )
-                }
-            }
+//            mediaItems.tvSeries?.let { series ->
+//                items(
+//                    count = series.size,
+//                    key = { series[it].id }
+//                ) { index ->
+//                    val item = series[index]
+//                    MediaCard(
+//                        posterPath = item.posterPath,
+//                        title = item.name,
+//                        releaseDate = item.firstAirDate,
+//                        overview = item.overview
+//                    )
+//                }
+//            }
+//            mediaItems.movies?.let { movies ->
+//                items(
+//                    count = movies.size,
+//                    key = { movies[it].id }
+//                ) { index ->
+//                    val item = movies[index]
+//                    MediaCard(
+//                        posterPath = item.posterPath,
+//                        title = item.title,
+//                        releaseDate = item.releaseDate,
+//                        overview = item.overview
+//                    )
+//                }
+//            }
         }
     } else {
         LazyVerticalGrid(
@@ -56,30 +56,30 @@ fun MediaContentListView(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            mediaItems.tvSeries?.let { series ->
-                items(
-                    count = series.size,
-                    key = { series[it].id }
-                ) { index ->
-                    val item = series[index]
-                    MediaPoster(
-                        posterPath = item.posterPath,
-                        title = if (showPostersTitle) item.name else null
-                    )
-                }
-            }
-            mediaItems.movies?.let { movies ->
-                items(
-                    count = movies.size,
-                    key = { movies[it].id }
-                ) { index ->
-                    val item = movies[index]
-                    MediaPoster(
-                        posterPath = item.posterPath,
-                        title = if (showPostersTitle) item.title else null
-                    )
-                }
-            }
+//            mediaItems.tvSeries?.let { series ->
+//                items(
+//                    count = series.size,
+//                    key = { series[it].id }
+//                ) { index ->
+//                    val item = series[index]
+//                    MediaPoster(
+//                        posterPath = item.posterPath,
+//                        title = if (showPostersTitle) item.name else null
+//                    )
+//                }
+//            }
+//            mediaItems.movies?.let { movies ->
+//                items(
+//                    count = movies.size,
+//                    key = { movies[it].id }
+//                ) { index ->
+//                    val item = movies[index]
+//                    MediaPoster(
+//                        posterPath = item.posterPath,
+//                        title = if (showPostersTitle) item.title else null
+//                    )
+//                }
+//            }
         }
     }
 }

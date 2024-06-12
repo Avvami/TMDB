@@ -61,26 +61,22 @@ android {
 
 dependencies {
 
-    implementation("androidx.core:core-ktx:1.13.0")
+    implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.activity:activity-compose:1.9.0")
-    implementation(platform("androidx.compose:compose-bom:2024.04.01"))
+    implementation(platform("androidx.compose:compose-bom:2024.05.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3:1.2.1")
+    implementation("androidx.compose.material3:material3")
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2024.02.00"))
+    androidTestImplementation(platform("androidx.compose:compose-bom:2024.05.00"))
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
-
-    // TMDB api Wrapper
-    implementation("uk.co.conoregan:themoviedbapi:1.15.1")
-    implementation("org.slf4j:slf4j-simple:2.0.12")
 
     // Coil
     implementation("io.coil-kt:coil-compose:2.5.0")
@@ -95,6 +91,13 @@ dependencies {
     // Room
     implementation("androidx.room:room-ktx:2.6.1")
     ksp("androidx.room:room-compiler:2.6.1")
+
+    // Retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.11.0")
+    implementation("com.squareup.retrofit2:converter-moshi:2.11.0")
+    implementation("com.squareup.moshi:moshi:1.15.1")
+    implementation("com.squareup.moshi:moshi-kotlin:1.15.1")
+    ksp("com.squareup.moshi:moshi-kotlin-codegen:1.15.1")
 
     // Dagger - Hilt
     implementation("com.google.dagger:hilt-android:2.51.1")

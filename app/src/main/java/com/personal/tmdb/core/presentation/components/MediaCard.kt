@@ -1,14 +1,21 @@
 package com.personal.tmdb.core.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -16,9 +23,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import com.personal.tmdb.R
+import com.personal.tmdb.core.domain.models.MediaInfo
+import com.personal.tmdb.core.navigation.RootNavGraph
+import com.personal.tmdb.core.util.MediaType
+import com.personal.tmdb.ui.theme.backgroundLight
+import com.personal.tmdb.ui.theme.onBackgroundLight
 
 @Composable
 fun MediaCard(
@@ -61,6 +76,79 @@ fun MediaCard(
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 4,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+    }
+}
+
+@Composable
+fun MediaPoster(
+    modifier: Modifier = Modifier,
+    onNavigateTo: (route: String) -> Unit,
+    mediaInfo: MediaInfo,
+    showTitle: Boolean,
+    showVoteAverage: Boolean
+) {
+    Column(
+        modifier = Modifier.width(IntrinsicSize.Min),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(
+            modifier = modifier
+                .clickable {
+                    when (mediaInfo.mediaType) {
+                        MediaType.TV, MediaType.MOVIE -> {
+                            onNavigateTo(RootNavGraph.DETAIL)
+                        }
+                        MediaType.PERSON -> {
+                            /*TODO: Navigate to person screen*/
+                        }
+                        else -> {
+                            /*TODO: Navigate to lost your way screen*/
+                        }
+                    }
+                }
+        ) {
+            AsyncImage(
+                model = "https://image.tmdb.org/t/p/w185${mediaInfo.posterPath}",
+                contentDescription = "Poster",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+            if (showVoteAverage && mediaInfo.voteAverage != null) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(onBackgroundLight.copy(.3f))
+                        .align(Alignment.BottomCenter),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterHorizontally)
+                ) {
+                    Text(
+                        text = "%.1f".format(mediaInfo.voteAverage),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = backgroundLight
+                    )
+                    Icon(
+                        modifier = Modifier.size(14.dp),
+                        painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
+                        contentDescription = null,
+                        tint = backgroundLight
+                    )
+                }
+            }
+        }
+        if (showTitle && mediaInfo.title != null) {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = mediaInfo.title,
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Center,
+                minLines = 2,
+                maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
         }

@@ -39,6 +39,7 @@ fun RootNavigationGraph(
                     }
                 },
                 preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle(),
+                homeState = mainViewModel::homeState,
                 uiEvent = mainViewModel::uiEvent
             )
         }
