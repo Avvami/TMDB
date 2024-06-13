@@ -15,7 +15,7 @@ class HomeRepositoryImpl @Inject constructor(
     override suspend fun getTrendingList(timeWindow: TimeWindow, language: String?): Resource<List<MediaInfo>> {
         return try {
             Resource.Success(
-                data = tmdbApi.getTrending(timeWindow, language).toMediaInfo()
+                data = tmdbApi.getTrending(timeWindow.name.lowercase(), language).toMediaInfo()
             )
         } catch (e: Exception) {
             e.printStackTrace()

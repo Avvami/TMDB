@@ -53,7 +53,7 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             var trending = homeState.trending
 
-            homeRepository.getTrendingList(TimeWindow.day).let { result ->
+            homeRepository.getTrendingList(TimeWindow.DAY).let { result ->
                 when(result) {
                     is Resource.Success -> {
                         trending = result.data
@@ -65,7 +65,8 @@ class MainViewModel @Inject constructor(
             }
 
             homeState = homeState.copy(
-                trending = trending
+                trending = trending,
+                randomMedia = trending?.random()
             )
         }
     }

@@ -6,6 +6,7 @@ data class MediaInfo(
     val id: Int,
     val mediaType: MediaType,
     val posterPath: String?,
+    val backdropPath: String?,
     val releaseDate: String?,
     val title: String?,
     val voteAverage: Double?

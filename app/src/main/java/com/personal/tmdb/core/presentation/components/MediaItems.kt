@@ -24,6 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -112,9 +115,11 @@ fun MediaPoster(
                 }
         ) {
             AsyncImage(
-                model = "https://image.tmdb.org/t/p/w185${mediaInfo.posterPath}",
-                contentDescription = "Poster",
                 modifier = Modifier.fillMaxSize(),
+                model = "https://image.tmdb.org/t/p/w185${mediaInfo.posterPath}",
+                placeholder = painterResource(id = R.drawable.placeholder),
+                error = painterResource(id = R.drawable.placeholder),
+                contentDescription = "Poster",
                 contentScale = ContentScale.Crop
             )
             if (showVoteAverage && mediaInfo.voteAverage != null) {
@@ -150,6 +155,40 @@ fun MediaPoster(
                 minLines = 2,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
+            )
+        }
+    }
+}
+
+@Composable
+fun MediaPosterShimmer(
+    modifier: Modifier = Modifier,
+    showTitle: Boolean
+) {
+    Column(
+        modifier = Modifier.width(IntrinsicSize.Min),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(
+            modifier = modifier
+        ) {
+            Text(
+                modifier = Modifier
+                    .align(Alignment.Center),
+                text = stringResource(id = R.string.tmdb),
+                style = MaterialTheme.typography.displaySmall,
+                color = MaterialTheme.colorScheme.surfaceContainerLow,
+                fontStyle = FontStyle.Italic,
+                fontWeight = FontWeight.Black,
+                textAlign = TextAlign.Center
+            )
+        }
+        if (showTitle) {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "",
+                minLines = 2
             )
         }
     }

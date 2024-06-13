@@ -3,6 +3,7 @@ package com.personal.tmdb.home.presentation.home
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -43,19 +44,26 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.personal.tmdb.R
 import com.personal.tmdb.UiEvent
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.GradientButton
 import com.personal.tmdb.core.presentation.components.MediaPoster
+import com.personal.tmdb.core.presentation.components.MediaPosterShimmer
 import com.personal.tmdb.core.util.ApplySystemBarsTheme
+import com.personal.tmdb.core.util.duotoneColorFilter
+import com.personal.tmdb.core.util.shimmerEffect
 import com.personal.tmdb.home.presentation.home.components.drawer.HomeModalDrawer
 import com.personal.tmdb.ui.theme.backgroundLight
+import com.personal.tmdb.ui.theme.duotoneBlueDark
+import com.personal.tmdb.ui.theme.duotoneBlueLight
 import com.personal.tmdb.ui.theme.duotonePurpleDark
 import com.personal.tmdb.ui.theme.gradientPurpleDark
 import com.personal.tmdb.ui.theme.gradientPurpleLight
@@ -147,71 +155,90 @@ fun HomeScreen(
                     }
                 }
                 item {
-                    Column(
+                    Box(
                         modifier = Modifier
                             .height(450.dp)
                             .fillMaxSize()
                             .padding(horizontal = 16.dp)
-                            .shadow(elevation = 8.dp, shape = RoundedCornerShape(24.dp))
-                            .clip(RoundedCornerShape(24.dp))
-                            .background(MaterialTheme.colorScheme.outlineVariant)
-                            .padding(horizontal = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(40.dp, Alignment.CenterVertically)
-                    ) {
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(2.dp)
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.welcome),
-                                style = MaterialTheme.typography.displayMedium,
-                                fontWeight = FontWeight.SemiBold,
-                                color = MaterialTheme.colorScheme.background
+                            .then(
+                                if (homeState().randomMedia?.backdropPath != null) {
+                                    Modifier.shadow(elevation = 8.dp, shape = RoundedCornerShape(24.dp), ambientColor = duotoneBlueLight, spotColor = duotoneBlueLight)
+                                } else {
+                                    Modifier.shadow(elevation = 8.dp, shape = RoundedCornerShape(24.dp))
+                                }
                             )
-                            Text(
-                                text = stringResource(id = R.string.explore_now),
-                                style = MaterialTheme.typography.headlineSmall,
-                                fontWeight = FontWeight.Medium,
-                                color = MaterialTheme.colorScheme.background
+                            .clip(RoundedCornerShape(24.dp))
+                            .background(MaterialTheme.colorScheme.outlineVariant),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        AsyncImage(
+                            modifier = Modifier.fillMaxSize(),
+                            model = "https://image.tmdb.org/t/p/w1280${homeState().randomMedia?.backdropPath}",
+                            contentDescription = "Backdrop",
+                            contentScale = ContentScale.Crop,
+                            colorFilter = duotoneColorFilter(duotoneBlueLight, duotoneBlueDark)
+                        )
+                        Column(
+                            verticalArrangement = Arrangement.spacedBy(40.dp, Alignment.CenterVertically),
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(horizontal = 16.dp),
+                                verticalArrangement = Arrangement.spacedBy(2.dp)
+                            ) {
+                                Text(
+                                    text = stringResource(id = R.string.welcome),
+                                    style = MaterialTheme.typography.displayMedium,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.background
+                                )
+                                Text(
+                                    text = stringResource(id = R.string.explore_now),
+                                    style = MaterialTheme.typography.headlineSmall,
+                                    fontWeight = FontWeight.Medium,
+                                    color = MaterialTheme.colorScheme.background
+                                )
+                            }
+                            OutlinedTextField(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp),
+                                value = "",
+                                onValueChange = {},
+                                label = {
+                                    Text(
+                                        text = stringResource(id = R.string.search_label),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                },
+                                trailingIcon = {
+                                    FilledIconButton(
+                                        onClick = { /*TODO*/ },
+                                        colors = IconButtonDefaults.iconButtonColors(
+                                            containerColor = secondaryContainerLight,
+                                            contentColor = onSecondaryContainerLight
+                                        )
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
+                                            contentDescription = "Search"
+                                        )
+                                    }
+                                },
+                                singleLine = true,
+                                shape = MaterialTheme.shapes.medium,
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    unfocusedContainerColor = backgroundLight.copy(alpha = .4f),
+                                    focusedTextColor = backgroundLight,
+                                    unfocusedTextColor = backgroundLight,
+                                    focusedLabelColor = backgroundLight,
+                                    unfocusedLabelColor = backgroundLight,
+                                    focusedBorderColor = backgroundLight,
+                                    unfocusedBorderColor = Color.Transparent,
+                                    cursorColor = backgroundLight
+                                )
                             )
                         }
-                        OutlinedTextField(
-                            modifier = Modifier.fillMaxWidth(),
-                            value = "",
-                            onValueChange = {},
-                            label = {
-                                Text(
-                                    text = stringResource(id = R.string.search_label),
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            },
-                            trailingIcon = {
-                                FilledIconButton(
-                                    onClick = { /*TODO*/ },
-                                    colors = IconButtonDefaults.iconButtonColors(
-                                        containerColor = secondaryContainerLight,
-                                        contentColor = onSecondaryContainerLight
-                                    )
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
-                                        contentDescription = "Search"
-                                    )
-                                }
-                            },
-                            singleLine = true,
-                            shape = MaterialTheme.shapes.medium,
-                            colors = OutlinedTextFieldDefaults.colors(
-                                unfocusedContainerColor = backgroundLight.copy(alpha = .4f),
-                                focusedTextColor = backgroundLight,
-                                unfocusedTextColor = backgroundLight,
-                                focusedLabelColor = backgroundLight,
-                                unfocusedLabelColor = backgroundLight,
-                                focusedBorderColor = backgroundLight,
-                                unfocusedBorderColor = Color.Transparent,
-                                cursorColor = backgroundLight
-                            )
-                        )
                     }
                 }
                 item {
@@ -228,22 +255,35 @@ fun HomeScreen(
                             contentPadding = PaddingValues(horizontal = 16.dp),
                             horizontalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            homeState().trending?.let { trending ->
-                                items(
-                                    count = trending.size,
-                                    key = { trending[it].id }
-                                ) { index ->
-                                    val mediaInfo = trending[index]
-                                    MediaPoster(
+                            if (homeState().trending == null) {
+                                items(15) {
+                                    MediaPosterShimmer(
                                         modifier = Modifier
                                             .height(150.dp)
                                             .aspectRatio(0.675f)
-                                            .clip(RoundedCornerShape(18.dp)),
-                                        onNavigateTo = onNavigateTo,
-                                        mediaInfo = mediaInfo,
-                                        showTitle = true,
-                                        showVoteAverage = true
+                                            .clip(RoundedCornerShape(18.dp))
+                                            .shimmerEffect(),
+                                        showTitle = true
                                     )
+                                }
+                            } else {
+                                homeState().trending?.let { trending ->
+                                    items(
+                                        count = trending.size,
+                                        key = { trending[it].id }
+                                    ) { index ->
+                                        val mediaInfo = trending[index]
+                                        MediaPoster(
+                                            modifier = Modifier
+                                                .height(150.dp)
+                                                .aspectRatio(0.675f)
+                                                .clip(RoundedCornerShape(18.dp)),
+                                            onNavigateTo = onNavigateTo,
+                                            mediaInfo = mediaInfo,
+                                            showTitle = true,
+                                            showVoteAverage = true
+                                        )
+                                    }
                                 }
                             }
                         }
