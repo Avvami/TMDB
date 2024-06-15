@@ -300,7 +300,7 @@ fun DetailScreen(
                                         overflow = TextOverflow.Ellipsis
                                     )
                                 }
-                                if (false) {
+                                info.credits?.cast?.let { cast ->
                                     Row(
                                         modifier = Modifier
                                             .clip(RoundedCornerShape(2.dp))
@@ -317,7 +317,7 @@ fun DetailScreen(
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                                             )
                                             Text(
-                                                text = "Cast names participated in the show production.",
+                                                text = cast.take(5).joinToString(", ") { it?.name.toString() },
                                                 style = MaterialTheme.typography.bodyMedium,
                                                 maxLines = 1,
                                                 overflow = TextOverflow.Ellipsis,

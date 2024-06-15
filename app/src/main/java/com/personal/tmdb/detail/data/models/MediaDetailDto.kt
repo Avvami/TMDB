@@ -14,6 +14,8 @@ data class MediaDetailDto(
     val belongsToBelongToCollection: BelongToCollection?,
     @Json(name = "created_by")
     val createdBy: List<CreatedBy?>?,
+    @Json(name = "credits")
+    val credits: Credits?,
     @Json(name = "episode_run_time")
     val episodeRunTime: List<Int?>?,
     @Json(name = "first_air_date")

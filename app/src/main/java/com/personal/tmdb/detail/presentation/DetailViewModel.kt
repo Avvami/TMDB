@@ -26,7 +26,8 @@ class DetailViewModel @Inject constructor(
     init {
         getMediaDetails(
             mediaType = savedStateHandle[C.MEDIA_TYPE] ?: "",
-            mediaId = savedStateHandle[C.MEDIA_ID] ?: 0
+            mediaId = savedStateHandle[C.MEDIA_ID] ?: 0,
+            appendToResponse = "credits"
         )
     }
 
