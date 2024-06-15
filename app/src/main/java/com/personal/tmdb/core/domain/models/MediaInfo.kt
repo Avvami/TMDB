@@ -9,5 +9,5 @@ data class MediaInfo(
     val backdropPath: String?,
     val releaseDate: String?,
     val title: String?,
-    val voteAverage: Double?
+    val voteAverage: Float?
 )

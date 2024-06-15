@@ -32,4 +32,5 @@
     <string name="sign_up">Sign Up</string>
     <string name="starring">Starring:</string>
     <string name="more">more</string>
+    <string name="runtime">%dh %dmin</string>
 </resources>

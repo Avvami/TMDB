@@ -9,6 +9,7 @@ import androidx.navigation.navArgument
 import com.personal.tmdb.MainViewModel
 import com.personal.tmdb.auth.presentation.auth.AuthScreen
 import com.personal.tmdb.core.presentation.components.animatedComposable
+import com.personal.tmdb.core.util.C
 import com.personal.tmdb.detail.presentation.DetailScreen
 import com.personal.tmdb.home.presentation.home.HomeScreen
 import com.personal.tmdb.settings.presentation.settings.SettingsScreen
@@ -63,10 +64,10 @@ fun RootNavigationGraph(
             )
         }
         animatedComposable(
-            route = RootNavGraph.DETAIL + "/{mediaId}/{mediaType}",
+            route = RootNavGraph.DETAIL + "/{${C.MEDIA_TYPE}}/{${C.MEDIA_ID}}",
             arguments = listOf(
-                navArgument("mediaId") { type = NavType.IntType; nullable = false },
-                navArgument("mediaType") { type = NavType.StringType; nullable = false}
+                navArgument(C.MEDIA_TYPE) { type = NavType.StringType; nullable = false},
+                navArgument(C.MEDIA_ID) { type = NavType.IntType; nullable = false }
             )
         ) {
             DetailScreen(

@@ -58,6 +58,7 @@ import com.personal.tmdb.core.presentation.components.GradientButton
 import com.personal.tmdb.core.presentation.components.MediaPoster
 import com.personal.tmdb.core.presentation.components.MediaPosterShimmer
 import com.personal.tmdb.core.util.ApplySystemBarsTheme
+import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.duotoneColorFilter
 import com.personal.tmdb.core.util.shimmerEffect
 import com.personal.tmdb.home.presentation.home.components.drawer.HomeModalDrawer
@@ -173,7 +174,7 @@ fun HomeScreen(
                     ) {
                         AsyncImage(
                             modifier = Modifier.fillMaxSize(),
-                            model = "https://image.tmdb.org/t/p/w1280${homeState().randomMedia?.backdropPath}",
+                            model = C.TMDB_IMAGES_BASE_URL + C.BACKDROP_W1280 + homeState().randomMedia?.backdropPath,
                             contentDescription = "Backdrop",
                             contentScale = ContentScale.Crop,
                             colorFilter = duotoneColorFilter(duotoneBlueLight, duotoneBlueDark)

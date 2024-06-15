@@ -13,7 +13,7 @@ fun MediaDto.toMediaInfo(): List<MediaInfo> {
             backdropPath = it.backdropPath,
             releaseDate = it.firstAirDate ?: it.releaseDate,
             title = it.title ?: it.name,
-            voteAverage = it.voteAverage
+            voteAverage = it.voteAverage?.toFloat()
         )
     }
 }

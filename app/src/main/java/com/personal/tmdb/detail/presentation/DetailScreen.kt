@@ -1,5 +1,6 @@
 package com.personal.tmdb.detail.presentation
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -30,22 +32,37 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import coil.compose.AsyncImage
 import com.personal.tmdb.R
+import com.personal.tmdb.core.util.C
+import com.personal.tmdb.core.util.formatRuntime
+import com.personal.tmdb.core.util.formatTvShowRuntime
+import com.personal.tmdb.core.util.formatVoteAverage
+import com.personal.tmdb.core.util.formatVoteAverageToColor
+import com.personal.tmdb.detail.presentation.components.DetailScreenShimmer
 import com.personal.tmdb.ui.theme.backgroundLight
-import com.personal.tmdb.ui.theme.tmdbRatingGreen
+import com.personal.tmdb.ui.theme.onBackgroundLight
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun DetailScreen(
     modifier: Modifier = Modifier,
     navigateBack: () -> Unit,
-    onNavigateTo: (route: String) -> Unit
+    onNavigateTo: (route: String) -> Unit,
+    detailViewModel: DetailViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
     Scaffold(
         topBar = {
             TopAppBar(
@@ -74,156 +91,247 @@ fun DetailScreen(
             contentPadding = innerPadding,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            item {
-                Box(
-                    modifier = Modifier
-                        .height(190.dp)
-                        .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.outlineVariant),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        modifier = Modifier.size(40.dp),
-                        imageVector = Icons.Rounded.PlayArrow,
-                        contentDescription = "Play",
-                        tint = backgroundLight
-                    )
+            if (detailViewModel.detailState.mediaDetail == null && detailViewModel.detailState.error == null) {
+                item {
+                    DetailScreenShimmer()
                 }
-            }
-            item {
-                Column(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(4.dp)
+            } else {
+                detailViewModel.detailState.error?.let {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .height(200.dp)
+                                .fillMaxWidth()
+                                .background(MaterialTheme.colorScheme.surfaceContainerHigh),
+                            contentAlignment = Alignment.Center
                         ) {
                             Text(
-                                text = "Show name",
+                                modifier = Modifier
+                                    .align(Alignment.Center),
+                                text = stringResource(id = R.string.tmdb),
                                 style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Medium
+                                color = MaterialTheme.colorScheme.outlineVariant,
+                                fontWeight = FontWeight.Medium,
+                                textAlign = TextAlign.Center
                             )
-                            FlowRow(
-                                modifier = Modifier.fillMaxWidth(),
-                                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        }
+                    }
+                }
+                detailViewModel.detailState.mediaDetail?.let { info ->
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .height(200.dp)
+                                .fillMaxWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                modifier = Modifier.align(Alignment.Center),
+                                text = stringResource(id = R.string.tmdb),
+                                style = MaterialTheme.typography.displayMedium,
+                                color = MaterialTheme.colorScheme.surfaceContainerLow,
+                                fontStyle = FontStyle.Italic,
+                                fontWeight = FontWeight.Black,
+                                textAlign = TextAlign.Center
+                            )
+                            AsyncImage(
+                                modifier = Modifier.fillMaxSize(),
+                                model = C.TMDB_IMAGES_BASE_URL + C.BACKDROP_W1280 + info.backdropPath,
+                                contentDescription = "Backdrop",
+                                placeholder = painterResource(id = R.drawable.placeholder),
+                                error = painterResource(id = R.drawable.placeholder),
+                                contentScale = ContentScale.Crop
+                            )
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(onBackgroundLight.copy(.3f))
+                                    .clickable { },
+                                contentAlignment = Alignment.Center
+                            ) {
+                                if (false) {
+                                    Icon(
+                                        modifier = Modifier.size(40.dp),
+                                        imageVector = Icons.Rounded.PlayArrow,
+                                        contentDescription = "Play",
+                                        tint = backgroundLight
+                                    )
+                                }
+                            }
+                        }
+                    }
+                    item {
+                        Column(
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            Column(
                                 verticalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                Text(
-                                    modifier = Modifier.align(Alignment.CenterVertically),
-                                    text = "Date of issue",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                                Text(
-                                    modifier = Modifier
-                                        .clip(MaterialTheme.shapes.extraSmall)
-                                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                                        .padding(horizontal = 10.dp)
-                                        .align(Alignment.CenterVertically),
-                                    text = "AGE",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                                Text(
-                                    modifier = Modifier.align(Alignment.CenterVertically),
-                                    text = "Show Duration",
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                        }
-                        Column {
-                            LinearProgressIndicator(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(8.dp)
-                                    .clip(RoundedCornerShape(2.dp)),
-                                progress = { .85f },
-                                trackColor = MaterialTheme.colorScheme.surfaceVariant,
-                                color = tmdbRatingGreen
-                            )
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(2.dp)
+                                Column(
+                                    verticalArrangement = Arrangement.spacedBy(4.dp)
                                 ) {
+                                    info.title?.let { title ->
+                                        Text(
+                                            text = title,
+                                            style = MaterialTheme.typography.titleLarge,
+                                            fontWeight = FontWeight.Medium
+                                        )
+                                    }
+                                    FlowRow(
+                                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                                    ) {
+                                        Text(
+                                            modifier = Modifier.align(Alignment.CenterVertically),
+                                            text = info.releaseDate.format(DateTimeFormatter.ofPattern("MMM d, yyyy")),
+                                            style = MaterialTheme.typography.bodyLarge,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                        info.runtime?.let { runtime ->
+                                            Icon(
+                                                modifier = Modifier
+                                                    .size(6.dp)
+                                                    .align(Alignment.CenterVertically),
+                                                painter = painterResource(id = R.drawable.icon_fiber_manual_record_fill1_wght400),
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                            Text(
+                                                modifier = Modifier.align(Alignment.CenterVertically),
+                                                text = formatRuntime(runtime, context),
+                                                style = MaterialTheme.typography.bodyLarge,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                        }
+                                        if (info.numberOfSeasons != null && info.numberOfEpisodes != null) {
+                                            Icon(
+                                                modifier = Modifier
+                                                    .size(6.dp)
+                                                    .align(Alignment.CenterVertically),
+                                                painter = painterResource(id = R.drawable.icon_fiber_manual_record_fill1_wght400),
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                            Text(
+                                                modifier = Modifier.align(Alignment.CenterVertically),
+                                                text = formatTvShowRuntime(info.numberOfSeasons, info.numberOfEpisodes),
+                                                style = MaterialTheme.typography.bodyLarge,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                        }
+                                    }
+                                }
+                                info.voteAverage?.let { voteAverage ->
+                                    Column {
+                                        LinearProgressIndicator(
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .height(8.dp)
+                                                .clip(RoundedCornerShape(2.dp)),
+                                            progress = { voteAverage.div(10f) },
+                                            trackColor = MaterialTheme.colorScheme.surfaceVariant,
+                                            color = formatVoteAverageToColor(voteAverage)
+                                        )
+                                        Row(
+                                            modifier = Modifier.fillMaxWidth(),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.SpaceBetween
+                                        ) {
+                                            Row(
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.spacedBy(2.dp)
+                                            ) {
+                                                Text(
+                                                    text = formatVoteAverage(voteAverage),
+                                                    style = MaterialTheme.typography.labelLarge,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                )
+                                                Icon(
+                                                    modifier = Modifier.size(14.dp),
+                                                    painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
+                                                    contentDescription = null,
+                                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                                )
+                                            }
+                                            if (false) {
+                                                Row(
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    horizontalArrangement = Arrangement.spacedBy(2.dp)
+                                                ) {
+                                                    Text(
+                                                        text = "Your: 10",
+                                                        style = MaterialTheme.typography.labelLarge,
+                                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                    )
+                                                    Icon(
+                                                        modifier = Modifier.size(14.dp),
+                                                        painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
+                                                        contentDescription = null,
+                                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                info.tagline?.let { tagline ->
                                     Text(
-                                        text = "8.5",
-                                        style = MaterialTheme.typography.labelLarge,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                    Icon(
-                                        modifier = Modifier.size(14.dp),
-                                        painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                        modifier = Modifier
+                                            .clip(MaterialTheme.shapes.small)
+                                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                                            .padding(10.dp),
+                                        text = "\"$tagline\"",
+                                        style = MaterialTheme.typography.bodyLarge
                                     )
                                 }
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(2.dp)
-                                ) {
+                                info.overview?.let { overview ->
                                     Text(
-                                        text = "Your: 10",
-                                        style = MaterialTheme.typography.labelLarge,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                    Icon(
-                                        modifier = Modifier.size(14.dp),
-                                        painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clip(MaterialTheme.shapes.extraSmall)
+                                            .animateContentSize()
+                                            .clickable {
+                                                detailViewModel.detailUiEvent(DetailUiEvent.ChangeCollapsedOverview)
+                                            },
+                                        text = overview,
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        maxLines = if (detailViewModel.isOverviewCollapsed) 4 else Int.MAX_VALUE,
+                                        overflow = TextOverflow.Ellipsis
                                     )
                                 }
+                                if (false) {
+                                    Row(
+                                        modifier = Modifier
+                                            .clip(RoundedCornerShape(2.dp))
+                                            .clickable { /*TODO: Go to cast screen*/ },
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Row(
+                                            modifier = Modifier.weight(1f),
+                                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                        ) {
+                                            Text(
+                                                text = stringResource(id = R.string.starring),
+                                                style = MaterialTheme.typography.labelLarge,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                            Text(
+                                                text = "Cast names participated in the show production.",
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                maxLines = 1,
+                                                overflow = TextOverflow.Ellipsis,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                        }
+                                        Text(
+                                            text = stringResource(id = R.string.more),
+                                            style = MaterialTheme.typography.labelMedium,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
+                                }
                             }
-                        }
-                        Text(
-                            modifier = Modifier
-                                .clip(MaterialTheme.shapes.small)
-                                .background(MaterialTheme.colorScheme.surfaceVariant)
-                                .padding(10.dp),
-                            text = "\"Tagline or quote\"",
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                        Text(
-                            text = "Summary or overview of the main points of a piece of writing, story, or a show.",
-                            style = MaterialTheme.typography.bodyLarge
-                        )
-                        Row(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(2.dp))
-                                .clickable { /*TODO: Go to cast screen*/ },
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Row(
-                                modifier = Modifier.weight(1f),
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                Text(
-                                    text = stringResource(id = R.string.starring),
-                                    style = MaterialTheme.typography.labelLarge,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                                Text(
-                                    text = "Cast names participated in the show production.",
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                            Text(
-                                text = stringResource(id = R.string.more),
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
                         }
                     }
                 }

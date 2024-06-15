@@ -1,7 +1,6 @@
 package com.personal.tmdb.detail.data.repository
 
 import com.personal.tmdb.core.data.remote.TmdbApi
-import com.personal.tmdb.core.util.MediaType
 import com.personal.tmdb.core.util.Resource
 import com.personal.tmdb.detail.data.mappers.toMediaDetailInfo
 import com.personal.tmdb.detail.domain.models.MediaDetailInfo
@@ -12,7 +11,7 @@ class DetailRepositoryImpl @Inject constructor(
     private val tmdbApi: TmdbApi
 ): DetailRepository {
     override suspend fun getMediaDetail(
-        mediaType: MediaType,
+        mediaType: String,
         mediaId: Int,
         language: String?,
         appendToResponse: String?
@@ -20,7 +19,7 @@ class DetailRepositoryImpl @Inject constructor(
         return try {
             Resource.Success(
                 data = tmdbApi.getMovieTvDetial(
-                    mediaType = mediaType.name.lowercase(),
+                    mediaType = mediaType,
                     mediaId = mediaId,
                     language = language,
                     appendToResponse = appendToResponse
@@ -28,7 +27,7 @@ class DetailRepositoryImpl @Inject constructor(
             )
         } catch (e: Exception) {
             e.printStackTrace()
-            Resource.Error(e.message ?: "Uknown")
+            Resource.Error(e.message ?: "Unknown")
         }
     }
 }

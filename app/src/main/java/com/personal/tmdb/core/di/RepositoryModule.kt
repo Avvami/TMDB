@@ -15,6 +15,6 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindLocalRepository(
-        localRepository: LocalRepositoryImpl
+        localRepositoryImpl: LocalRepositoryImpl
     ): LocalRepository
 }

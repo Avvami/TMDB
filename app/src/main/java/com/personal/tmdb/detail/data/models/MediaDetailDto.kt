@@ -58,6 +58,8 @@ data class MediaDetailDto(
     val productionCompanies: List<ProductionCompany?>?,
     @Json(name = "production_countries")
     val productionCountries: List<ProductionCountry?>?,
+    @Json(name = "release_date")
+    val releaseDate: String?,
     @Json(name = "runtime")
     val runtime: Int?,
     @Json(name = "seasons")

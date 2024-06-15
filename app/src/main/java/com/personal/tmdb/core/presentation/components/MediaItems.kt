@@ -34,7 +34,9 @@ import coil.compose.AsyncImage
 import com.personal.tmdb.R
 import com.personal.tmdb.core.domain.models.MediaInfo
 import com.personal.tmdb.core.navigation.RootNavGraph
+import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.MediaType
+import com.personal.tmdb.core.util.formatVoteAverage
 import com.personal.tmdb.ui.theme.backgroundLight
 import com.personal.tmdb.ui.theme.onBackgroundLight
 
@@ -103,7 +105,7 @@ fun MediaPoster(
                 .clickable {
                     when (mediaInfo.mediaType) {
                         MediaType.TV, MediaType.MOVIE -> {
-                            onNavigateTo(RootNavGraph.DETAIL)
+                            onNavigateTo(RootNavGraph.DETAIL + "/${mediaInfo.mediaType.name.lowercase()}/${mediaInfo.id}")
                         }
                         MediaType.PERSON -> {
                             /*TODO: Navigate to person screen*/
@@ -116,7 +118,7 @@ fun MediaPoster(
         ) {
             AsyncImage(
                 modifier = Modifier.fillMaxSize(),
-                model = "https://image.tmdb.org/t/p/w185${mediaInfo.posterPath}",
+                model = C.TMDB_IMAGES_BASE_URL + C.POSTER_W185 + mediaInfo.posterPath,
                 placeholder = painterResource(id = R.drawable.placeholder),
                 error = painterResource(id = R.drawable.placeholder),
                 contentDescription = "Poster",
@@ -132,7 +134,7 @@ fun MediaPoster(
                     horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterHorizontally)
                 ) {
                     Text(
-                        text = "%.1f".format(mediaInfo.voteAverage),
+                        text = formatVoteAverage(mediaInfo.voteAverage),
                         style = MaterialTheme.typography.labelLarge,
                         color = backgroundLight
                     )

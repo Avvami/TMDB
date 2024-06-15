@@ -55,11 +55,11 @@ class MainViewModel @Inject constructor(
 
             homeRepository.getTrendingList(TimeWindow.DAY).let { result ->
                 when(result) {
-                    is Resource.Success -> {
-                        trending = result.data
-                    }
                     is Resource.Error -> {
                         println(result.message)
+                    }
+                    is Resource.Success -> {
+                        trending = result.data
                     }
                 }
             }
