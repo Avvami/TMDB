@@ -1,10 +1,11 @@
 package com.personal.tmdb.core.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
+import androidx.navigation.navArgument
 import com.personal.tmdb.MainViewModel
 import com.personal.tmdb.auth.presentation.auth.AuthScreen
 import com.personal.tmdb.core.presentation.components.animatedComposable
@@ -19,9 +20,7 @@ fun RootNavigationGraph(
 ) {
     val onNavigateBack: () -> Unit = {
         with(navController) {
-            if (currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED) {
-                popBackStack()
-            }
+            this.navigateUp()
         }
     }
     NavHost(
@@ -64,7 +63,11 @@ fun RootNavigationGraph(
             )
         }
         animatedComposable(
-            route = RootNavGraph.DETAIL
+            route = RootNavGraph.DETAIL + "/{mediaId}/{mediaType}",
+            arguments = listOf(
+                navArgument("mediaId") { type = NavType.IntType; nullable = false },
+                navArgument("mediaType") { type = NavType.StringType; nullable = false}
+            )
         ) {
             DetailScreen(
                 navigateBack = onNavigateBack,
@@ -87,5 +90,5 @@ object RootNavGraph {
     const val DETAIL = "detail_screen"
 }
 
-val NavHostController.canGoBack: Boolean
-    get() = this.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED
+//val NavHostController.canGoBack: Boolean
+//    get() = this.currentBackStackEntry?.lifecycle?.currentState == Lifecycle.State.RESUMED
