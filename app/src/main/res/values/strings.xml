@@ -35,5 +35,5 @@
     <string name="more">more</string>
     <string name="runtime">%dh %dmin</string>
     <string name="empty_search">Oh man. We don\'t have that.</string>
-    <string name="empty_search_suppose">Try search for another movie, show, or person.</string>
+    <string name="empty_search_suggest">Try search for another movie, show, or person.</string>
 </resources>
