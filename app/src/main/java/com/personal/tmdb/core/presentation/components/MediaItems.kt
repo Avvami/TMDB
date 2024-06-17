@@ -147,10 +147,10 @@ fun MediaPoster(
                 }
             }
         }
-        if (showTitle && mediaInfo.title != null) {
+        if (showTitle && mediaInfo.name != null) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = mediaInfo.title,
+                text = mediaInfo.name,
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center,

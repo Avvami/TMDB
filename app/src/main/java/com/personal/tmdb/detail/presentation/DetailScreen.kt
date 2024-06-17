@@ -171,7 +171,7 @@ fun DetailScreen(
                                 Column(
                                     verticalArrangement = Arrangement.spacedBy(4.dp)
                                 ) {
-                                    info.title?.let { title ->
+                                    info.name?.let { title ->
                                         Text(
                                             text = title,
                                             style = MaterialTheme.typography.titleLarge,

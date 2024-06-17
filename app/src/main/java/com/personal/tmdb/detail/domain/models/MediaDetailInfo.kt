@@ -13,6 +13,7 @@ data class MediaDetailInfo(
     val credits: Credits?,
     val genres: List<Genre?>?,
     val id: Int,
+    val name: String?,
     val networks: List<Network?>?,
     val numberOfEpisodes: Int?,
     val numberOfSeasons: Int?,
@@ -23,6 +24,5 @@ data class MediaDetailInfo(
     val runtime: Int?,
     val seasons: List<Season?>?,
     val tagline: String?,
-    val title: String?,
     val voteAverage: Float?,
 )

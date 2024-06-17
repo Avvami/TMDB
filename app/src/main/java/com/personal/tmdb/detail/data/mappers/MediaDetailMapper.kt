@@ -12,6 +12,7 @@ fun MediaDetailDto.toMediaDetailInfo(): MediaDetailInfo {
         credits = credits,
         genres = genres,
         id = id,
+        name = title ?: name,
         networks = networks,
         numberOfEpisodes = numberOfEpisodes,
         numberOfSeasons = numberOfSeasons,
@@ -22,7 +23,6 @@ fun MediaDetailDto.toMediaDetailInfo(): MediaDetailInfo {
         runtime = runtime,
         seasons = seasons,
         tagline = tagline,
-        title = title ?: name,
         voteAverage = voteAverage?.toFloat()
     )
 }

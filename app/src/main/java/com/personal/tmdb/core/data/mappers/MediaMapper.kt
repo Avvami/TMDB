@@ -9,10 +9,10 @@ fun MediaDto.toMediaInfo(): List<MediaInfo> {
         MediaInfo(
             id = it.id,
             mediaType = convertMediaType(it.mediaType),
+            name = it.title ?: it.name,
             posterPath = it.posterPath ?: it.profilePath,
             backdropPath = it.backdropPath,
             releaseDate = it.firstAirDate ?: it.releaseDate,
-            title = it.title ?: it.name,
             voteAverage = it.voteAverage?.toFloat()
         )
     }
