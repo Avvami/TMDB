@@ -18,7 +18,7 @@ class DetailRepositoryImpl @Inject constructor(
     ): Resource<MediaDetailInfo> {
         return try {
             Resource.Success(
-                data = tmdbApi.getMovieTvDetial(
+                data = tmdbApi.getMovieTvDetail(
                     mediaType = mediaType,
                     mediaId = mediaId,
                     language = language,

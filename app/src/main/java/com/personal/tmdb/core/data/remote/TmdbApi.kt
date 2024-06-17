@@ -3,6 +3,7 @@ package com.personal.tmdb.core.data.remote
 import com.personal.tmdb.BuildConfig
 import com.personal.tmdb.detail.data.models.MediaDetailDto
 import com.personal.tmdb.core.data.models.MediaDto
+import com.personal.tmdb.search.data.models.SearchDto
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Path
@@ -19,10 +20,20 @@ interface TmdbApi {
 
     @Headers("Authorization: Bearer ${BuildConfig.TMDB_API_KEY}")
     @GET("3/{media_type}/{media_id}?")
-    suspend fun getMovieTvDetial(
+    suspend fun getMovieTvDetail(
         @Path("media_type") mediaType: String,
         @Path("media_id") mediaId: Int,
         @Query("language") language: String?,
         @Query("append_to_response") appendToResponse: String?
     ): MediaDetailDto
+
+    @Headers("Authorization: Bearer ${BuildConfig.TMDB_API_KEY}")
+    @GET("3/search/{search_type}?")
+    suspend fun searchFor(
+        @Path("search_type") searchType: String,
+        @Query("query") query: String,
+        @Query("include_adult") includeAdult: Boolean?,
+        @Query("language") language: String?,
+        @Query("page") page: Int
+    ): SearchDto
 }
