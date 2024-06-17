@@ -19,6 +19,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowForward
 import androidx.compose.material.icons.rounded.Menu
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
@@ -50,15 +51,18 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.personal.tmdb.R
 import com.personal.tmdb.UiEvent
+import com.personal.tmdb.core.navigation.RootNavGraph
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.GradientButton
 import com.personal.tmdb.core.presentation.components.MediaPoster
 import com.personal.tmdb.core.presentation.components.MediaPosterShimmer
 import com.personal.tmdb.core.util.ApplySystemBarsTheme
 import com.personal.tmdb.core.util.C
+import com.personal.tmdb.core.util.MediaType
 import com.personal.tmdb.core.util.duotoneColorFilter
 import com.personal.tmdb.core.util.shimmerEffect
 import com.personal.tmdb.home.presentation.home.components.drawer.HomeModalDrawer
@@ -70,6 +74,7 @@ import com.personal.tmdb.ui.theme.gradientPurpleDark
 import com.personal.tmdb.ui.theme.gradientPurpleLight
 import com.personal.tmdb.ui.theme.onSecondaryContainerLight
 import com.personal.tmdb.ui.theme.secondaryContainerLight
+import com.personal.tmdb.ui.theme.surfaceVariantLight
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,7 +83,8 @@ fun HomeScreen(
     onNavigateTo: (route: String) -> Unit,
     preferencesState: State<PreferencesState>,
     homeState: () -> HomeState,
-    uiEvent: (UiEvent) -> Unit
+    uiEvent: (UiEvent) -> Unit,
+    homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
@@ -109,7 +115,8 @@ fun HomeScreen(
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.background,
-                        navigationIconContentColor = MaterialTheme.colorScheme.onBackground
+                        navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
+                        actionIconContentColor = MaterialTheme.colorScheme.onBackground,
                     ),
                     navigationIcon = {
                         IconButton(
@@ -118,6 +125,16 @@ fun HomeScreen(
                             Icon(
                                 imageVector = Icons.Rounded.Menu,
                                 contentDescription = "Drawer"
+                            )
+                        }
+                    },
+                    actions = {
+                        IconButton(
+                            onClick = { onNavigateTo(RootNavGraph.SEARCH_SCREEN + "/${MediaType.MULTI.name.lowercase()}") }
+                        ) {
+                            Icon(
+                                imageVector = Icons.Rounded.Search,
+                                contentDescription = "Search"
                             )
                         }
                     }
@@ -163,9 +180,17 @@ fun HomeScreen(
                             .padding(horizontal = 16.dp)
                             .then(
                                 if (homeState().randomMedia?.backdropPath != null) {
-                                    Modifier.shadow(elevation = 8.dp, shape = RoundedCornerShape(24.dp), ambientColor = duotoneBlueLight, spotColor = duotoneBlueLight)
+                                    Modifier.shadow(
+                                        elevation = 8.dp,
+                                        shape = RoundedCornerShape(24.dp),
+                                        ambientColor = duotoneBlueLight,
+                                        spotColor = duotoneBlueLight
+                                    )
                                 } else {
-                                    Modifier.shadow(elevation = 8.dp, shape = RoundedCornerShape(24.dp))
+                                    Modifier.shadow(
+                                        elevation = 8.dp,
+                                        shape = RoundedCornerShape(24.dp)
+                                    )
                                 }
                             )
                             .clip(RoundedCornerShape(24.dp))
@@ -203,18 +228,25 @@ fun HomeScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(horizontal = 16.dp),
-                                value = "",
-                                onValueChange = {},
-                                label = {
+                                value = homeViewModel.searchQuery,
+                                onValueChange = {
+                                    homeViewModel.homeUiEvent(HomeUiEvent.OnSearchQueryChange(it))
+                                },
+                                placeholder = {
                                     Text(
-                                        text = stringResource(id = R.string.search_label),
+                                        text = stringResource(id = R.string.search_placeholder),
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis
                                     )
                                 },
                                 trailingIcon = {
                                     FilledIconButton(
-                                        onClick = { /*TODO*/ },
+                                        onClick = {
+                                            onNavigateTo(
+                                                RootNavGraph.SEARCH_SCREEN +
+                                                        "/${MediaType.MULTI.name.lowercase()}?${C.SEARCH_QUERY}=${homeViewModel.searchQuery}"
+                                            )
+                                        },
                                         colors = IconButtonDefaults.iconButtonColors(
                                             containerColor = secondaryContainerLight,
                                             contentColor = onSecondaryContainerLight
@@ -232,8 +264,8 @@ fun HomeScreen(
                                     unfocusedContainerColor = backgroundLight.copy(alpha = .4f),
                                     focusedTextColor = backgroundLight,
                                     unfocusedTextColor = backgroundLight,
-                                    focusedLabelColor = backgroundLight,
-                                    unfocusedLabelColor = backgroundLight,
+                                    focusedPlaceholderColor = backgroundLight,
+                                    unfocusedPlaceholderColor = backgroundLight,
                                     focusedBorderColor = backgroundLight,
                                     unfocusedBorderColor = Color.Transparent,
                                     cursorColor = backgroundLight

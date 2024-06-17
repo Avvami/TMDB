@@ -92,6 +92,7 @@ fun MediaPoster(
     modifier: Modifier = Modifier,
     onNavigateTo: (route: String) -> Unit,
     mediaInfo: MediaInfo,
+    mediaType: MediaType? = null,
     showTitle: Boolean,
     showVoteAverage: Boolean
 ) {
@@ -103,15 +104,30 @@ fun MediaPoster(
         Box(
             modifier = modifier
                 .clickable {
-                    when (mediaInfo.mediaType) {
-                        MediaType.TV, MediaType.MOVIE -> {
-                            onNavigateTo(RootNavGraph.DETAIL + "/${mediaInfo.mediaType.name.lowercase()}/${mediaInfo.id}")
+                    mediaType?.let { mediaType ->
+                        when (mediaType) {
+                            MediaType.TV, MediaType.MOVIE -> {
+                                onNavigateTo(RootNavGraph.DETAIL + "/${mediaType.name.lowercase()}/${mediaInfo.id}")
+                            }
+                            MediaType.PERSON -> {
+                                /*TODO: Navigate to person screen*/
+                            }
+                            else -> {
+                                /*TODO: Navigate to lost your way screen*/
+                            }
                         }
-                        MediaType.PERSON -> {
-                            /*TODO: Navigate to person screen*/
-                        }
-                        else -> {
-                            /*TODO: Navigate to lost your way screen*/
+                    }
+                    mediaInfo.mediaType?.let { mediaType ->
+                        when (mediaType) {
+                            MediaType.TV, MediaType.MOVIE -> {
+                                onNavigateTo(RootNavGraph.DETAIL + "/${mediaType.name.lowercase()}/${mediaInfo.id}")
+                            }
+                            MediaType.PERSON -> {
+                                /*TODO: Navigate to person screen*/
+                            }
+                            else -> {
+                                /*TODO: Navigate to lost your way screen*/
+                            }
                         }
                     }
                 }
@@ -154,7 +170,6 @@ fun MediaPoster(
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center,
-                minLines = 2,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )
@@ -189,8 +204,7 @@ fun MediaPosterShimmer(
         if (showTitle) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "",
-                minLines = 2
+                text = ""
             )
         }
     }

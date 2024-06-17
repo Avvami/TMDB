@@ -7,4 +7,6 @@ object C {
     const val POSTER_W185 = "w185"
     const val MEDIA_ID = "mediaId"
     const val MEDIA_TYPE = "mediaType"
+    const val SEARCH_TYPE = "searchType"
+    const val SEARCH_QUERY = "searchQuery"
 }

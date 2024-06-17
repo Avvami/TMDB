@@ -13,15 +13,15 @@ data class MediaDetailDto(
     @Json(name = "belongs_to_collection")
     val belongsToBelongToCollection: BelongToCollection?,
     @Json(name = "created_by")
-    val createdBy: List<CreatedBy?>?,
+    val createdBy: List<CreatedBy>?,
     @Json(name = "credits")
     val credits: Credits?,
     @Json(name = "episode_run_time")
-    val episodeRunTime: List<Int?>?,
+    val episodeRunTime: List<Int>?,
     @Json(name = "first_air_date")
     val firstAirDate: String?,
     @Json(name = "genres")
-    val genres: List<Genre?>?,
+    val genres: List<Genre>?,
     @Json(name = "homepage")
     val homepage: String?,
     @Json(name = "id")
@@ -29,7 +29,7 @@ data class MediaDetailDto(
     @Json(name = "in_production")
     val inProduction: Boolean?,
     @Json(name = "languages")
-    val languages: List<String?>?,
+    val languages: List<String>?,
     @Json(name = "last_air_date")
     val lastAirDate: String?,
     @Json(name = "last_episode_to_air")
@@ -37,7 +37,7 @@ data class MediaDetailDto(
     @Json(name = "name")
     val name: String?,
     @Json(name = "networks")
-    val networks: List<Network?>?,
+    val networks: List<Network>?,
     @Json(name = "next_episode_to_air")
     val nextEpisodeToAir: Any?,
     @Json(name = "number_of_episodes")
@@ -45,7 +45,7 @@ data class MediaDetailDto(
     @Json(name = "number_of_seasons")
     val numberOfSeasons: Int?,
     @Json(name = "origin_country")
-    val originCountry: List<String?>?,
+    val originCountry: List<String>?,
     @Json(name = "original_language")
     val originalLanguage: String?,
     @Json(name = "original_name")
@@ -57,17 +57,17 @@ data class MediaDetailDto(
     @Json(name = "poster_path")
     val posterPath: String?,
     @Json(name = "production_companies")
-    val productionCompanies: List<ProductionCompany?>?,
+    val productionCompanies: List<ProductionCompany>?,
     @Json(name = "production_countries")
-    val productionCountries: List<ProductionCountry?>?,
+    val productionCountries: List<ProductionCountry>?,
     @Json(name = "release_date")
     val releaseDate: String?,
     @Json(name = "runtime")
     val runtime: Int?,
     @Json(name = "seasons")
-    val seasons: List<Season?>?,
+    val seasons: List<Season>?,
     @Json(name = "spoken_languages")
-    val spokenLanguages: List<SpokenLanguage?>?,
+    val spokenLanguages: List<SpokenLanguage>?,
     @Json(name = "status")
     val status: String?,
     @Json(name = "tagline")

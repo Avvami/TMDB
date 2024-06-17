@@ -182,12 +182,14 @@ fun DetailScreen(
                                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                                         verticalArrangement = Arrangement.spacedBy(8.dp)
                                     ) {
-                                        Text(
-                                            modifier = Modifier.align(Alignment.CenterVertically),
-                                            text = info.releaseDate.format(DateTimeFormatter.ofPattern("MMM d, yyyy")),
-                                            style = MaterialTheme.typography.bodyLarge,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
+                                        info.releaseDate?.let { releaseDate ->
+                                            Text(
+                                                modifier = Modifier.align(Alignment.CenterVertically),
+                                                text = releaseDate.format(DateTimeFormatter.ofPattern("MMM d, yyyy")),
+                                                style = MaterialTheme.typography.bodyLarge,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                        }
                                         info.runtime?.let { runtime ->
                                             Icon(
                                                 modifier = Modifier
@@ -301,34 +303,37 @@ fun DetailScreen(
                                     )
                                 }
                                 info.credits?.cast?.let { cast ->
-                                    Row(
-                                        modifier = Modifier
-                                            .clip(RoundedCornerShape(2.dp))
-                                            .clickable { /*TODO: Go to cast screen*/ },
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
+                                    if (cast.isNotEmpty()) {
                                         Row(
-                                            modifier = Modifier.weight(1f),
-                                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                            modifier = Modifier
+                                                .clip(RoundedCornerShape(2.dp))
+                                                .clickable { /*TODO: Go to cast screen*/ },
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(2.dp)
                                         ) {
+                                            Row(
+                                                modifier = Modifier.weight(1f, false),
+                                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                            ) {
+                                                Text(
+                                                    text = stringResource(id = R.string.starring),
+                                                    style = MaterialTheme.typography.labelLarge,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                )
+                                                Text(
+                                                    text = cast.take(5).joinToString(", ") { it.name.toString() },
+                                                    style = MaterialTheme.typography.bodyMedium,
+                                                    maxLines = 1,
+                                                    overflow = TextOverflow.Ellipsis,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                )
+                                            }
                                             Text(
-                                                text = stringResource(id = R.string.starring),
-                                                style = MaterialTheme.typography.labelLarge,
-                                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                                            )
-                                            Text(
-                                                text = cast.take(5).joinToString(", ") { it?.name.toString() },
-                                                style = MaterialTheme.typography.bodyMedium,
-                                                maxLines = 1,
-                                                overflow = TextOverflow.Ellipsis,
+                                                text = stringResource(id = R.string.more),
+                                                style = MaterialTheme.typography.labelMedium,
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                                             )
                                         }
-                                        Text(
-                                            text = stringResource(id = R.string.more),
-                                            style = MaterialTheme.typography.labelMedium,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
                                     }
                                 }
                             }

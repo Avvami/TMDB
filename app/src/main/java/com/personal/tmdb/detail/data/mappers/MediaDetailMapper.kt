@@ -6,6 +6,14 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 fun MediaDetailDto.toMediaDetailInfo(): MediaDetailInfo {
+    val releaseDate: LocalDate? = try {
+        val dateString = firstAirDate?.takeIf { it.isNotBlank() } ?: releaseDate?.takeIf { it.isNotBlank() }
+        dateString?.let { string ->
+            LocalDate.parse(string, DateTimeFormatter.ISO_LOCAL_DATE)
+        }
+    } catch (e: Exception) {
+        null
+    }
     return MediaDetailInfo(
         backdropPath = backdropPath,
         belongsToCollection = belongsToBelongToCollection,
@@ -17,12 +25,12 @@ fun MediaDetailDto.toMediaDetailInfo(): MediaDetailInfo {
         numberOfEpisodes = numberOfEpisodes,
         numberOfSeasons = numberOfSeasons,
         originalName = originalName,
-        overview = overview,
+        overview = if (overview.isNullOrEmpty()) null else overview,
         posterPath = posterPath,
-        releaseDate = LocalDate.parse(firstAirDate ?: releaseDate, DateTimeFormatter.ISO_LOCAL_DATE),
-        runtime = runtime,
+        releaseDate = releaseDate,
+        runtime = if (runtime == 0) null else runtime,
         seasons = seasons,
-        tagline = tagline,
+        tagline = if (tagline.isNullOrEmpty()) null else tagline,
         voteAverage = voteAverage?.toFloat()
     )
 }
