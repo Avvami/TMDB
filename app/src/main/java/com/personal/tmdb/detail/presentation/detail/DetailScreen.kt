@@ -310,7 +310,7 @@ fun DetailScreen(
                                 info.credits?.cast?.let { cast ->
                                     if (cast.isNotEmpty()) {
                                         Column {
-                                            info.createdBy?.first()?.let { createdBy ->
+                                            info.createdBy?.firstOrNull()?.let { createdBy ->
                                                 createdBy.name?.let { name ->
                                                     Row(
                                                         horizontalArrangement = Arrangement.spacedBy(4.dp)
