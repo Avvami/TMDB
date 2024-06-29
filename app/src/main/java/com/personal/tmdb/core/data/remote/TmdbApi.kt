@@ -3,6 +3,7 @@ package com.personal.tmdb.core.data.remote
 import com.personal.tmdb.BuildConfig
 import com.personal.tmdb.detail.data.models.MediaDetailDto
 import com.personal.tmdb.core.data.models.MediaDto
+import com.personal.tmdb.detail.data.models.CollectionDto
 import com.personal.tmdb.search.data.models.SearchDto
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -36,4 +37,11 @@ interface TmdbApi {
         @Query("language") language: String?,
         @Query("page") page: Int
     ): SearchDto
+
+    @Headers("Authorization: Bearer ${BuildConfig.TMDB_API_KEY}")
+    @GET("3/collection/{collectionId}?")
+    suspend fun getCollection(
+        @Path("collectionId") collectionId: Int,
+        @Query("language") language: String?
+    ): CollectionDto
 }

@@ -7,9 +7,9 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 fun MediaDto.toMediaInfo(): List<MediaInfo> {
-    return results.map {
+    return results.map { result ->
         val releaseDate: LocalDate? = try {
-            val dateString = it.firstAirDate?.takeIf { it.isNotBlank() } ?: it.releaseDate?.takeIf { it.isNotBlank() }
+            val dateString = result.firstAirDate?.takeIf { it.isNotBlank() } ?: result.releaseDate?.takeIf { it.isNotBlank() }
             dateString?.let { string ->
                 LocalDate.parse(string, DateTimeFormatter.ISO_LOCAL_DATE)
             }
@@ -17,16 +17,16 @@ fun MediaDto.toMediaInfo(): List<MediaInfo> {
             null
         }
         MediaInfo(
-            backdropPath = it.backdropPath,
-            id = it.id,
+            backdropPath = result.backdropPath,
+            id = result.id,
             knownFor = null,
             knownForDepartment = null,
-            mediaType = convertMediaType(it.mediaType),
-            name = it.title ?: it.name,
-            overview = it.overview,
-            posterPath = it.posterPath ?: it.profilePath,
+            mediaType = convertMediaType(result.mediaType),
+            name = result.title ?: result.name,
+            overview = result.overview,
+            posterPath = result.posterPath ?: result.profilePath,
             releaseDate = releaseDate,
-            voteAverage = it.voteAverage?.toFloat()
+            voteAverage = result.voteAverage?.toFloat()
         )
     }
 }

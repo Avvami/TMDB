@@ -1,6 +1,7 @@
 package com.personal.tmdb.detail.domain.models
 
 import com.personal.tmdb.detail.data.models.BelongToCollection
+import com.personal.tmdb.detail.data.models.CreatedBy
 import com.personal.tmdb.detail.data.models.Credits
 import com.personal.tmdb.detail.data.models.Genre
 import com.personal.tmdb.detail.data.models.Network
@@ -10,6 +11,7 @@ import java.time.LocalDate
 data class MediaDetailInfo(
     val backdropPath: String?,
     val belongsToCollection: BelongToCollection?,
+    val createdBy: List<CreatedBy>?,
     val credits: Credits?,
     val genres: List<Genre>?,
     val id: Int,

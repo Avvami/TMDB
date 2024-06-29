@@ -1,4 +1,4 @@
-package com.personal.tmdb.detail.presentation
+package com.personal.tmdb.detail.presentation.detail
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -32,6 +33,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -44,14 +46,17 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.personal.tmdb.R
+import com.personal.tmdb.core.navigation.RootNavGraph
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.formatRuntime
 import com.personal.tmdb.core.util.formatTvShowRuntime
 import com.personal.tmdb.core.util.formatVoteAverage
 import com.personal.tmdb.core.util.formatVoteAverageToColor
-import com.personal.tmdb.detail.presentation.components.DetailScreenShimmer
+import com.personal.tmdb.core.util.shimmerEffect
+import com.personal.tmdb.detail.presentation.detail.components.DetailScreenShimmer
 import com.personal.tmdb.ui.theme.backgroundLight
 import com.personal.tmdb.ui.theme.onBackgroundLight
+import com.personal.tmdb.ui.theme.tmdbDarkBlue
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
@@ -304,35 +309,134 @@ fun DetailScreen(
                                 }
                                 info.credits?.cast?.let { cast ->
                                     if (cast.isNotEmpty()) {
-                                        Row(
-                                            modifier = Modifier
-                                                .clip(RoundedCornerShape(2.dp))
-                                                .clickable { /*TODO: Go to cast screen*/ },
-                                            verticalAlignment = Alignment.CenterVertically,
-                                            horizontalArrangement = Arrangement.spacedBy(2.dp)
-                                        ) {
+                                        Column {
+                                            info.createdBy?.first()?.let { createdBy ->
+                                                createdBy.name?.let { name ->
+                                                    Row(
+                                                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                                    ) {
+                                                        Text(
+                                                            text = stringResource(id = R.string.creator),
+                                                            style = MaterialTheme.typography.labelLarge,
+                                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                        )
+                                                        Text(
+                                                            text = name,
+                                                            style = MaterialTheme.typography.bodyMedium,
+                                                            maxLines = 1,
+                                                            overflow = TextOverflow.Ellipsis,
+                                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                            info.credits.crew?.find { it.department == "Directing" }?.let { director ->
+                                                director.name?.let { name ->
+                                                    Row(
+                                                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                                    ) {
+                                                        Text(
+                                                            text = stringResource(id = R.string.director),
+                                                            style = MaterialTheme.typography.labelLarge,
+                                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                        )
+                                                        Text(
+                                                            text = name,
+                                                            style = MaterialTheme.typography.bodyMedium,
+                                                            maxLines = 1,
+                                                            overflow = TextOverflow.Ellipsis,
+                                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                        )
+                                                    }
+                                                }
+                                            }
                                             Row(
-                                                modifier = Modifier.weight(1f, false),
-                                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                                modifier = Modifier
+                                                    .clip(RoundedCornerShape(2.dp))
+                                                    .clickable { /*TODO: Go to cast screen*/ },
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.spacedBy(2.dp)
                                             ) {
+                                                Row(
+                                                    modifier = Modifier.weight(1f, false),
+                                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                                                ) {
+                                                    Text(
+                                                        text = stringResource(id = R.string.starring),
+                                                        style = MaterialTheme.typography.labelLarge,
+                                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                    )
+                                                    Text(
+                                                        text = cast.take(5).joinToString(", ") { it.name.toString() },
+                                                        style = MaterialTheme.typography.bodyMedium,
+                                                        maxLines = 1,
+                                                        overflow = TextOverflow.Ellipsis,
+                                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                    )
+                                                }
                                                 Text(
-                                                    text = stringResource(id = R.string.starring),
-                                                    style = MaterialTheme.typography.labelLarge,
-                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                                )
-                                                Text(
-                                                    text = cast.take(5).joinToString(", ") { it.name.toString() },
-                                                    style = MaterialTheme.typography.bodyMedium,
-                                                    maxLines = 1,
-                                                    overflow = TextOverflow.Ellipsis,
+                                                    text = stringResource(id = R.string.more),
+                                                    style = MaterialTheme.typography.labelMedium,
                                                     color = MaterialTheme.colorScheme.onSurfaceVariant
                                                 )
                                             }
+                                        }
+                                    }
+                                }
+                                info.belongsToCollection?.let { belongToCollection ->
+                                    Box(
+                                        modifier = Modifier
+                                            .height(IntrinsicSize.Min)
+                                            .clip(MaterialTheme.shapes.large)
+                                            .clickable { onNavigateTo(RootNavGraph.COLLECTION + "/${belongToCollection.id}") }
+                                    ) {
+                                        AsyncImage(
+                                            modifier = Modifier.fillMaxSize(),
+                                            model = C.TMDB_IMAGES_BASE_URL + C.BACKDROP_W1280 + belongToCollection.backdropPath,
+                                            placeholder = painterResource(id = R.drawable.placeholder),
+                                            error = painterResource(id = R.drawable.placeholder),
+                                            contentDescription = "Backdrop",
+                                            contentScale = ContentScale.Crop
+                                        )
+                                        Box(
+                                            modifier = Modifier
+                                                .fillMaxSize()
+                                                .background(tmdbDarkBlue.copy(alpha = .7f))
+                                        )
+                                        Column(
+                                            modifier = Modifier.padding(12.dp),
+                                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                                        ) {
                                             Text(
-                                                text = stringResource(id = R.string.more),
-                                                style = MaterialTheme.typography.labelMedium,
-                                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                text = stringResource(id = R.string.part_of_collection, belongToCollection.name ?: ""),
+                                                style = MaterialTheme.typography.titleLarge,
+                                                fontWeight = FontWeight.Medium,
+                                                color = backgroundLight
                                             )
+                                            if (detailViewModel.collectionState.isLoading) {
+                                                Text(
+                                                    modifier = Modifier
+                                                        .clip(MaterialTheme.shapes.small)
+                                                        .shimmerEffect(backgroundLight, backgroundLight.copy(alpha = .3f)),
+                                                    text = "Includes some titles",
+                                                    style = MaterialTheme.typography.bodyMedium,
+                                                    color = Color.Transparent,
+                                                    minLines = 2,
+                                                    maxLines = 2,
+                                                    overflow = TextOverflow.Ellipsis
+                                                )
+                                            } else {
+                                                detailViewModel.collectionState.collectionInfo?.parts?.let { partInfos ->
+                                                    Text(
+                                                        text = stringResource(id = R.string.includes, partInfos.joinToString(", ") { it.title.toString() }),
+                                                        style = MaterialTheme.typography.bodyMedium,
+                                                        color = backgroundLight,
+                                                        minLines = 2,
+                                                        maxLines = 2,
+                                                        overflow = TextOverflow.Ellipsis
+                                                    )
+                                                }
+                                            }
                                         }
                                     }
                                 }

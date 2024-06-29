@@ -10,7 +10,8 @@ import com.personal.tmdb.MainViewModel
 import com.personal.tmdb.auth.presentation.auth.AuthScreen
 import com.personal.tmdb.core.presentation.components.animatedComposable
 import com.personal.tmdb.core.util.C
-import com.personal.tmdb.detail.presentation.DetailScreen
+import com.personal.tmdb.detail.presentation.collection.CollectionScreen
+import com.personal.tmdb.detail.presentation.detail.DetailScreen
 import com.personal.tmdb.home.presentation.home.HomeScreen
 import com.personal.tmdb.search.presentation.search.SearchScreen
 import com.personal.tmdb.settings.presentation.settings.SettingsScreen
@@ -81,13 +82,28 @@ fun RootNavigationGraph(
             )
         }
         animatedComposable(
-            route = RootNavGraph.SEARCH_SCREEN + "/{${C.SEARCH_TYPE}}?${C.SEARCH_QUERY}={${C.SEARCH_QUERY}}",
+            route = RootNavGraph.SEARCH + "/{${C.SEARCH_TYPE}}?${C.SEARCH_QUERY}={${C.SEARCH_QUERY}}",
             arguments = listOf(
                 navArgument(C.SEARCH_TYPE) { type = NavType.StringType; nullable = false},
                 navArgument(C.SEARCH_QUERY) { type = NavType.StringType; nullable = true; defaultValue = null}
             )
         ) {
             SearchScreen(
+                navigateBack = onNavigateBack,
+                onNavigateTo = { route ->
+                    navController.navigate(route = route) {
+                        launchSingleTop = true
+                    }
+                }
+            )
+        }
+        animatedComposable(
+            route = RootNavGraph.COLLECTION + "/{${C.COLLECTION_ID}}",
+            arguments = listOf(
+                navArgument(C.COLLECTION_ID) { type = NavType.IntType; nullable = false},
+            )
+        ) {
+            CollectionScreen(
                 navigateBack = onNavigateBack,
                 onNavigateTo = { route ->
                     navController.navigate(route = route) {
@@ -106,5 +122,6 @@ object RootNavGraph {
     const val AUTH = "auth_screen"
     const val SETTINGS = "settings_screen"
     const val DETAIL = "detail_screen"
-    const val SEARCH_SCREEN = "detail_screen"
+    const val SEARCH = "detail_screen"
+    const val COLLECTION = "collection_screen"
 }

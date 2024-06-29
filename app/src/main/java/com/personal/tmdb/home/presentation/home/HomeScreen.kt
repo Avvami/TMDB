@@ -129,7 +129,7 @@ fun HomeScreen(
                     },
                     actions = {
                         IconButton(
-                            onClick = { onNavigateTo(RootNavGraph.SEARCH_SCREEN + "/${MediaType.MULTI.name.lowercase()}") }
+                            onClick = { onNavigateTo(RootNavGraph.SEARCH + "/${MediaType.MULTI.name.lowercase()}") }
                         ) {
                             Icon(
                                 imageVector = Icons.Rounded.Search,
@@ -242,7 +242,7 @@ fun HomeScreen(
                                     FilledIconButton(
                                         onClick = {
                                             onNavigateTo(
-                                                RootNavGraph.SEARCH_SCREEN +
+                                                RootNavGraph.SEARCH +
                                                         "/${MediaType.MULTI.name.lowercase()}?${C.SEARCH_QUERY}=${homeViewModel.searchQuery}"
                                             )
                                         },

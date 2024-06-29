@@ -7,15 +7,19 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class Cast(
     @Json(name = "adult")
-    val adult: Boolean?,
+    val adult: Boolean,
     @Json(name = "character")
     val character: String?,
     @Json(name = "credit_id")
     val creditId: String?,
+    @Json(name = "department")
+    val department: String?,
     @Json(name = "gender")
-    val gender: Int?,
+    val gender: Int,
     @Json(name = "id")
-    val id: Int?,
+    val id: Int,
+    @Json(name = "job")
+    val job: String?,
     @Json(name = "known_for_department")
     val knownForDepartment: String?,
     @Json(name = "name")

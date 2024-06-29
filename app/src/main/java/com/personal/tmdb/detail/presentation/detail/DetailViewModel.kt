@@ -1,4 +1,4 @@
-package com.personal.tmdb.detail.presentation
+package com.personal.tmdb.detail.presentation.detail
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -8,8 +8,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.Resource
+import com.personal.tmdb.detail.domain.models.CollectionInfo
 import com.personal.tmdb.detail.domain.models.MediaDetailInfo
 import com.personal.tmdb.detail.domain.repository.DetailRepository
+import com.personal.tmdb.detail.presentation.collection.CollectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,6 +23,9 @@ class DetailViewModel @Inject constructor(
 ): ViewModel() {
 
     var detailState by mutableStateOf(DetailState())
+        private set
+
+    var collectionState by mutableStateOf(CollectionState())
         private set
 
     init {
@@ -45,9 +50,38 @@ class DetailViewModel @Inject constructor(
                     }
                 }
             }
+            mediaDetail?.belongsToCollection?.let { collection ->
+                getCollection(collectionId = collection.id)
+            }
 
             detailState = detailState.copy(
                 mediaDetail = mediaDetail
+            )
+        }
+    }
+
+    private fun getCollection(collectionId: Int, language: String? = null) {
+        viewModelScope.launch {
+            collectionState = collectionState.copy(
+                isLoading = true
+            )
+
+            var collectionInfo: CollectionInfo? = null
+
+            detailRepository.getCollection(collectionId, language).let { result ->
+                when (result) {
+                    is Resource.Error -> {
+                        println(result.message)
+                    }
+                    is Resource.Success -> {
+                        collectionInfo = result.data
+                    }
+                }
+            }
+
+            collectionState = collectionState.copy(
+                collectionInfo = collectionInfo,
+                isLoading = false
             )
         }
     }

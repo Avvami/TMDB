@@ -17,6 +17,7 @@ fun MediaDetailDto.toMediaDetailInfo(): MediaDetailInfo {
     return MediaDetailInfo(
         backdropPath = backdropPath,
         belongsToCollection = belongsToBelongToCollection,
+        createdBy = createdBy,
         credits = credits,
         genres = genres,
         id = id,

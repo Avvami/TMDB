@@ -1,4 +1,4 @@
-package com.personal.tmdb.detail.presentation.components
+package com.personal.tmdb.detail.presentation.detail.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

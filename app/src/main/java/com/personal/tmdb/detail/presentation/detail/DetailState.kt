@@ -1,4 +1,4 @@
-package com.personal.tmdb.detail.presentation
+package com.personal.tmdb.detail.presentation.detail
 
 import com.personal.tmdb.detail.domain.models.MediaDetailInfo
 
