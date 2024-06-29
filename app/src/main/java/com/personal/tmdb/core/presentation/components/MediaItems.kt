@@ -134,7 +134,7 @@ fun MediaPoster(
         ) {
             AsyncImage(
                 modifier = Modifier.fillMaxSize(),
-                model = C.TMDB_IMAGES_BASE_URL + C.POSTER_W185 + mediaInfo.posterPath,
+                model = C.TMDB_IMAGES_BASE_URL + C.POSTER_W300 + mediaInfo.posterPath,
                 placeholder = painterResource(id = R.drawable.placeholder),
                 error = painterResource(id = R.drawable.placeholder),
                 contentDescription = "Poster",
@@ -163,16 +163,19 @@ fun MediaPoster(
                 }
             }
         }
-        if (showTitle && mediaInfo.name != null) {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = mediaInfo.name,
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
+        if (showTitle || mediaType?.equals(MediaType.PERSON) == true) {
+            mediaInfo.name?.let { name ->
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = name,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onBackground,
+                    textAlign = TextAlign.Center,
+                    minLines = 2,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
     }
 }
@@ -204,7 +207,9 @@ fun MediaPosterShimmer(
         if (showTitle) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = ""
+                text = "",
+                minLines = 2,
+                maxLines = 2,
             )
         }
     }

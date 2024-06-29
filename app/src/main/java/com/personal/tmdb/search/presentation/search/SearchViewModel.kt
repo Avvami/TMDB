@@ -53,7 +53,7 @@ class SearchViewModel @Inject constructor(
 
                 searchRepository.searchFor(
                     searchType = searchType,
-                    query = query,
+                    query = query.trim(),
                     includeAdult = false,
                     page = page
                 ).let { result ->
@@ -82,7 +82,7 @@ class SearchViewModel @Inject constructor(
                 searchQuery = event.query
                 searchJob?.cancel()
                 searchJob = viewModelScope.launch {
-                    delay(1000L)
+                    delay(500L)
                     searchFor(event.searchType, searchQuery, event.page)
                 }
             }

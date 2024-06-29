@@ -74,7 +74,6 @@ import com.personal.tmdb.ui.theme.gradientPurpleDark
 import com.personal.tmdb.ui.theme.gradientPurpleLight
 import com.personal.tmdb.ui.theme.onSecondaryContainerLight
 import com.personal.tmdb.ui.theme.secondaryContainerLight
-import com.personal.tmdb.ui.theme.surfaceVariantLight
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -215,13 +214,13 @@ fun HomeScreen(
                                     text = stringResource(id = R.string.welcome),
                                     style = MaterialTheme.typography.displayMedium,
                                     fontWeight = FontWeight.SemiBold,
-                                    color = MaterialTheme.colorScheme.background
+                                    color = backgroundLight
                                 )
                                 Text(
                                     text = stringResource(id = R.string.explore_now),
                                     style = MaterialTheme.typography.headlineSmall,
                                     fontWeight = FontWeight.Medium,
-                                    color = MaterialTheme.colorScheme.background
+                                    color = backgroundLight
                                 )
                             }
                             OutlinedTextField(
@@ -352,7 +351,7 @@ fun HomeScreen(
                             onClick = { /*TODO: Open sign up link*/ },
                             gradient = Brush.horizontalGradient(listOf(gradientPurpleDark, gradientPurpleLight))
                         ) {
-                            Text(text = stringResource(id = R.string.sign_up))
+                            Text(text = stringResource(id = R.string.sign_up), color = backgroundLight)
                         }
                     }
                 }
