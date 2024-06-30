@@ -46,5 +46,5 @@
     <string name="sort_by">Sort by</string>
     <string name="rating">Rating</string>
     <string name="release_date">Release date</string>
-    <string name="how">How?</string>
+    <string name="empty"/>
 </resources>

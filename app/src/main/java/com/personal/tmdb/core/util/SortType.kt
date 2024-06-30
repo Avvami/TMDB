@@ -15,6 +15,6 @@ fun convertSortType(sortType: SortType?): Int {
         SortType.RATING_DESC -> R.string.rating
         SortType.RELEASE_DATE_ASC -> R.string.release_date
         SortType.RELEASE_DATE_DESC -> R.string.release_date
-        null -> R.string.how
+        null -> R.string.empty
     }
 }

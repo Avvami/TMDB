@@ -33,6 +33,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
@@ -146,7 +147,8 @@ fun HomeScreen(
             contentColor = MaterialTheme.colorScheme.onBackground
         ) { innerPadding ->
             LazyColumn(
-                contentPadding = innerPadding,
+                modifier = Modifier.padding(innerPadding),
+                contentPadding = PaddingValues(vertical = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 item {
@@ -155,18 +157,21 @@ fun HomeScreen(
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         SuggestionChip(
+                            modifier = Modifier.height(SuggestionChipDefaults.Height),
                             onClick = { /*TODO*/ },
                             label = {
                                 Text(text = stringResource(id = R.string.tv_shows))
                             }
                         )
                         SuggestionChip(
+                            modifier = Modifier.height(SuggestionChipDefaults.Height),
                             onClick = { /*TODO*/ },
                             label = {
                                 Text(text = stringResource(id = R.string.movies))
                             }
                         )
                         SuggestionChip(
+                            modifier = Modifier.height(SuggestionChipDefaults.Height),
                             onClick = { /*TODO*/ },
                             label = {
                                 Text(text = stringResource(id = R.string.people))

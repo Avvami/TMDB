@@ -197,6 +197,52 @@ fun DetailScreen(
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                                             )
                                         }
+                                        info.contentRatings?.contentRatingsResults?.find { it.iso31661 == "US" }?.let { result ->
+                                            if (result.rating.isNotEmpty()) {
+                                                Icon(
+                                                    modifier = Modifier
+                                                        .size(6.dp)
+                                                        .align(Alignment.CenterVertically),
+                                                    painter = painterResource(id = R.drawable.icon_fiber_manual_record_fill1_wght400),
+                                                    contentDescription = null,
+                                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                                )
+                                                Text(
+                                                    modifier = Modifier
+                                                        .clip(MaterialTheme.shapes.extraSmall)
+                                                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                                                        .padding(horizontal = 8.dp)
+                                                        .align(Alignment.CenterVertically),
+                                                    text = result.rating,
+                                                    style = MaterialTheme.typography.bodyLarge,
+                                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                )
+                                            }
+                                        }
+                                        info.releaseDates?.releaseDatesResults?.find { it.iso31661 == "US" }?.let { result ->
+                                            result.releaseDates?.find { it.certification.isNotEmpty() }?.let { release ->
+                                                if (release.certification.isNotEmpty()) {
+                                                    Icon(
+                                                        modifier = Modifier
+                                                            .size(6.dp)
+                                                            .align(Alignment.CenterVertically),
+                                                        painter = painterResource(id = R.drawable.icon_fiber_manual_record_fill1_wght400),
+                                                        contentDescription = null,
+                                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                                    )
+                                                    Text(
+                                                        modifier = Modifier
+                                                            .clip(MaterialTheme.shapes.extraSmall)
+                                                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                                                            .padding(horizontal = 8.dp)
+                                                            .align(Alignment.CenterVertically),
+                                                        text = release.certification,
+                                                        style = MaterialTheme.typography.bodyLarge,
+                                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                    )
+                                                }
+                                            }
+                                        }
                                         info.runtime?.let { runtime ->
                                             Icon(
                                                 modifier = Modifier

@@ -26,12 +26,27 @@ fun ApplySystemBarsTheme(applyLightStatusBars: Boolean) {
     }
 }
 
-fun ApplySystemBarsTheme(view: View, context: Context, applyLightStatusBars: Boolean) {
+@Composable
+fun ApplyStatusBarsTheme(applyLightStatusBars: Boolean) {
+    val view = LocalView.current
+    val context = LocalContext.current
+
+    if (!view.isInEditMode) {
+        SideEffect {
+            (context as? ComponentActivity)?.let { activity ->
+                WindowCompat.getInsetsController(activity.window, view).apply {
+                    isAppearanceLightStatusBars = !applyLightStatusBars
+                }
+            }
+        }
+    }
+}
+
+fun applyStatusBarsTheme(view: View, context: Context, applyLightStatusBars: Boolean) {
     if (!view.isInEditMode) {
         (context as? ComponentActivity)?.let { activity ->
             WindowCompat.getInsetsController(activity.window, view).apply {
                 isAppearanceLightStatusBars = !applyLightStatusBars
-                isAppearanceLightNavigationBars = !applyLightStatusBars
             }
         }
     }

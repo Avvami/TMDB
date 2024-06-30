@@ -16,7 +16,8 @@ fun MediaDetailDto.toMediaDetailInfo(): MediaDetailInfo {
     }
     return MediaDetailInfo(
         backdropPath = backdropPath,
-        belongsToCollection = belongsToBelongToCollection,
+        belongsToCollection = belongsToCollection,
+        contentRatings = contentRatings,
         createdBy = createdBy,
         credits = credits,
         genres = genres,
@@ -29,6 +30,7 @@ fun MediaDetailDto.toMediaDetailInfo(): MediaDetailInfo {
         overview = if (overview.isNullOrEmpty()) null else overview,
         posterPath = posterPath,
         releaseDate = releaseDate,
+        releaseDates = releaseDates,
         runtime = if (runtime == 0) null else runtime,
         seasons = seasons,
         tagline = if (tagline.isNullOrEmpty()) null else tagline,

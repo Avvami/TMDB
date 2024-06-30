@@ -9,6 +9,7 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -27,11 +28,13 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,11 +57,13 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.personal.tmdb.R
 import com.personal.tmdb.core.domain.models.DropdownItem
+import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.CustomDropdownMenu
 import com.personal.tmdb.core.presentation.components.MediaListView
-import com.personal.tmdb.core.util.ApplySystemBarsTheme
+import com.personal.tmdb.core.util.ApplyStatusBarsTheme
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.SortType
+import com.personal.tmdb.core.util.applyStatusBarsTheme
 import com.personal.tmdb.core.util.convertSortType
 import com.personal.tmdb.core.util.formatVoteAverage
 import com.personal.tmdb.core.util.shimmerEffect
@@ -72,14 +77,15 @@ fun CollectionScreen(
     modifier: Modifier = Modifier,
     navigateBack: () -> Unit,
     onNavigateTo: (route: String) -> Unit,
+    preferencesState: State<PreferencesState>,
     collectionViewModel: CollectionViewModel = hiltViewModel()
 ) {
-    ApplySystemBarsTheme(applyLightStatusBars = true)
+    ApplyStatusBarsTheme(applyLightStatusBars = true)
     val view = LocalView.current
     val context = LocalContext.current
     DisposableEffect(key1 = Unit) {
         onDispose {
-            ApplySystemBarsTheme(view, context, false)
+            applyStatusBarsTheme(view, context, preferencesState.value.isDark)
         }
     }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()
@@ -130,9 +136,8 @@ fun CollectionScreen(
         contentColor = MaterialTheme.colorScheme.onBackground
     ) { innerPadding ->
         MediaListView(
-            modifier = Modifier
-                .padding(bottom = innerPadding.calculateBottomPadding())
-                .padding(bottom = 16.dp),
+            modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding()),
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
             onNavigateTo = onNavigateTo,
             mediaList = { collectionViewModel.collectionState.collectionInfo?.parts },
             emptyListTextRes = R.string.nothing_to_show,
@@ -142,16 +147,18 @@ fun CollectionScreen(
             topItemContent = {
                 val sidePadding = (-16).dp
                 Column(
-                    modifier = Modifier.layout { measurable, constraints ->
-                        val placeable = measurable.measure(constraints.offset(horizontal = -sidePadding.roundToPx() * 2))
-                        layout(
-                            width = placeable.width + sidePadding.roundToPx() * 2,
-                            height = placeable.height
-                        ) {
-                            placeable.place(+sidePadding.roundToPx(), 0)
+                    modifier = Modifier
+                        .layout { measurable, constraints ->
+                            val placeable = measurable.measure(constraints.offset(horizontal = -sidePadding.roundToPx() * 2))
+                            layout(
+                                width = placeable.width + sidePadding.roundToPx() * 2,
+                                height = placeable.height
+                            ) {
+                                placeable.place(+sidePadding.roundToPx(), 0)
+                            }
                         }
-                    },
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                        .padding(bottom = 8.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
                     collectionViewModel.collectionState.collectionInfo?.let { collectionInfo ->
                         val painter = rememberAsyncImagePainter(
@@ -256,6 +263,7 @@ fun CollectionScreen(
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         SuggestionChip(
+                            modifier = Modifier.height(SuggestionChipDefaults.Height),
                             onClick = {
                                 collectionViewModel.collectionUiEvent(CollectionUiEvent.ChangeDropdownState)
                             },
@@ -284,7 +292,7 @@ fun CollectionScreen(
                                     dropDownItems = listOf(
                                         DropdownItem(
                                             selected = true,
-                                            iconRes = R.drawable.icon_thumbs_up_down_fill1_wght400,
+                                            iconRes = R.drawable.icon_thumbs_up_down_fill0_wght400,
                                             textRes = R.string.rating,
                                             onItemClick = {
                                                 when (collectionViewModel.sortType) {
@@ -332,6 +340,7 @@ fun CollectionScreen(
                             visible = collectionViewModel.sortType != null
                         ) {
                             FilterChip(
+                                modifier = Modifier.height(FilterChipDefaults.Height),
                                 selected = true,
                                 onClick = {
                                     collectionViewModel.collectionUiEvent(CollectionUiEvent.SetSortType(null))

@@ -27,6 +27,7 @@ import com.personal.tmdb.core.domain.models.MediaInfo
 @Composable
 fun MediaListView(
     modifier: Modifier = Modifier,
+    contentPadding: PaddingValues,
     onNavigateTo: (route: String) -> Unit,
     topItemContent: @Composable (() -> Unit)? = null,
     mediaList: () -> List<MediaInfo>?,
@@ -42,7 +43,7 @@ fun MediaListView(
         if (targetState) {
             LazyColumn(
                 modifier = modifier,
-                contentPadding = PaddingValues(horizontal = 16.dp),
+                contentPadding = contentPadding,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 topItemContent?.let { content ->
@@ -82,7 +83,7 @@ fun MediaListView(
             LazyVerticalGrid(
                 modifier = modifier,
                 columns = GridCells.Adaptive(100.dp),
-                contentPadding = PaddingValues(horizontal = 16.dp),
+                contentPadding = contentPadding,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {

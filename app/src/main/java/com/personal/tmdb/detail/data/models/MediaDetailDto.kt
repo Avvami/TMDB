@@ -11,7 +11,9 @@ data class MediaDetailDto(
     @Json(name = "backdrop_path")
     val backdropPath: String?,
     @Json(name = "belongs_to_collection")
-    val belongsToBelongToCollection: BelongToCollection?,
+    val belongsToCollection: BelongsToCollection?,
+    @Json(name = "content_ratings")
+    val contentRatings: ContentRatings?,
     @Json(name = "created_by")
     val createdBy: List<CreatedBy>?,
     @Json(name = "credits")
@@ -62,6 +64,8 @@ data class MediaDetailDto(
     val productionCountries: List<ProductionCountry>?,
     @Json(name = "release_date")
     val releaseDate: String?,
+    @Json(name = "release_dates")
+    val releaseDates: ReleaseDates?,
     @Json(name = "runtime")
     val runtime: Int?,
     @Json(name = "seasons")

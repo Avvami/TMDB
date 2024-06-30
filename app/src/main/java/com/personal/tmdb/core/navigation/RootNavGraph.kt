@@ -109,7 +109,8 @@ fun RootNavigationGraph(
                     navController.navigate(route = route) {
                         launchSingleTop = true
                     }
-                }
+                },
+                preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle(),
             )
         }
     }

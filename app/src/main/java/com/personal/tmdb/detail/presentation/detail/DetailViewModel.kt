@@ -11,6 +11,7 @@ import com.personal.tmdb.core.util.Resource
 import com.personal.tmdb.detail.domain.models.CollectionInfo
 import com.personal.tmdb.detail.domain.models.MediaDetailInfo
 import com.personal.tmdb.detail.domain.repository.DetailRepository
+import com.personal.tmdb.core.domain.util.appendToResponse
 import com.personal.tmdb.detail.presentation.collection.CollectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -32,7 +33,7 @@ class DetailViewModel @Inject constructor(
         getMediaDetails(
             mediaType = savedStateHandle[C.MEDIA_TYPE] ?: "",
             mediaId = savedStateHandle[C.MEDIA_ID] ?: 0,
-            appendToResponse = "credits"
+            appendToResponse = appendToResponse(savedStateHandle[C.MEDIA_TYPE] ?: "")
         )
     }
 
