@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.Resource
+import com.personal.tmdb.core.util.SortType
 import com.personal.tmdb.detail.domain.models.CollectionInfo
 import com.personal.tmdb.detail.domain.repository.DetailRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -50,9 +51,49 @@ class CollectionViewModel @Inject constructor(
 
             collectionState = collectionState.copy(
                 collectionInfo = collectionInfo,
+                originalParts = collectionInfo?.parts,
                 isLoading = false
             )
         }
     }
 
+    private fun sortCollectionParts(sortType: SortType?) {
+        collectionState.collectionInfo?.let { info ->
+            val sortedParts = when (sortType) {
+                SortType.RATING_ASC -> info.parts?.sortedBy { it.voteAverage }
+                SortType.RATING_DESC -> info.parts?.sortedByDescending { it.voteAverage }
+                SortType.RELEASE_DATE_ASC -> info.parts?.sortedBy { it.releaseDate }
+                SortType.RELEASE_DATE_DESC -> info.parts?.sortedByDescending { it.releaseDate }
+                null -> collectionState.originalParts
+            }
+            collectionState = collectionState.copy(
+                collectionInfo = info.copy(parts = sortedParts)
+            )
+        }
+    }
+
+    var isOverviewCollapsed by mutableStateOf(true)
+        private set
+
+    var isDropdownExpanded by mutableStateOf(false)
+        private set
+
+    var sortType by mutableStateOf<SortType?>(null)
+        private set
+
+    fun collectionUiEvent(event: CollectionUiEvent) {
+        when (event) {
+            CollectionUiEvent.ChangeCollapsedOverview -> {
+                isOverviewCollapsed = !isOverviewCollapsed
+            }
+            CollectionUiEvent.ChangeDropdownState -> {
+                isDropdownExpanded = !isDropdownExpanded
+            }
+            is CollectionUiEvent.SetSortType -> {
+                println(event.sortType?.name)
+                sortType = event.sortType
+                sortCollectionParts(sortType)
+            }
+        }
+    }
 }

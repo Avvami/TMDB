@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -36,6 +37,7 @@ import com.personal.tmdb.core.domain.models.MediaInfo
 import com.personal.tmdb.core.navigation.RootNavGraph
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.MediaType
+import com.personal.tmdb.core.util.formatDate
 import com.personal.tmdb.core.util.formatVoteAverage
 import com.personal.tmdb.ui.theme.backgroundLight
 import com.personal.tmdb.ui.theme.onBackgroundLight
@@ -43,46 +45,109 @@ import com.personal.tmdb.ui.theme.onBackgroundLight
 @Composable
 fun MediaCard(
     modifier: Modifier = Modifier,
-    posterPath: String,
-    title: String,
-    releaseDate: String,
-    overview: String
+    onNavigateTo: (route: String) -> Unit,
+    mediaInfo: MediaInfo,
+    mediaType: MediaType? = null,
+    showVoteAverage: Boolean
 ) {
     Row(
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .clip(RoundedCornerShape(18.dp))
+            .clickable {
+                mediaType?.let { mediaType ->
+                    when (mediaType) {
+                        MediaType.TV, MediaType.MOVIE -> {
+                            onNavigateTo(RootNavGraph.DETAIL + "/${mediaType.name.lowercase()}/${mediaInfo.id}")
+                        }
+                        MediaType.PERSON -> {
+                            /*TODO: Navigate to person screen*/
+                        }
+                        else -> {
+                            /*TODO: Navigate to lost your way screen*/
+                        }
+                    }
+                }
+                mediaInfo.mediaType?.let { mediaType ->
+                    when (mediaType) {
+                        MediaType.TV, MediaType.MOVIE -> {
+                            onNavigateTo(RootNavGraph.DETAIL + "/${mediaType.name.lowercase()}/${mediaInfo.id}")
+                        }
+                        MediaType.PERSON -> {
+                            /*TODO: Navigate to person screen*/
+                        }
+                        else -> {
+                            /*TODO: Navigate to lost your way screen*/
+                        }
+                    }
+                }
+            }
             .background(MaterialTheme.colorScheme.surfaceContainer)
-            .padding(8.dp)
+            .padding(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        AsyncImage(
-            model = "https://image.tmdb.org/t/p/w185$posterPath",
-            contentDescription = "Poster",
+        Box(
             modifier = Modifier
-                .size(104.dp, 156.dp)
-                .clip(RoundedCornerShape(18.dp)),
-            contentScale = ContentScale.Crop
-        )
+                .height(150.dp)
+                .aspectRatio(0.675f)
+                .clip(RoundedCornerShape(18.dp))
+        ) {
+            AsyncImage(
+                modifier = Modifier.fillMaxSize(),
+                model = C.TMDB_IMAGES_BASE_URL + C.POSTER_W300 + mediaInfo.posterPath,
+                placeholder = painterResource(id = R.drawable.placeholder),
+                error = painterResource(id = R.drawable.placeholder),
+                contentDescription = "Poster",
+                contentScale = ContentScale.Crop
+            )
+            if (showVoteAverage && mediaInfo.voteAverage != null) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(onBackgroundLight.copy(.3f))
+                        .align(Alignment.BottomCenter),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterHorizontally)
+                ) {
+                    Text(
+                        text = formatVoteAverage(mediaInfo.voteAverage),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = backgroundLight
+                    )
+                    Icon(
+                        modifier = Modifier.size(14.dp),
+                        painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
+                        contentDescription = null,
+                        tint = backgroundLight
+                    )
+                }
+            }
+        }
         Column {
-            Text(
-                text = title,
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Text(
-                text = releaseDate,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = overview,
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 4,
-                overflow = TextOverflow.Ellipsis
-            )
+            mediaInfo.name?.let { name ->
+                Text(
+                    text = name,
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+            }
+            mediaInfo.releaseDate?.let { releaseDate ->
+                Text(
+                    text = formatDate(releaseDate),
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+            mediaInfo.overview?.let { overview ->
+                Spacer(modifier = Modifier.height(12.dp))
+                Text(
+                    text = overview,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 4,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
         }
     }
 }

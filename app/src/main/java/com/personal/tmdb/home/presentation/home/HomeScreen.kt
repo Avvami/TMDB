@@ -181,7 +181,7 @@ fun HomeScreen(
                             .fillMaxSize()
                             .padding(horizontal = 16.dp)
                             .then(
-                                if (homeState().randomMedia?.backdropPath != null) {
+                                if (!homeState().randomMedia?.backdropPath.isNullOrEmpty()) {
                                     Modifier.shadow(
                                         elevation = 8.dp,
                                         shape = RoundedCornerShape(24.dp),

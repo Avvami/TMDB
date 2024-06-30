@@ -1,5 +1,7 @@
 package com.personal.tmdb.core.util
 
+import android.content.Context
+import android.view.View
 import androidx.activity.ComponentActivity
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
@@ -19,6 +21,17 @@ fun ApplySystemBarsTheme(applyLightStatusBars: Boolean) {
                     isAppearanceLightStatusBars = !applyLightStatusBars
                     isAppearanceLightNavigationBars = !applyLightStatusBars
                 }
+            }
+        }
+    }
+}
+
+fun ApplySystemBarsTheme(view: View, context: Context, applyLightStatusBars: Boolean) {
+    if (!view.isInEditMode) {
+        (context as? ComponentActivity)?.let { activity ->
+            WindowCompat.getInsetsController(activity.window, view).apply {
+                isAppearanceLightStatusBars = !applyLightStatusBars
+                isAppearanceLightNavigationBars = !applyLightStatusBars
             }
         }
     }

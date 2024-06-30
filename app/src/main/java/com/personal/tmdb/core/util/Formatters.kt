@@ -8,6 +8,8 @@ import com.personal.tmdb.R
 import com.personal.tmdb.ui.theme.tmdbRatingGreen
 import com.personal.tmdb.ui.theme.tmdbRatingOrange
 import com.personal.tmdb.ui.theme.tmdbRatingRed
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 fun formatRuntime(minutes: Int, context: Context): String {
     val hours = minutes / 60
@@ -33,6 +35,7 @@ fun formatVoteAverage(voteAverage: Float): String {
         else -> roundedValue.toString()
     }
 }
+
 fun formatTvShowRuntime(numberOfSeasons: Int, numberOfEpisodes: Int): String {
     val episodes = when (numberOfEpisodes) {
         1 -> "$numberOfEpisodes Episode"
@@ -43,3 +46,5 @@ fun formatTvShowRuntime(numberOfSeasons: Int, numberOfEpisodes: Int): String {
         else -> "$numberOfSeasons Seasons"
     }
 }
+
+fun formatDate(localDate: LocalDate): String = localDate.format(DateTimeFormatter.ofPattern("MMM d, yyyy"))

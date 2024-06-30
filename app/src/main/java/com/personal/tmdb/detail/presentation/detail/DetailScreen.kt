@@ -50,6 +50,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.personal.tmdb.R
 import com.personal.tmdb.core.navigation.RootNavGraph
 import com.personal.tmdb.core.util.C
+import com.personal.tmdb.core.util.formatDate
 import com.personal.tmdb.core.util.formatRuntime
 import com.personal.tmdb.core.util.formatTvShowRuntime
 import com.personal.tmdb.core.util.formatVoteAverage
@@ -59,7 +60,6 @@ import com.personal.tmdb.detail.presentation.detail.components.DetailScreenShimm
 import com.personal.tmdb.ui.theme.backgroundLight
 import com.personal.tmdb.ui.theme.onBackgroundLight
 import com.personal.tmdb.ui.theme.tmdbDarkBlue
-import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
@@ -192,7 +192,7 @@ fun DetailScreen(
                                         info.releaseDate?.let { releaseDate ->
                                             Text(
                                                 modifier = Modifier.align(Alignment.CenterVertically),
-                                                text = releaseDate.format(DateTimeFormatter.ofPattern("MMM d, yyyy")),
+                                                text = formatDate(releaseDate),
                                                 style = MaterialTheme.typography.bodyLarge,
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                                             )
@@ -431,7 +431,7 @@ fun DetailScreen(
                                             } else {
                                                 detailViewModel.collectionState.collectionInfo?.parts?.let { partInfos ->
                                                     Text(
-                                                        text = stringResource(id = R.string.includes, partInfos.joinToString(", ") { it.title.toString() }),
+                                                        text = stringResource(id = R.string.includes, partInfos.joinToString(", ") { it.name.toString() }),
                                                         style = MaterialTheme.typography.bodyMedium,
                                                         color = backgroundLight,
                                                         minLines = 2,
