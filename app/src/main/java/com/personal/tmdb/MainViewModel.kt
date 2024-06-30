@@ -31,6 +31,9 @@ class MainViewModel @Inject constructor(
     private val _preferencesState = MutableStateFlow(PreferencesState())
     val preferencesState: StateFlow<PreferencesState> = _preferencesState.asStateFlow()
 
+    var homeState by mutableStateOf(HomeState())
+        private set
+
     init {
         viewModelScope.launch {
             localRepository.getPreferences().collect { preferencesEntity ->
@@ -40,14 +43,11 @@ class MainViewModel @Inject constructor(
                         sessionId = preferencesEntity.sessionId
                     )
                 }
-                loadTrendingList()
                 holdSplash = false
             }
         }
+        loadTrendingList()
     }
-
-    var homeState by mutableStateOf(HomeState())
-        private set
 
     private fun loadTrendingList() {
         viewModelScope.launch {
@@ -66,7 +66,7 @@ class MainViewModel @Inject constructor(
 
             homeState = homeState.copy(
                 trending = trending,
-                randomMedia = trending?.random()
+                randomMedia = trending?.randomOrNull()
             )
         }
     }

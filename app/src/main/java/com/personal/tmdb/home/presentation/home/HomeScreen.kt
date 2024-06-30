@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
@@ -42,6 +43,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -70,6 +72,7 @@ import com.personal.tmdb.ui.theme.backgroundLight
 import com.personal.tmdb.ui.theme.duotoneBlueDark
 import com.personal.tmdb.ui.theme.duotoneBlueLight
 import com.personal.tmdb.ui.theme.duotonePurpleDark
+import com.personal.tmdb.ui.theme.duotonePurpleLight
 import com.personal.tmdb.ui.theme.gradientPurpleDark
 import com.personal.tmdb.ui.theme.gradientPurpleLight
 import com.personal.tmdb.ui.theme.onSecondaryContainerLight
@@ -325,7 +328,13 @@ fun HomeScreen(
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .background(duotonePurpleDark)
+                            .height(IntrinsicSize.Min)
+                            .paint(
+                                painter = painterResource(id = R.drawable.movie_poster),
+                                sizeToIntrinsics = false,
+                                contentScale = ContentScale.Crop,
+                                colorFilter = duotoneColorFilter(duotonePurpleLight, duotonePurpleDark)
+                            )
                             .padding(horizontal = 16.dp, vertical = 24.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
