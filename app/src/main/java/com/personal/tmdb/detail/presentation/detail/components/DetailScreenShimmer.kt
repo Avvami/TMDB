@@ -56,7 +56,7 @@ fun DetailScreenShimmer() {
             ) {
                 Text(
                     modifier = Modifier
-                        .clip(MaterialTheme.shapes.extraSmall)
+                        .clip(MaterialTheme.shapes.small)
                         .shimmerEffect(),
                     text = "Media title",
                     style = MaterialTheme.typography.titleLarge,
@@ -65,7 +65,7 @@ fun DetailScreenShimmer() {
                 )
                 Text(
                     modifier = Modifier
-                        .clip(MaterialTheme.shapes.extraSmall)
+                        .clip(MaterialTheme.shapes.small)
                         .shimmerEffect(),
                     text = "Media release date, genres, runtime",
                     style = MaterialTheme.typography.bodyLarge,
@@ -84,7 +84,7 @@ fun DetailScreenShimmer() {
                 )
                 Row(
                     modifier = Modifier
-                        .clip(MaterialTheme.shapes.extraSmall)
+                        .clip(MaterialTheme.shapes.small)
                         .shimmerEffect(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(2.dp)
@@ -104,13 +104,34 @@ fun DetailScreenShimmer() {
             }
             Text(
                 modifier = Modifier
+                    .clip(MaterialTheme.shapes.small)
+                    .shimmerEffect()
+                    .padding(10.dp),
+                text = "One last hunt to save us all.",
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.Transparent
+            )
+            Text(
+                modifier = Modifier
                     .fillMaxWidth()
                     .clip(MaterialTheme.shapes.small)
                     .shimmerEffect(),
                 text = "",
                 style = MaterialTheme.typography.bodyLarge,
-                minLines =  4
+                minLines = 4
             )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(MaterialTheme.shapes.small)
+                    .shimmerEffect(),
+            ) {
+                Text(
+                    text = stringResource(id = R.string.starring),
+                    style = MaterialTheme.typography.labelLarge,
+                    color = Color.Transparent
+                )
+            }
         }
     }
 }

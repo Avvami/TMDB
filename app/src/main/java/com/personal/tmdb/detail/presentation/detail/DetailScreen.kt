@@ -64,7 +64,6 @@ import com.personal.tmdb.ui.theme.tmdbDarkBlue
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun DetailScreen(
-    modifier: Modifier = Modifier,
     navigateBack: () -> Unit,
     onNavigateTo: (route: String) -> Unit,
     detailViewModel: DetailViewModel = hiltViewModel()
@@ -98,7 +97,7 @@ fun DetailScreen(
             contentPadding = innerPadding,
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            if (detailViewModel.detailState.mediaDetail == null && detailViewModel.detailState.error == null) {
+            if (detailViewModel.detailState.isLoading) {
                 item {
                     DetailScreenShimmer()
                 }

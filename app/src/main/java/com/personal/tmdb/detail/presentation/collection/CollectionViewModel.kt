@@ -90,7 +90,6 @@ class CollectionViewModel @Inject constructor(
                 isDropdownExpanded = !isDropdownExpanded
             }
             is CollectionUiEvent.SetSortType -> {
-                println(event.sortType?.name)
                 sortType = event.sortType
                 sortCollectionParts(sortType)
             }
