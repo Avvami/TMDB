@@ -23,6 +23,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -39,6 +40,7 @@ import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.MediaType
 import com.personal.tmdb.core.util.formatDate
 import com.personal.tmdb.core.util.formatVoteAverage
+import com.personal.tmdb.core.util.shimmerEffect
 import com.personal.tmdb.ui.theme.backgroundLight
 import com.personal.tmdb.ui.theme.onBackgroundLight
 
@@ -59,9 +61,11 @@ fun MediaCard(
                         MediaType.TV, MediaType.MOVIE -> {
                             onNavigateTo(RootNavGraph.DETAIL + "/${mediaType.name.lowercase()}/${mediaInfo.id}")
                         }
+
                         MediaType.PERSON -> {
                             /*TODO: Navigate to person screen*/
                         }
+
                         else -> {
                             /*TODO: Navigate to lost your way screen*/
                         }
@@ -72,9 +76,11 @@ fun MediaCard(
                         MediaType.TV, MediaType.MOVIE -> {
                             onNavigateTo(RootNavGraph.DETAIL + "/${mediaType.name.lowercase()}/${mediaInfo.id}")
                         }
+
                         MediaType.PERSON -> {
                             /*TODO: Navigate to person screen*/
                         }
+
                         else -> {
                             /*TODO: Navigate to lost your way screen*/
                         }
@@ -148,6 +154,67 @@ fun MediaCard(
                     overflow = TextOverflow.Ellipsis
                 )
             }
+        }
+    }
+}
+@Composable
+fun MediaCardShimmer(
+    modifier: Modifier = Modifier
+) {
+    Row(
+        modifier = modifier
+            .clip(RoundedCornerShape(18.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainerLow)
+            .padding(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .height(150.dp)
+                .aspectRatio(0.675f)
+                .clip(RoundedCornerShape(18.dp))
+                .shimmerEffect()
+        ) {
+            Text(
+                modifier = Modifier
+                    .align(Alignment.Center),
+                text = stringResource(id = R.string.tmdb),
+                style = MaterialTheme.typography.displaySmall,
+                color = MaterialTheme.colorScheme.surfaceContainerLow,
+                fontStyle = FontStyle.Italic,
+                fontWeight = FontWeight.Black,
+                textAlign = TextAlign.Center
+            )
+        }
+        Column {
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(MaterialTheme.shapes.small)
+                    .shimmerEffect(),
+                text = "",
+                style = MaterialTheme.typography.titleMedium
+            )
+            Spacer(modifier = Modifier.height(2.dp))
+            Text(
+                modifier = Modifier
+                    .clip(MaterialTheme.shapes.small)
+                    .shimmerEffect(),
+                text = "release date",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Transparent
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clip(MaterialTheme.shapes.small)
+                    .shimmerEffect(),
+                text = "",
+                style = MaterialTheme.typography.bodyMedium,
+                minLines = 4
+            )
         }
     }
 }

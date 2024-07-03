@@ -22,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.personal.tmdb.core.domain.models.MediaInfo
+import com.personal.tmdb.core.util.shimmerEffect
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -127,6 +128,63 @@ fun MediaListView(
                             )
                         }
                     }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun MediaListViewShimmer(
+    modifier: Modifier = Modifier,
+    contentPadding: PaddingValues,
+    topItemContent: @Composable (() -> Unit)? = null,
+    useCards: () -> Boolean,
+    showTitle: () -> Boolean
+) {
+    AnimatedContent(
+        targetState = useCards(),
+        label = ""
+    ) { targetState ->
+        if (targetState) {
+            LazyColumn(
+                modifier = modifier,
+                contentPadding = contentPadding,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                topItemContent?.let { content ->
+                    item {
+                        content()
+                    }
+                }
+                items(count = 15) {
+                    MediaCardShimmer()
+                }
+            }
+        } else {
+            LazyVerticalGrid(
+                modifier = modifier,
+                columns = GridCells.Adaptive(100.dp),
+                contentPadding = contentPadding,
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                topItemContent?.let { content ->
+                    item(
+                        span = { GridItemSpan(maxLineSpan) }
+                    ) {
+                        content()
+                    }
+                }
+                items(count = 15) {
+                    MediaPosterShimmer(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(0.675f)
+                            .clip(RoundedCornerShape(18.dp))
+                            .shimmerEffect(),
+                        showTitle = showTitle()
+                    )
                 }
             }
         }
