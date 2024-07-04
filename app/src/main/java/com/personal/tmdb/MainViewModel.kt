@@ -46,14 +46,14 @@ class MainViewModel @Inject constructor(
                 holdSplash = false
             }
         }
-        loadTrendingList()
+        getTrendingList(TimeWindow.DAY)
     }
 
-    private fun loadTrendingList() {
+    private fun getTrendingList(timeWindow: TimeWindow, language: String? = null) {
         viewModelScope.launch {
             var trending = homeState.trending
 
-            homeRepository.getTrendingList(TimeWindow.DAY).let { result ->
+            homeRepository.getTrendingList(timeWindow, language).let { result ->
                 when(result) {
                     is Resource.Error -> {
                         println(result.message)
@@ -66,7 +66,7 @@ class MainViewModel @Inject constructor(
 
             homeState = homeState.copy(
                 trending = trending,
-                randomMedia = trending?.randomOrNull()
+                randomMedia = trending?.results?.randomOrNull()
             )
         }
     }

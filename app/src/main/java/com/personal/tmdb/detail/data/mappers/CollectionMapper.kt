@@ -23,8 +23,6 @@ fun Part.toMediaInfo(): MediaInfo {
     return MediaInfo(
         backdropPath = backdropPath,
         id = id,
-        knownFor = null,
-        knownForDepartment = null,
         mediaType = convertMediaType(mediaType),
         name = title,
         overview = overview,

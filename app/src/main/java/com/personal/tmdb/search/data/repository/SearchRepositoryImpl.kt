@@ -1,9 +1,10 @@
 package com.personal.tmdb.search.data.repository
 
+import com.personal.tmdb.core.data.mappers.toMediaResponseInfo
 import com.personal.tmdb.core.data.remote.TmdbApi
+import com.personal.tmdb.core.domain.models.MediaResponseInfo
 import com.personal.tmdb.core.util.Resource
-import com.personal.tmdb.search.data.mappers.toSearchInfo
-import com.personal.tmdb.search.domain.models.SearchInfo
+import com.personal.tmdb.core.util.TimeWindow
 import com.personal.tmdb.search.domain.repository.SearchRepository
 import javax.inject.Inject
 
@@ -16,7 +17,7 @@ class SearchRepositoryImpl @Inject constructor(
         includeAdult: Boolean?,
         language: String?,
         page: Int
-    ): Resource<SearchInfo> {
+    ): Resource<MediaResponseInfo> {
         return try {
             Resource.Success(
                 data = tmdbApi.searchFor(
@@ -25,7 +26,35 @@ class SearchRepositoryImpl @Inject constructor(
                     includeAdult,
                     language,
                     page
-                ).toSearchInfo()
+                ).toMediaResponseInfo()
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(e.message ?: "Unknown")
+        }
+    }
+
+    override suspend fun getTrendingList(
+        timeWindow: TimeWindow,
+        language: String?
+    ): Resource<MediaResponseInfo> {
+        return try {
+            Resource.Success(
+                data = tmdbApi.getTrendingList(timeWindow.name.lowercase(), language).toMediaResponseInfo()
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(e.message ?: "Unknown")
+        }
+    }
+
+    override suspend fun getPopularPeopleList(
+        mediaType: String,
+        language: String?
+    ): Resource<MediaResponseInfo> {
+        return try {
+            Resource.Success(
+                data = tmdbApi.getPopularList(mediaType, language, 1).toMediaResponseInfo()
             )
         } catch (e: Exception) {
             e.printStackTrace()

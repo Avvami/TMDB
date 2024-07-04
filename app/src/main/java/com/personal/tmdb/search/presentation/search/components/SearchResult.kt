@@ -26,22 +26,22 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.personal.tmdb.R
+import com.personal.tmdb.core.presentation.MediaState
 import com.personal.tmdb.core.presentation.components.MediaPoster
 import com.personal.tmdb.core.util.MediaType
-import com.personal.tmdb.search.presentation.search.SearchState
 import com.personal.tmdb.search.presentation.search.SearchUiEvent
 
 @Composable
 fun SearchResult(
     modifier: Modifier = Modifier,
-    searchState: () -> SearchState,
+    searchState: () -> MediaState,
     mediaType: MediaType,
     onNavigateTo: (route: String) -> Unit,
     showTitle: Boolean,
     showVoteAverage: Boolean,
     searchUiEvent: (SearchUiEvent) -> Unit
 ) {
-    searchState().searchInfo?.results?.let { results ->
+    searchState().mediaResponseInfo?.results?.let { results ->
         LazyVerticalGrid(
             columns = GridCells.Adaptive(100.dp),
             contentPadding = PaddingValues(16.dp),

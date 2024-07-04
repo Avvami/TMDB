@@ -307,7 +307,7 @@ fun HomeScreen(
                                     )
                                 }
                             } else {
-                                homeState().trending?.let { trending ->
+                                homeState().trending?.results?.let { trending ->
                                     items(
                                         count = trending.size,
                                         key = { trending[it].id }

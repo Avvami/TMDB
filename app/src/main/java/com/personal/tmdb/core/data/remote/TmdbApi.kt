@@ -1,10 +1,9 @@
 package com.personal.tmdb.core.data.remote
 
 import com.personal.tmdb.BuildConfig
-import com.personal.tmdb.detail.data.models.MediaDetailDto
-import com.personal.tmdb.core.data.models.MediaDto
+import com.personal.tmdb.core.data.models.MediaResponseDto
 import com.personal.tmdb.detail.data.models.CollectionDto
-import com.personal.tmdb.search.data.models.SearchDto
+import com.personal.tmdb.detail.data.models.MediaDetailDto
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Path
@@ -14,10 +13,10 @@ interface TmdbApi {
 
     @Headers("Authorization: Bearer ${BuildConfig.TMDB_API_KEY}")
     @GET("3/trending/all/{time_window}?")
-    suspend fun getTrending(
+    suspend fun getTrendingList(
         @Path("time_window") timeWindow: String,
         @Query("language") language: String?
-    ): MediaDto
+    ): MediaResponseDto
 
     @Headers("Authorization: Bearer ${BuildConfig.TMDB_API_KEY}")
     @GET("3/{media_type}/{media_id}?")
@@ -36,7 +35,7 @@ interface TmdbApi {
         @Query("include_adult") includeAdult: Boolean?,
         @Query("language") language: String?,
         @Query("page") page: Int
-    ): SearchDto
+    ): MediaResponseDto
 
     @Headers("Authorization: Bearer ${BuildConfig.TMDB_API_KEY}")
     @GET("3/collection/{collectionId}?")
@@ -44,4 +43,12 @@ interface TmdbApi {
         @Path("collectionId") collectionId: Int,
         @Query("language") language: String?
     ): CollectionDto
+
+    @Headers("Authorization: Bearer ${BuildConfig.TMDB_API_KEY}")
+    @GET("3/{media_type}/popular?")
+    suspend fun getPopularList(
+        @Path("media_type") mediaType: String,
+        @Query("language") language: String?,
+        @Query("page") page: Int
+    ): MediaResponseDto
 }

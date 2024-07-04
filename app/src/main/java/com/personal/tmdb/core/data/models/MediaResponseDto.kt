@@ -1,23 +1,32 @@
-package com.personal.tmdb.search.data.models
-
+package com.personal.tmdb.core.data.models
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
+data class MediaResponseDto(
+    @Json(name = "page")
+    val page: Int,
+    @Json(name = "results")
+    val results: List<Result>,
+    @Json(name = "total_pages")
+    val totalPages: Int,
+    @Json(name = "total_results")
+    val totalResults: Int
+)
+
+@JsonClass(generateAdapter = true)
 data class Result(
     @Json(name = "backdrop_path")
     val backdropPath: String?,
-    @Json(name = "first_air_date")
-    val firstAirDate: String?,
+    @Json(name = "genre_ids")
+    val genreIds: List<Int>?,
     @Json(name = "id")
     val id: Int,
-    @Json(name = "known_for")
-    val knownFor: List<KnownFor?>?,
-    @Json(name = "known_for_department")
-    val knownForDepartment: String?,
+    @Json(name = "first_air_date")
+    val firstAirDate: String?,
     @Json(name = "media_type")
-    val mediaType: String?,
+    val mediaType: String,
     @Json(name = "name")
     val name: String?,
     @Json(name = "overview")

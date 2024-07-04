@@ -36,7 +36,6 @@ import com.personal.tmdb.search.presentation.search.components.SearchShimmer
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchScreen(
-    modifier: Modifier = Modifier,
     navigateBack: () -> Unit,
     onNavigateTo: (route: String) -> Unit,
     searchViewModel: SearchViewModel = hiltViewModel()
@@ -133,7 +132,7 @@ fun SearchScreen(
                     unfocusedTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             )
-            if (searchViewModel.searchState.searchInfo == null && searchViewModel.searchState.isLoading) {
+            if (searchViewModel.searchState.mediaResponseInfo == null && searchViewModel.searchState.isLoading) {
                 SearchShimmer(showTitle = true)
             } else {
                 SearchResult(
