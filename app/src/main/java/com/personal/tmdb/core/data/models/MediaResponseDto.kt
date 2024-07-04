@@ -26,7 +26,7 @@ data class Result(
     @Json(name = "first_air_date")
     val firstAirDate: String?,
     @Json(name = "media_type")
-    val mediaType: String,
+    val mediaType: String?,
     @Json(name = "name")
     val name: String?,
     @Json(name = "overview")

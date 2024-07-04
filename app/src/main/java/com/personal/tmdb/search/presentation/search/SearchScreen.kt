@@ -1,13 +1,17 @@
 package com.personal.tmdb.search.presentation.search
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.Clear
@@ -27,11 +31,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.personal.tmdb.R
 import com.personal.tmdb.core.util.convertMediaType
 import com.personal.tmdb.search.presentation.search.components.SearchResult
 import com.personal.tmdb.search.presentation.search.components.SearchShimmer
+import com.personal.tmdb.search.presentation.search.components.SearchTrending
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -132,17 +138,36 @@ fun SearchScreen(
                     unfocusedTrailingIconColor = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             )
-            if (searchViewModel.searchState.mediaResponseInfo == null && searchViewModel.searchState.isLoading) {
-                SearchShimmer(showTitle = true)
-            } else {
-                SearchResult(
-                    searchState = searchViewModel::searchState,
-                    mediaType = convertMediaType(searchViewModel.searchType),
-                    onNavigateTo = onNavigateTo,
-                    showTitle = true,
-                    showVoteAverage = true,
-                    searchUiEvent = searchViewModel::searchUiEvent
-                )
+            AnimatedContent(
+                targetState = searchViewModel.searchState.mediaResponseInfo == null && !searchViewModel.searchState.isLoading && searchViewModel.searchState.error == null,
+                label = "Search screen content animation"
+            ) { targetState ->
+                if (targetState) {
+                    LazyColumn(
+                        contentPadding = PaddingValues(vertical = 16.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        item {
+                            SearchTrending(
+                                onNavigateTo = onNavigateTo,
+                                trendingState = searchViewModel::trendingState
+                            )
+                        }
+                    }
+                } else {
+                    if (searchViewModel.searchState.mediaResponseInfo == null && searchViewModel.searchState.isLoading) {
+                        SearchShimmer(showTitle = true)
+                    } else {
+                        SearchResult(
+                            searchState = searchViewModel::searchState,
+                            mediaType = convertMediaType(searchViewModel.searchType),
+                            onNavigateTo = onNavigateTo,
+                            showTitle = true,
+                            showVoteAverage = true,
+                            searchUiEvent = searchViewModel::searchUiEvent
+                        )
+                    }
+                }
             }
         }
     }

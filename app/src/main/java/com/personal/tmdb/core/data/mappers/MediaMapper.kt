@@ -29,7 +29,7 @@ fun Result.toMediaInfo(): MediaInfo {
     return MediaInfo(
         backdropPath = backdropPath,
         id = id,
-        mediaType = convertMediaType(mediaType),
+        mediaType = mediaType?.let { convertMediaType(it) },
         name = title ?: name,
         overview = overview,
         posterPath = posterPath ?: profilePath,
