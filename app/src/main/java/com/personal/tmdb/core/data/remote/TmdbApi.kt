@@ -4,6 +4,7 @@ import com.personal.tmdb.BuildConfig
 import com.personal.tmdb.core.data.models.MediaResponseDto
 import com.personal.tmdb.detail.data.models.CollectionDto
 import com.personal.tmdb.detail.data.models.MediaDetailDto
+import com.personal.tmdb.detail.data.models.SeasonDto
 import retrofit2.http.GET
 import retrofit2.http.Headers
 import retrofit2.http.Path
@@ -51,4 +52,12 @@ interface TmdbApi {
         @Query("language") language: String?,
         @Query("page") page: Int
     ): MediaResponseDto
+
+    @Headers("Authorization: Bearer ${BuildConfig.TMDB_API_KEY}")
+    @GET("3/tv/{series_id}/season/{season_number}?")
+    suspend fun getSeasonDetail(
+        @Path("series_id") seriesId: Int,
+        @Path("season_number") seasonNumber: Int,
+        @Query("language") language: String?
+    ): SeasonDto
 }

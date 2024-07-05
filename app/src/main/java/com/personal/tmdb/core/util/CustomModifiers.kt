@@ -45,3 +45,5 @@ fun Modifier.shimmerEffect(
             size = it.size
         }
 }
+
+/*TODO: Make fadeEdge modifier*/

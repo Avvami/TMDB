@@ -12,9 +12,13 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 fun formatRuntime(minutes: Int, context: Context): String {
-    val hours = minutes / 60
-    val remainingMinutes = minutes % 60
-    return UiText.StringResource(R.string.runtime, hours, remainingMinutes).asString(context)
+    return if (minutes < 60) {
+        UiText.StringResource(R.string.runtime_min, minutes).asString(context)
+    } else {
+        val hours = minutes / 60
+        val remainingMinutes = minutes % 60
+        return UiText.StringResource(R.string.runtime_full, hours, remainingMinutes).asString(context)
+    }
 }
 
 @Composable

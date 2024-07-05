@@ -1,6 +1,7 @@
 package com.personal.tmdb.detail.presentation.detail
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -9,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -16,6 +18,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
@@ -57,11 +61,14 @@ import com.personal.tmdb.core.util.formatVoteAverage
 import com.personal.tmdb.core.util.formatVoteAverageToColor
 import com.personal.tmdb.core.util.shimmerEffect
 import com.personal.tmdb.detail.presentation.detail.components.DetailScreenShimmer
+import com.personal.tmdb.detail.presentation.detail.components.Episodes
 import com.personal.tmdb.ui.theme.backgroundLight
 import com.personal.tmdb.ui.theme.onBackgroundLight
 import com.personal.tmdb.ui.theme.tmdbDarkBlue
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class,
+    ExperimentalFoundationApi::class
+)
 @Composable
 fun DetailScreen(
     navigateBack: () -> Unit,
@@ -486,6 +493,43 @@ fun DetailScreen(
                                                 }
                                             }
                                         }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    item {
+                        detailViewModel.pagerPageCount?.let { pageCount ->
+                            val horizontalPagerState = rememberPagerState(
+                                initialPage = 0,
+                                pageCount = { pageCount }
+                            )
+                            HorizontalPager(
+                                modifier = Modifier.fillMaxWidth(),
+                                state = horizontalPagerState,
+                                verticalAlignment = Alignment.Top,
+                                contentPadding = PaddingValues(start = 16.dp, top = 8.dp, end = 16.dp, bottom = 16.dp)
+                            ) { page ->
+                                when (detailViewModel.pageLabelsRes[page]) {
+                                    R.string.episodes -> {
+                                        info.seasons?.let { seasons ->
+                                            Episodes(
+                                                onNavigateTo = onNavigateTo,
+                                                seasonState = detailViewModel::seasonState,
+                                                seasons = { seasons },
+                                                detailInfo = { info },
+                                                selectedSeasonNumber = detailViewModel::selectedSeasonNumber,
+                                                isSeasonDropdownExpanded = detailViewModel::isSeasonDropdownExpanded,
+                                                isSeasonOverviewCollapsed = detailViewModel::isSeasonOverviewCollapsed,
+                                                detailUiEvent = detailViewModel::detailUiEvent
+                                            )
+                                        }
+                                    }
+                                    R.string.available -> {
+
+                                    }
+                                    R.string.recommendations -> {
+
                                     }
                                 }
                             }
