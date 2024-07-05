@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.personal.tmdb.R
 import com.personal.tmdb.core.util.convertMediaType
+import com.personal.tmdb.search.presentation.search.components.SearchPopularPeople
 import com.personal.tmdb.search.presentation.search.components.SearchResult
 import com.personal.tmdb.search.presentation.search.components.SearchShimmer
 import com.personal.tmdb.search.presentation.search.components.SearchTrending
@@ -151,6 +152,12 @@ fun SearchScreen(
                             SearchTrending(
                                 onNavigateTo = onNavigateTo,
                                 trendingState = searchViewModel::trendingState
+                            )
+                        }
+                        item {
+                            SearchPopularPeople(
+                                onNavigateTo = onNavigateTo,
+                                popularState = searchViewModel::popularState
                             )
                         }
                     }

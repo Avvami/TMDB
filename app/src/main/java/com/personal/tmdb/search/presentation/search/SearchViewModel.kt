@@ -45,6 +45,7 @@ class SearchViewModel @Inject constructor(
     init {
         searchFor(searchType = searchType, query = searchQuery, page = 1)
         getTrendingList()
+        getPopularPeopleList(mediaType = MediaType.PERSON.name.lowercase())
     }
 
     private fun searchFor(searchType: String, query: String, page: Int) {
