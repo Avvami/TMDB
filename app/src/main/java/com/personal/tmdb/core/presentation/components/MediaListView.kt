@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.core.domain.models.MediaInfo
+import com.personal.tmdb.core.util.MediaType
 import com.personal.tmdb.core.util.shimmerEffect
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -26,6 +27,7 @@ fun MediaListView(
     onNavigateTo: (route: String) -> Unit,
     topItemContent: @Composable (() -> Unit)? = null,
     mediaList: () -> List<MediaInfo>,
+    mediaType: MediaType? = null,
     emptyListContent: @Composable (() -> Unit)? = null,
     useCards: () -> Boolean,
     showTitle: () -> Boolean,
@@ -62,7 +64,7 @@ fun MediaListView(
                             modifier = Modifier.animateItemPlacement(),
                             onNavigateTo = onNavigateTo,
                             mediaInfo = mediaInfo,
-                            mediaType = mediaInfo.mediaType,
+                            mediaType = mediaType,
                             showVoteAverage = showVoteAverage()
                         )
                     }
@@ -105,7 +107,7 @@ fun MediaListView(
                                 .animateItemPlacement(),
                             onNavigateTo = onNavigateTo,
                             mediaInfo = mediaInfo,
-                            mediaType = mediaInfo.mediaType,
+                            mediaType = mediaType,
                             showTitle = showTitle(),
                             showVoteAverage = showVoteAverage()
                         )

@@ -80,6 +80,7 @@ fun SearchResult(
                 contentPadding = PaddingValues(16.dp),
                 onNavigateTo = onNavigateTo,
                 mediaList = { results },
+                mediaType = mediaType,
                 useCards = useCards,
                 showTitle = showTitle,
                 showVoteAverage = showVoteAverage,
