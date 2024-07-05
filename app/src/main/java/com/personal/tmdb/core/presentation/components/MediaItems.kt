@@ -54,6 +54,7 @@ fun MediaCard(
 ) {
     Row(
         modifier = modifier
+            .fillMaxWidth()
             .clip(RoundedCornerShape(18.dp))
             .clickable {
                 mediaType?.let { mediaType ->

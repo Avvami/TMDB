@@ -31,7 +31,7 @@ fun Result.toMediaInfo(): MediaInfo {
         id = id,
         mediaType = mediaType?.let { convertMediaType(it) },
         name = title ?: name,
-        overview = overview,
+        overview = if (overview.isNullOrEmpty()) null else overview,
         posterPath = posterPath ?: profilePath,
         releaseDate = releaseDate,
         voteAverage = voteAverage?.toFloat()

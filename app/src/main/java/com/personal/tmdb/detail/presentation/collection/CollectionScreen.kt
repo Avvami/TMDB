@@ -50,9 +50,11 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
 import com.personal.tmdb.R
@@ -144,268 +146,280 @@ fun CollectionScreen(
                 showTitle = { true }
             )
         } else {
-            MediaListView(
-                modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding()),
-                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
-                onNavigateTo = onNavigateTo,
-                mediaList = { collectionViewModel.collectionState.collectionInfo?.parts },
-                emptyListTextRes = R.string.nothing_to_show,
-                useCards = { true },
-                showTitle = { true },
-                showVoteAverage = { true },
-                topItemContent = {
-                    val sidePadding = (-16).dp
-                    Column(
-                        modifier = Modifier
-                            .layout { measurable, constraints ->
-                                val placeable =
-                                    measurable.measure(constraints.offset(horizontal = -sidePadding.roundToPx() * 2))
-                                layout(
-                                    width = placeable.width + sidePadding.roundToPx() * 2,
-                                    height = placeable.height
-                                ) {
-                                    placeable.place(+sidePadding.roundToPx(), 0)
-                                }
-                            }
-                            .padding(bottom = 8.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        collectionViewModel.collectionState.collectionInfo?.let { collectionInfo ->
-                            val painter = rememberAsyncImagePainter(
-                                model = C.TMDB_IMAGES_BASE_URL + C.BACKDROP_W1280 + collectionInfo.backdropPath,
-                                placeholder = painterResource(id = R.drawable.placeholder),
-                                error = painterResource(id = R.drawable.placeholder)
+            collectionViewModel.collectionState.collectionInfo?.let { collectionInfo ->
+                collectionInfo.parts?.let { parts ->
+                    MediaListView(
+                        modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding()),
+                        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
+                        onNavigateTo = onNavigateTo,
+                        mediaList = { parts },
+                        useCards = { true },
+                        showTitle = { true },
+                        showVoteAverage = { true },
+                        emptyListContent = {
+                            Text(
+                                modifier = Modifier.fillMaxWidth(),
+                                text = stringResource(id = R.string.nothing_to_show),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontSize = 20.sp,
+                                textAlign = TextAlign.Center
                             )
+                        },
+                        topItemContent = {
+                            val sidePadding = (-16).dp
                             Column(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(IntrinsicSize.Min)
-                                    .paint(
-                                        painter = painter,
-                                        sizeToIntrinsics = false,
-                                        contentScale = ContentScale.Crop
-                                    )
-                                    .background(tmdbDarkBlue.copy(alpha = .7f))
-                                    .padding(bottom = 16.dp)
-                                    .padding(top = innerPadding.calculateTopPadding()),
+                                    .layout { measurable, constraints ->
+                                        val placeable =
+                                            measurable.measure(constraints.offset(horizontal = -sidePadding.roundToPx() * 2))
+                                        layout(
+                                            width = placeable.width + sidePadding.roundToPx() * 2,
+                                            height = placeable.height
+                                        ) {
+                                            placeable.place(+sidePadding.roundToPx(), 0)
+                                        }
+                                    }
+                                    .padding(bottom = 8.dp),
                                 verticalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
-                                collectionInfo.overview?.let { overview ->
-                                    Text(
+                                collectionViewModel.collectionState.collectionInfo?.let { collectionInfo ->
+                                    val painter = rememberAsyncImagePainter(
+                                        model = C.TMDB_IMAGES_BASE_URL + C.BACKDROP_W1280 + collectionInfo.backdropPath,
+                                        placeholder = painterResource(id = R.drawable.placeholder),
+                                        error = painterResource(id = R.drawable.placeholder)
+                                    )
+                                    Column(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .clip(MaterialTheme.shapes.extraSmall)
-                                            .animateContentSize()
-                                            .padding(horizontal = 16.dp)
-                                            .clickable {
-                                                collectionViewModel.collectionUiEvent(
-                                                    CollectionUiEvent.ChangeCollapsedOverview
-                                                )
-                                            },
-                                        text = overview,
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        color = backgroundLight,
-                                        maxLines = if (collectionViewModel.isOverviewCollapsed) 4 else Int.MAX_VALUE,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                }
-                                collectionInfo.parts?.let { mediaList ->
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        verticalAlignment = Alignment.CenterVertically,
-                                        horizontalArrangement = Arrangement.SpaceEvenly
-                                    ) {
-                                        Column(
-                                            modifier = Modifier.padding(horizontal = 4.dp),
-                                            verticalArrangement = Arrangement.spacedBy(4.dp),
-                                            horizontalAlignment = Alignment.CenterHorizontally
-                                        ) {
-                                            Text(
-                                                text = mediaList.size.toString(),
-                                                style = MaterialTheme.typography.titleLarge,
-                                                fontWeight = FontWeight.Medium,
-                                                color = backgroundLight
+                                            .height(IntrinsicSize.Min)
+                                            .paint(
+                                                painter = painter,
+                                                sizeToIntrinsics = false,
+                                                contentScale = ContentScale.Crop
                                             )
+                                            .background(tmdbDarkBlue.copy(alpha = .7f))
+                                            .padding(bottom = 16.dp)
+                                            .padding(top = innerPadding.calculateTopPadding()),
+                                        verticalArrangement = Arrangement.spacedBy(16.dp)
+                                    ) {
+                                        collectionInfo.overview?.let { overview ->
                                             Text(
-                                                text = stringResource(id = R.string.number_of_movies),
-                                                style = MaterialTheme.typography.titleMedium,
-                                                color = backgroundLight
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .clip(MaterialTheme.shapes.extraSmall)
+                                                    .animateContentSize()
+                                                    .padding(horizontal = 16.dp)
+                                                    .clickable {
+                                                        collectionViewModel.collectionUiEvent(
+                                                            CollectionUiEvent.ChangeCollapsedOverview
+                                                        )
+                                                    },
+                                                text = overview,
+                                                style = MaterialTheme.typography.bodyLarge,
+                                                color = backgroundLight,
+                                                maxLines = if (collectionViewModel.isOverviewCollapsed) 4 else Int.MAX_VALUE,
+                                                overflow = TextOverflow.Ellipsis
                                             )
                                         }
-                                        Column(
-                                            modifier = Modifier.padding(horizontal = 4.dp),
-                                            verticalArrangement = Arrangement.spacedBy(4.dp),
-                                            horizontalAlignment = Alignment.CenterHorizontally
-                                        ) {
+                                        collectionInfo.parts?.let { mediaList ->
                                             Row(
-                                                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                                verticalAlignment = Alignment.CenterVertically
+                                                modifier = Modifier.fillMaxWidth(),
+                                                verticalAlignment = Alignment.CenterVertically,
+                                                horizontalArrangement = Arrangement.SpaceEvenly
                                             ) {
-                                                val averageRating = mediaList.takeIf { it.isNotEmpty() }
-                                                    ?.sumOf { it.voteAverage?.toDouble() ?: 0.0 }
-                                                    ?.div(mediaList.size)
-                                                    ?: 0.0
+                                                Column(
+                                                    modifier = Modifier.padding(horizontal = 4.dp),
+                                                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                                                    horizontalAlignment = Alignment.CenterHorizontally
+                                                ) {
+                                                    Text(
+                                                        text = mediaList.size.toString(),
+                                                        style = MaterialTheme.typography.titleLarge,
+                                                        fontWeight = FontWeight.Medium,
+                                                        color = backgroundLight
+                                                    )
+                                                    Text(
+                                                        text = stringResource(id = R.string.number_of_movies),
+                                                        style = MaterialTheme.typography.titleMedium,
+                                                        color = backgroundLight
+                                                    )
+                                                }
+                                                Column(
+                                                    modifier = Modifier.padding(horizontal = 4.dp),
+                                                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                                                    horizontalAlignment = Alignment.CenterHorizontally
+                                                ) {
+                                                    Row(
+                                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                                        verticalAlignment = Alignment.CenterVertically
+                                                    ) {
+                                                        val averageRating = mediaList.takeIf { it.isNotEmpty() }
+                                                            ?.sumOf { it.voteAverage?.toDouble() ?: 0.0 }
+                                                            ?.div(mediaList.size)
+                                                            ?: 0.0
+                                                        Text(
+                                                            text = formatVoteAverage(averageRating.toFloat()),
+                                                            style = MaterialTheme.typography.titleLarge,
+                                                            fontWeight = FontWeight.Medium,
+                                                            color = backgroundLight
+                                                        )
+                                                        Icon(
+                                                            painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
+                                                            contentDescription = "Rating",
+                                                            tint = backgroundLight
+                                                        )
+                                                    }
+                                                    Text(
+                                                        text = stringResource(id = R.string.average_rating),
+                                                        style = MaterialTheme.typography.titleMedium,
+                                                        color = backgroundLight
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                Row(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .horizontalScroll(rememberScrollState())
+                                        .padding(horizontal = 16.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                ) {
+                                    SuggestionChip(
+                                        modifier = Modifier.height(SuggestionChipDefaults.Height),
+                                        onClick = {
+                                            collectionViewModel.collectionUiEvent(CollectionUiEvent.ChangeDropdownState)
+                                        },
+                                        label = {
+                                            Text(text = stringResource(id = R.string.sort_by))
+                                        },
+                                        icon = {
+                                            val rotation by animateIntAsState(
+                                                targetValue = if (collectionViewModel.isDropdownExpanded) 180 else 0,
+                                                label = "Rotation animation"
+                                            )
+                                            Icon(
+                                                modifier = Modifier
+                                                    .rotate(rotation.toFloat())
+                                                    .size(SuggestionChipDefaults.IconSize),
+                                                imageVector = Icons.Rounded.ArrowDropDown,
+                                                contentDescription = "Dropdown"
+                                            )
+                                            CustomDropdownMenu(
+                                                expanded = collectionViewModel.isDropdownExpanded,
+                                                onDismissRequest = {
+                                                    collectionViewModel.collectionUiEvent(
+                                                        CollectionUiEvent.ChangeDropdownState
+                                                    )
+                                                },
+                                                dropDownItems = listOf(
+                                                    DropdownItem(
+                                                        selected = true,
+                                                        iconRes = R.drawable.icon_thumbs_up_down_fill0_wght400,
+                                                        textRes = R.string.rating,
+                                                        onItemClick = {
+                                                            when (collectionViewModel.sortType) {
+                                                                SortType.RATING_ASC -> {
+                                                                    collectionViewModel.collectionUiEvent(CollectionUiEvent.SetSortType(SortType.RATING_DESC))
+                                                                }
+                                                                SortType.RATING_DESC -> {
+                                                                    collectionViewModel.collectionUiEvent(CollectionUiEvent.SetSortType(SortType.RATING_ASC))
+                                                                }
+                                                                else -> {
+                                                                    collectionViewModel.collectionUiEvent(CollectionUiEvent.SetSortType(SortType.RATING_DESC))
+                                                                }
+                                                            }
+                                                            collectionViewModel.collectionUiEvent(
+                                                                CollectionUiEvent.ChangeDropdownState
+                                                            )
+                                                        }
+                                                    ),
+                                                    DropdownItem(
+                                                        selected = true,
+                                                        iconRes = R.drawable.icon_calendar_month_fill0_wght400,
+                                                        textRes = R.string.release_date,
+                                                        onItemClick = {
+                                                            when (collectionViewModel.sortType) {
+                                                                SortType.RELEASE_DATE_ASC -> {
+                                                                    collectionViewModel.collectionUiEvent(CollectionUiEvent.SetSortType(SortType.RELEASE_DATE_DESC))
+                                                                }
+                                                                SortType.RELEASE_DATE_DESC -> {
+                                                                    collectionViewModel.collectionUiEvent(CollectionUiEvent.SetSortType(SortType.RELEASE_DATE_ASC))
+                                                                }
+                                                                else -> {
+                                                                    collectionViewModel.collectionUiEvent(CollectionUiEvent.SetSortType(SortType.RELEASE_DATE_DESC))
+                                                                }
+                                                            }
+                                                            collectionViewModel.collectionUiEvent(
+                                                                CollectionUiEvent.ChangeDropdownState
+                                                            )
+                                                        }
+                                                    ),
+                                                )
+                                            )
+                                        }
+                                    )
+                                    AnimatedVisibility(
+                                        visible = collectionViewModel.sortType != null
+                                    ) {
+                                        FilterChip(
+                                            modifier = Modifier.height(FilterChipDefaults.Height),
+                                            selected = true,
+                                            onClick = {
+                                                collectionViewModel.collectionUiEvent(CollectionUiEvent.SetSortType(null))
+                                            },
+                                            label = {
                                                 Text(
-                                                    text = formatVoteAverage(averageRating.toFloat()),
-                                                    style = MaterialTheme.typography.titleLarge,
-                                                    fontWeight = FontWeight.Medium,
-                                                    color = backgroundLight
+                                                    text = stringResource(
+                                                        id = when (collectionViewModel.sortType) {
+                                                            SortType.RATING_ASC -> convertSortType(collectionViewModel.sortType)
+                                                            SortType.RATING_DESC -> convertSortType(collectionViewModel.sortType)
+                                                            SortType.RELEASE_DATE_ASC -> convertSortType(collectionViewModel.sortType)
+                                                            SortType.RELEASE_DATE_DESC -> convertSortType(collectionViewModel.sortType)
+                                                            null -> convertSortType(collectionViewModel.sortType)
+                                                        }
+                                                    )
+                                                )
+                                            },
+                                            leadingIcon = {
+                                                Icon(
+                                                    modifier = Modifier.size(FilterChipDefaults.IconSize),
+                                                    imageVector = Icons.Rounded.Clear,
+                                                    contentDescription = "Clear"
+                                                )
+                                            },
+                                            trailingIcon = {
+                                                val rotation by animateIntAsState(
+                                                    targetValue = when (collectionViewModel.sortType) {
+                                                        SortType.RATING_ASC -> 90
+                                                        SortType.RATING_DESC -> -90
+                                                        SortType.RELEASE_DATE_ASC -> 90
+                                                        SortType.RELEASE_DATE_DESC -> -90
+                                                        null -> -90
+                                                    },
+                                                    label = "Rotation animation"
                                                 )
                                                 Icon(
-                                                    painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
-                                                    contentDescription = "Rating",
-                                                    tint = backgroundLight
+                                                    modifier = Modifier
+                                                        .rotate(rotation.toFloat())
+                                                        .size(FilterChipDefaults.IconSize),
+                                                    imageVector = when (collectionViewModel.sortType) {
+                                                        SortType.RATING_ASC, SortType.RATING_DESC,
+                                                        SortType.RELEASE_DATE_ASC, SortType.RELEASE_DATE_DESC -> Icons.AutoMirrored.Rounded.ArrowBack
+                                                        null -> Icons.AutoMirrored.Rounded.ArrowBack
+                                                    },
+                                                    contentDescription = "Arrow"
                                                 )
                                             }
-                                            Text(
-                                                text = stringResource(id = R.string.average_rating),
-                                                style = MaterialTheme.typography.titleMedium,
-                                                color = backgroundLight
-                                            )
-                                        }
+                                        )
                                     }
                                 }
                             }
                         }
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp)
-                                .horizontalScroll(rememberScrollState()),
-                            horizontalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
-                            SuggestionChip(
-                                modifier = Modifier.height(SuggestionChipDefaults.Height),
-                                onClick = {
-                                    collectionViewModel.collectionUiEvent(CollectionUiEvent.ChangeDropdownState)
-                                },
-                                label = {
-                                    Text(text = stringResource(id = R.string.sort_by))
-                                },
-                                icon = {
-                                    val rotation by animateIntAsState(
-                                        targetValue = if (collectionViewModel.isDropdownExpanded) 180 else 0,
-                                        label = "Rotation animation"
-                                    )
-                                    Icon(
-                                        modifier = Modifier
-                                            .rotate(rotation.toFloat())
-                                            .size(SuggestionChipDefaults.IconSize),
-                                        imageVector = Icons.Rounded.ArrowDropDown,
-                                        contentDescription = "Dropdown"
-                                    )
-                                    CustomDropdownMenu(
-                                        expanded = collectionViewModel.isDropdownExpanded,
-                                        onDismissRequest = {
-                                            collectionViewModel.collectionUiEvent(
-                                                CollectionUiEvent.ChangeDropdownState
-                                            )
-                                        },
-                                        dropDownItems = listOf(
-                                            DropdownItem(
-                                                selected = true,
-                                                iconRes = R.drawable.icon_thumbs_up_down_fill0_wght400,
-                                                textRes = R.string.rating,
-                                                onItemClick = {
-                                                    when (collectionViewModel.sortType) {
-                                                        SortType.RATING_ASC -> {
-                                                            collectionViewModel.collectionUiEvent(CollectionUiEvent.SetSortType(SortType.RATING_DESC))
-                                                        }
-                                                        SortType.RATING_DESC -> {
-                                                            collectionViewModel.collectionUiEvent(CollectionUiEvent.SetSortType(SortType.RATING_ASC))
-                                                        }
-                                                        else -> {
-                                                            collectionViewModel.collectionUiEvent(CollectionUiEvent.SetSortType(SortType.RATING_DESC))
-                                                        }
-                                                    }
-                                                    collectionViewModel.collectionUiEvent(
-                                                        CollectionUiEvent.ChangeDropdownState
-                                                    )
-                                                }
-                                            ),
-                                            DropdownItem(
-                                                selected = true,
-                                                iconRes = R.drawable.icon_calendar_month_fill0_wght400,
-                                                textRes = R.string.release_date,
-                                                onItemClick = {
-                                                    when (collectionViewModel.sortType) {
-                                                        SortType.RELEASE_DATE_ASC -> {
-                                                            collectionViewModel.collectionUiEvent(CollectionUiEvent.SetSortType(SortType.RELEASE_DATE_DESC))
-                                                        }
-                                                        SortType.RELEASE_DATE_DESC -> {
-                                                            collectionViewModel.collectionUiEvent(CollectionUiEvent.SetSortType(SortType.RELEASE_DATE_ASC))
-                                                        }
-                                                        else -> {
-                                                            collectionViewModel.collectionUiEvent(CollectionUiEvent.SetSortType(SortType.RELEASE_DATE_DESC))
-                                                        }
-                                                    }
-                                                    collectionViewModel.collectionUiEvent(
-                                                        CollectionUiEvent.ChangeDropdownState
-                                                    )
-                                                }
-                                            ),
-                                        )
-                                    )
-                                }
-                            )
-                            AnimatedVisibility(
-                                visible = collectionViewModel.sortType != null
-                            ) {
-                                FilterChip(
-                                    modifier = Modifier.height(FilterChipDefaults.Height),
-                                    selected = true,
-                                    onClick = {
-                                        collectionViewModel.collectionUiEvent(CollectionUiEvent.SetSortType(null))
-                                    },
-                                    label = {
-                                        Text(
-                                            text = stringResource(
-                                                id = when (collectionViewModel.sortType) {
-                                                    SortType.RATING_ASC -> convertSortType(collectionViewModel.sortType)
-                                                    SortType.RATING_DESC -> convertSortType(collectionViewModel.sortType)
-                                                    SortType.RELEASE_DATE_ASC -> convertSortType(collectionViewModel.sortType)
-                                                    SortType.RELEASE_DATE_DESC -> convertSortType(collectionViewModel.sortType)
-                                                    null -> convertSortType(collectionViewModel.sortType)
-                                                }
-                                            )
-                                        )
-                                    },
-                                    leadingIcon = {
-                                        Icon(
-                                            modifier = Modifier.size(FilterChipDefaults.IconSize),
-                                            imageVector = Icons.Rounded.Clear,
-                                            contentDescription = "Clear"
-                                        )
-                                    },
-                                    trailingIcon = {
-                                        val rotation by animateIntAsState(
-                                            targetValue = when (collectionViewModel.sortType) {
-                                                SortType.RATING_ASC -> 90
-                                                SortType.RATING_DESC -> -90
-                                                SortType.RELEASE_DATE_ASC -> 90
-                                                SortType.RELEASE_DATE_DESC -> -90
-                                                null -> -90
-                                            },
-                                            label = "Rotation animation"
-                                        )
-                                        Icon(
-                                            modifier = Modifier
-                                                .rotate(rotation.toFloat())
-                                                .size(FilterChipDefaults.IconSize),
-                                            imageVector = when (collectionViewModel.sortType) {
-                                                SortType.RATING_ASC, SortType.RATING_DESC,
-                                                SortType.RELEASE_DATE_ASC, SortType.RELEASE_DATE_DESC -> Icons.AutoMirrored.Rounded.ArrowBack
-                                                null -> Icons.AutoMirrored.Rounded.ArrowBack
-                                            },
-                                            contentDescription = "Arrow"
-                                        )
-                                    }
-                                )
-                            }
-                        }
-                    }
+                    )
                 }
-            )
+            }
         }
     }
 }

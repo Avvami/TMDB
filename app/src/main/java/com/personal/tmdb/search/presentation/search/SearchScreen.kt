@@ -37,7 +37,6 @@ import com.personal.tmdb.R
 import com.personal.tmdb.core.util.convertMediaType
 import com.personal.tmdb.search.presentation.search.components.SearchPopularPeople
 import com.personal.tmdb.search.presentation.search.components.SearchResult
-import com.personal.tmdb.search.presentation.search.components.SearchShimmer
 import com.personal.tmdb.search.presentation.search.components.SearchTrending
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -162,18 +161,15 @@ fun SearchScreen(
                         }
                     }
                 } else {
-                    if (searchViewModel.searchState.mediaResponseInfo == null && searchViewModel.searchState.isLoading) {
-                        SearchShimmer(showTitle = true)
-                    } else {
-                        SearchResult(
-                            searchState = searchViewModel::searchState,
-                            mediaType = convertMediaType(searchViewModel.searchType),
-                            onNavigateTo = onNavigateTo,
-                            showTitle = true,
-                            showVoteAverage = true,
-                            searchUiEvent = searchViewModel::searchUiEvent
-                        )
-                    }
+                    SearchResult(
+                        searchState = searchViewModel::searchState,
+                        mediaType = convertMediaType(searchViewModel.searchType),
+                        onNavigateTo = onNavigateTo,
+                        useCards = { false },
+                        showTitle = { true },
+                        showVoteAverage = { true },
+                        searchUiEvent = searchViewModel::searchUiEvent
+                    )
                 }
             }
         }

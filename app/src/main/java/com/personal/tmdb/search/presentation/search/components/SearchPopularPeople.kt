@@ -32,7 +32,7 @@ fun SearchPopularPeople(
     ) {
         Text(
             modifier = Modifier.padding(start = 16.dp),
-            text = stringResource(id = R.string.trending),
+            text = stringResource(id = R.string.popular_people),
             style = MaterialTheme.typography.titleLarge,
             fontWeight = FontWeight.Medium
         )
