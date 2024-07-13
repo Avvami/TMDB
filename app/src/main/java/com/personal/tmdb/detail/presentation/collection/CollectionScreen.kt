@@ -7,10 +7,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -39,7 +41,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -56,7 +57,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.compose.rememberAsyncImagePainter
+import coil.compose.AsyncImage
 import com.personal.tmdb.R
 import com.personal.tmdb.core.domain.models.DropdownItem
 import com.personal.tmdb.core.presentation.PreferencesState
@@ -183,97 +184,99 @@ fun CollectionScreen(
                                 verticalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
                                 collectionViewModel.collectionState.collectionInfo?.let { collectionInfo ->
-                                    val painter = rememberAsyncImagePainter(
-                                        model = C.TMDB_IMAGES_BASE_URL + C.BACKDROP_W1280 + collectionInfo.backdropPath,
-                                        placeholder = painterResource(id = R.drawable.placeholder),
-                                        error = painterResource(id = R.drawable.placeholder)
-                                    )
-                                    Column(
+                                    Box(
                                         modifier = Modifier
                                             .fillMaxWidth()
                                             .height(IntrinsicSize.Min)
-                                            .paint(
-                                                painter = painter,
-                                                sizeToIntrinsics = false,
-                                                contentScale = ContentScale.Crop
-                                            )
-                                            .background(tmdbDarkBlue.copy(alpha = .7f))
-                                            .padding(bottom = 16.dp)
-                                            .padding(top = innerPadding.calculateTopPadding()),
-                                        verticalArrangement = Arrangement.spacedBy(16.dp)
                                     ) {
-                                        collectionInfo.overview?.let { overview ->
-                                            Text(
-                                                modifier = Modifier
-                                                    .fillMaxWidth()
-                                                    .clip(MaterialTheme.shapes.extraSmall)
-                                                    .animateContentSize()
-                                                    .padding(horizontal = 16.dp)
-                                                    .clickable {
-                                                        collectionViewModel.collectionUiEvent(
-                                                            CollectionUiEvent.ChangeCollapsedOverview
-                                                        )
-                                                    },
-                                                text = overview,
-                                                style = MaterialTheme.typography.bodyLarge,
-                                                color = backgroundLight,
-                                                maxLines = if (collectionViewModel.isOverviewCollapsed) 4 else Int.MAX_VALUE,
-                                                overflow = TextOverflow.Ellipsis
-                                            )
-                                        }
-                                        collectionInfo.parts?.let { mediaList ->
-                                            Row(
-                                                modifier = Modifier.fillMaxWidth(),
-                                                verticalAlignment = Alignment.CenterVertically,
-                                                horizontalArrangement = Arrangement.SpaceEvenly
-                                            ) {
-                                                Column(
-                                                    modifier = Modifier.padding(horizontal = 4.dp),
-                                                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                                                    horizontalAlignment = Alignment.CenterHorizontally
+                                        AsyncImage(
+                                            modifier = Modifier.fillMaxSize(),
+                                            model = C.TMDB_IMAGES_BASE_URL + C.BACKDROP_W1280 + collectionInfo.backdropPath,
+                                            contentDescription = "Backdrop",
+                                            contentScale = ContentScale.Crop,
+                                            placeholder = painterResource(id = R.drawable.placeholder),
+                                            error = painterResource(id = R.drawable.placeholder)
+                                        )
+                                        Column(
+                                            modifier = Modifier
+                                                .background(tmdbDarkBlue.copy(alpha = .7f))
+                                                .padding(bottom = 16.dp)
+                                                .padding(top = innerPadding.calculateTopPadding()),
+                                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                                        ) {
+                                            collectionInfo.overview?.let { overview ->
+                                                Text(
+                                                    modifier = Modifier
+                                                        .fillMaxWidth()
+                                                        .clip(MaterialTheme.shapes.extraSmall)
+                                                        .animateContentSize()
+                                                        .padding(horizontal = 16.dp)
+                                                        .clickable {
+                                                            collectionViewModel.collectionUiEvent(
+                                                                CollectionUiEvent.ChangeCollapsedOverview
+                                                            )
+                                                        },
+                                                    text = overview,
+                                                    style = MaterialTheme.typography.bodyLarge,
+                                                    color = backgroundLight,
+                                                    maxLines = if (collectionViewModel.isOverviewCollapsed) 4 else Int.MAX_VALUE,
+                                                    overflow = TextOverflow.Ellipsis
+                                                )
+                                            }
+                                            collectionInfo.parts?.let { mediaList ->
+                                                Row(
+                                                    modifier = Modifier.fillMaxWidth(),
+                                                    verticalAlignment = Alignment.CenterVertically,
+                                                    horizontalArrangement = Arrangement.SpaceEvenly
                                                 ) {
-                                                    Text(
-                                                        text = mediaList.size.toString(),
-                                                        style = MaterialTheme.typography.titleLarge,
-                                                        fontWeight = FontWeight.Medium,
-                                                        color = backgroundLight
-                                                    )
-                                                    Text(
-                                                        text = stringResource(id = R.string.number_of_movies),
-                                                        style = MaterialTheme.typography.titleMedium,
-                                                        color = backgroundLight
-                                                    )
-                                                }
-                                                Column(
-                                                    modifier = Modifier.padding(horizontal = 4.dp),
-                                                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                                                    horizontalAlignment = Alignment.CenterHorizontally
-                                                ) {
-                                                    Row(
-                                                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                                        verticalAlignment = Alignment.CenterVertically
+                                                    Column(
+                                                        modifier = Modifier.padding(horizontal = 4.dp),
+                                                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                                                        horizontalAlignment = Alignment.CenterHorizontally
                                                     ) {
-                                                        val averageRating = mediaList.takeIf { it.isNotEmpty() }
-                                                            ?.sumOf { it.voteAverage?.toDouble() ?: 0.0 }
-                                                            ?.div(mediaList.size)
-                                                            ?: 0.0
                                                         Text(
-                                                            text = formatVoteAverage(averageRating.toFloat()),
+                                                            text = mediaList.size.toString(),
                                                             style = MaterialTheme.typography.titleLarge,
                                                             fontWeight = FontWeight.Medium,
                                                             color = backgroundLight
                                                         )
-                                                        Icon(
-                                                            painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
-                                                            contentDescription = "Rating",
-                                                            tint = backgroundLight
+                                                        Text(
+                                                            text = stringResource(id = R.string.number_of_movies),
+                                                            style = MaterialTheme.typography.titleMedium,
+                                                            color = backgroundLight
                                                         )
                                                     }
-                                                    Text(
-                                                        text = stringResource(id = R.string.average_rating),
-                                                        style = MaterialTheme.typography.titleMedium,
-                                                        color = backgroundLight
-                                                    )
+                                                    Column(
+                                                        modifier = Modifier.padding(horizontal = 4.dp),
+                                                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                                                        horizontalAlignment = Alignment.CenterHorizontally
+                                                    ) {
+                                                        Row(
+                                                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                                            verticalAlignment = Alignment.CenterVertically
+                                                        ) {
+                                                            val averageRating = mediaList.takeIf { it.isNotEmpty() }
+                                                                ?.sumOf { it.voteAverage?.toDouble() ?: 0.0 }
+                                                                ?.div(mediaList.size)
+                                                                ?: 0.0
+                                                            Text(
+                                                                text = formatVoteAverage(averageRating.toFloat()),
+                                                                style = MaterialTheme.typography.titleLarge,
+                                                                fontWeight = FontWeight.Medium,
+                                                                color = backgroundLight
+                                                            )
+                                                            Icon(
+                                                                painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
+                                                                contentDescription = "Rating",
+                                                                tint = backgroundLight
+                                                            )
+                                                        }
+                                                        Text(
+                                                            text = stringResource(id = R.string.average_rating),
+                                                            style = MaterialTheme.typography.titleMedium,
+                                                            color = backgroundLight
+                                                        )
+                                                    }
                                                 }
                                             }
                                         }

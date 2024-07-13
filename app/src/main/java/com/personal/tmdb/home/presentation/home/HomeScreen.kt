@@ -44,7 +44,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.paint
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -330,42 +329,48 @@ fun HomeScreen(
                     }
                 }
                 item {
-                    Column(
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(IntrinsicSize.Min)
-                            .paint(
-                                painter = painterResource(id = R.drawable.movie_poster),
-                                sizeToIntrinsics = false,
-                                contentScale = ContentScale.Crop,
-                                colorFilter = duotoneColorFilter(duotonePurpleLight, duotonePurpleDark)
-                            )
-                            .padding(horizontal = 16.dp, vertical = 24.dp),
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
+                        AsyncImage(
+                            modifier = Modifier.fillMaxSize(),
+                            model = C.TMDB_IMAGES_BASE_URL + C.BACKDROP_W1280 + "/lMnoYqPIAVL0YaLP5YjRy7iwaYv.jpg",
+                            contentDescription = "Backdrop",
+                            contentScale = ContentScale.Crop,
+                            placeholder = painterResource(id = R.drawable.placeholder),
+                            error = painterResource(id = R.drawable.placeholder),
+                            colorFilter = duotoneColorFilter(duotonePurpleLight, duotonePurpleDark)
+                        )
                         Column(
-                            verticalArrangement = Arrangement.spacedBy(4.dp)
+                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp),
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            Text(
-                                text = stringResource(id = R.string.join_today),
-                                style = MaterialTheme.typography.headlineMedium,
-                                fontWeight = FontWeight.Medium,
-                                color = backgroundLight
-                            )
-                            Text(
-                                text = stringResource(id = R.string.join_today_benefits),
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = backgroundLight
-                            )
-                        }
-                        GradientButton(
-                            modifier = Modifier
-                                .widthIn(max = 400.dp)
-                                .fillMaxWidth(),
-                            onClick = { /*TODO: Open sign up link*/ },
-                            gradient = Brush.horizontalGradient(listOf(gradientPurpleDark, gradientPurpleLight))
-                        ) {
-                            Text(text = stringResource(id = R.string.sign_up), color = backgroundLight)
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                Text(
+                                    text = stringResource(id = R.string.join_today),
+                                    style = MaterialTheme.typography.headlineMedium,
+                                    fontWeight = FontWeight.Medium,
+                                    color = backgroundLight
+                                )
+                                Text(
+                                    text = stringResource(id = R.string.join_today_benefits),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = backgroundLight
+                                )
+                            }
+                            GradientButton(
+                                modifier = Modifier
+                                    .widthIn(max = 400.dp)
+                                    .fillMaxWidth(),
+                                onClick = { /*TODO: Open sign up link*/ },
+                                gradient = Brush.horizontalGradient(listOf(gradientPurpleDark, gradientPurpleLight))
+                            ) {
+                                Text(text = stringResource(id = R.string.sign_up), color = backgroundLight)
+                            }
                         }
                     }
                 }

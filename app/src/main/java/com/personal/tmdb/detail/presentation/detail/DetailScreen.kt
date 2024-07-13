@@ -37,7 +37,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -50,7 +49,6 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
-import coil.compose.rememberAsyncImagePainter
 import com.personal.tmdb.R
 import com.personal.tmdb.core.navigation.RootNavGraph
 import com.personal.tmdb.core.util.C
@@ -438,25 +436,25 @@ fun DetailScreen(
                                     }
                                 }
                                 info.belongsToCollection?.let { belongToCollection ->
-                                    val painter = rememberAsyncImagePainter(
-                                        model = C.TMDB_IMAGES_BASE_URL + C.BACKDROP_W1280 + belongToCollection.backdropPath,
-                                        placeholder = painterResource(id = R.drawable.placeholder),
-                                        error = painterResource(id = R.drawable.placeholder)
-                                    )
                                     Box(
                                         modifier = Modifier
                                             .height(IntrinsicSize.Min)
                                             .clip(MaterialTheme.shapes.large)
-                                            .paint(
-                                                painter = painter,
-                                                sizeToIntrinsics = false,
-                                                contentScale = ContentScale.Crop
-                                            )
-                                            .background(tmdbDarkBlue.copy(alpha = .7f))
                                             .clickable { onNavigateTo(RootNavGraph.COLLECTION + "/${belongToCollection.id}") }
                                     ) {
+                                        AsyncImage(
+                                            modifier = Modifier.fillMaxSize(),
+                                            model = C.TMDB_IMAGES_BASE_URL + C.BACKDROP_W1280 + belongToCollection.backdropPath,
+                                            contentDescription = "Backdrop",
+                                            contentScale = ContentScale.Crop,
+                                            placeholder = painterResource(id = R.drawable.placeholder),
+                                            error = painterResource(id = R.drawable.placeholder)
+                                        )
                                         Column(
-                                            modifier = Modifier.padding(12.dp),
+                                            modifier = Modifier
+                                                .fillMaxWidth()
+                                                .background(tmdbDarkBlue.copy(alpha = .7f))
+                                                .padding(12.dp),
                                             verticalArrangement = Arrangement.spacedBy(4.dp)
                                         ) {
                                             Text(
