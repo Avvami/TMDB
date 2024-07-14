@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -65,10 +66,13 @@ fun Episodes(
     isSeasonOverviewCollapsed: () -> Boolean,
     detailUiEvent: (DetailUiEvent) -> Unit
 ) {
-    Column {
+    Column(
+        modifier = Modifier.padding(PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp))
+    ) {
         if (seasons().size != 1) {
             seasons().find { it.seasonNumber == selectedSeasonNumber() }?.let { seasonInfo ->
                 Button(
+                    modifier = Modifier.height(ButtonDefaults.MinHeight),
                     onClick = { detailUiEvent(DetailUiEvent.ChangeSeasonDropdownState) },
                     shape = MaterialTheme.shapes.small,
                     contentPadding = PaddingValues(start = 16.dp, top = 8.dp, end = 8.dp, bottom = 8.dp)
@@ -182,7 +186,7 @@ fun Episodes(
                 }
                 if (seasonInfo.episodes.isNullOrEmpty()) {
                     Text(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.padding(vertical = 8.dp).fillMaxWidth(),
                         text = stringResource(id = R.string.no_episodes),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,

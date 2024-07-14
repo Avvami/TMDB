@@ -1,5 +1,6 @@
 package com.personal.tmdb.detail.data.mappers
 
+import com.personal.tmdb.core.data.mappers.toMediaResponseInfo
 import com.personal.tmdb.detail.data.models.MediaDetailDto
 import com.personal.tmdb.detail.domain.models.MediaDetailInfo
 import java.time.LocalDate
@@ -29,10 +30,12 @@ fun MediaDetailDto.toMediaDetailInfo(): MediaDetailInfo {
         originalName = originalName,
         overview = if (overview.isNullOrEmpty()) null else overview,
         posterPath = posterPath,
+        recommendations = recommendations?.toMediaResponseInfo(),
         releaseDate = releaseDate,
         releaseDates = releaseDates,
         runtime = if (runtime == 0) null else runtime,
         seasons = seasons,
+        similar = similar?.toMediaResponseInfo(),
         tagline = if (tagline.isNullOrEmpty()) null else tagline,
         voteAverage = voteAverage?.toFloat()
     )

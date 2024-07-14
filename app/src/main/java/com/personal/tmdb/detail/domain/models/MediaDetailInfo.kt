@@ -1,5 +1,6 @@
 package com.personal.tmdb.detail.domain.models
 
+import com.personal.tmdb.core.domain.models.MediaResponseInfo
 import com.personal.tmdb.detail.data.models.BelongsToCollection
 import com.personal.tmdb.detail.data.models.ContentRatings
 import com.personal.tmdb.detail.data.models.CreatedBy
@@ -25,10 +26,12 @@ data class MediaDetailInfo(
     val originalName: String?,
     val overview: String?,
     val posterPath: String?,
+    val recommendations: MediaResponseInfo?,
     val releaseDate: LocalDate?,
     val releaseDates: ReleaseDates?,
     val runtime: Int?,
     val seasons: List<Season>?,
+    val similar: MediaResponseInfo?,
     val tagline: String?,
     val voteAverage: Float?,
 )

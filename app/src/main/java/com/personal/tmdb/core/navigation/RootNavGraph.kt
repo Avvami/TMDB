@@ -75,9 +75,7 @@ fun RootNavigationGraph(
             DetailScreen(
                 navigateBack = onNavigateBack,
                 onNavigateTo = { route ->
-                    navController.navigate(route = route) {
-                        launchSingleTop = true
-                    }
+                    navController.navigate(route = route)
                 }
             )
         }

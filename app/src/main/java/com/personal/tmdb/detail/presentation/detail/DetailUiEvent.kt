@@ -5,4 +5,5 @@ sealed interface DetailUiEvent {
     data object ChangeCollapsedSeasonOverview: DetailUiEvent
     data object ChangeSeasonDropdownState: DetailUiEvent
     data class SetSelectedSeason(val seriesId: Int, val seasonNumber: Int): DetailUiEvent
+    data class SetSelectedTab(val tabIndex: Int): DetailUiEvent
 }

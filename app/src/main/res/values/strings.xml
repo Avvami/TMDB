@@ -53,4 +53,7 @@
     <string name="available">Available</string>
     <string name="overview">Overview</string>
     <string name="no_episodes">There are no episodes added to this season.</string>
+    <string name="similar">Similar</string>
+    <string name="no_similar">No similar content was found.</string>
+    <string name="no_recommendations">We don\'t have enough data to suggest any movies based on %s. You can help by rating movies you\'ve seen.</string>
 </resources>

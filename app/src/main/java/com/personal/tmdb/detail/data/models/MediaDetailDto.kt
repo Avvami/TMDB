@@ -1,6 +1,7 @@
 package com.personal.tmdb.detail.data.models
 
 
+import com.personal.tmdb.core.data.models.MediaResponseDto
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -62,6 +63,8 @@ data class MediaDetailDto(
     val productionCompanies: List<ProductionCompany>?,
     @Json(name = "production_countries")
     val productionCountries: List<ProductionCountry>?,
+    @Json(name = "recommendations")
+    val recommendations: MediaResponseDto?,
     @Json(name = "release_date")
     val releaseDate: String?,
     @Json(name = "release_dates")
@@ -70,6 +73,8 @@ data class MediaDetailDto(
     val runtime: Int?,
     @Json(name = "seasons")
     val seasons: List<Season>?,
+    @Json(name = "similar")
+    val similar: MediaResponseDto?,
     @Json(name = "spoken_languages")
     val spokenLanguages: List<SpokenLanguage>?,
     @Json(name = "status")

@@ -11,6 +11,7 @@ import com.personal.tmdb.R
 import com.personal.tmdb.core.domain.util.appendToResponse
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.Resource
+import com.personal.tmdb.core.util.convertMediaType
 import com.personal.tmdb.detail.domain.models.CollectionInfo
 import com.personal.tmdb.detail.domain.models.MediaDetailInfo
 import com.personal.tmdb.detail.domain.models.SeasonInfo
@@ -42,6 +43,9 @@ class DetailViewModel @Inject constructor(
         private set
 
     var pagerPageCount by mutableStateOf<Int?>(null)
+        private set
+
+    var selectedTab by mutableIntStateOf(0)
         private set
 
     init {
@@ -83,7 +87,12 @@ class DetailViewModel @Inject constructor(
                     getSeasonDetail(detail.id, selectedSeasonNumber)
                     labelsRes.add(R.string.episodes)
                 }
-                labelsRes.addAll(listOf(R.string.available, R.string.recommendations))
+                if (detail.similar != null) {
+                    labelsRes.add(R.string.similar)
+                }
+                if (detail.recommendations != null) {
+                    labelsRes.add(R.string.recommendations)
+                }
 
                 pageLabelsRes = labelsRes
                 pagerPageCount = labelsRes.size
@@ -91,6 +100,7 @@ class DetailViewModel @Inject constructor(
 
             detailState = detailState.copy(
                 mediaDetail = mediaDetail,
+                mediaType = convertMediaType(mediaType),
                 isLoading = false,
                 error = error
             )
@@ -124,7 +134,6 @@ class DetailViewModel @Inject constructor(
     }
 
     private fun getSeasonDetail(seriesId: Int, seasonNumber: Int, language: String? = null) {
-        println("Monkey ${seriesId} ${seasonNumber}")
         viewModelScope.launch {
             seasonState = seasonState.copy(
                 isLoading = true,
@@ -177,6 +186,9 @@ class DetailViewModel @Inject constructor(
                 isSeasonOverviewCollapsed = true
                 selectedSeasonNumber = event.seasonNumber
                 getSeasonDetail(event.seriesId, selectedSeasonNumber)
+            }
+            is DetailUiEvent.SetSelectedTab -> {
+                selectedTab = event.tabIndex
             }
         }
     }
