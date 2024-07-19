@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -72,7 +71,6 @@ fun Episodes(
         if (seasons().size != 1) {
             seasons().find { it.seasonNumber == selectedSeasonNumber() }?.let { seasonInfo ->
                 Button(
-                    modifier = Modifier.height(ButtonDefaults.MinHeight),
                     onClick = { detailUiEvent(DetailUiEvent.ChangeSeasonDropdownState) },
                     shape = MaterialTheme.shapes.small,
                     contentPadding = PaddingValues(start = 16.dp, top = 8.dp, end = 8.dp, bottom = 8.dp)

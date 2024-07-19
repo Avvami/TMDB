@@ -18,6 +18,11 @@ import com.personal.tmdb.detail.domain.models.SeasonInfo
 import com.personal.tmdb.detail.domain.repository.DetailRepository
 import com.personal.tmdb.detail.presentation.collection.CollectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -47,6 +52,27 @@ class DetailViewModel @Inject constructor(
 
     var selectedTab by mutableIntStateOf(0)
         private set
+
+    var availableState by mutableStateOf(AvailableState())
+        private set
+
+    private val _availableSearchQuery = MutableStateFlow("")
+    var availableSearchQuery = _availableSearchQuery.asStateFlow()
+
+    private val _availableCountries = MutableStateFlow(detailState.mediaDetail?.watchProviders?.keys)
+    val availableCountries = availableSearchQuery.combine(_availableCountries) { query, countries ->
+        if (query.isBlank()) {
+            countries
+        } else {
+            countries?.filter {
+                it.contains(query, ignoreCase = true)
+            }
+        }
+    }.stateIn(
+        viewModelScope,
+        SharingStarted.WhileSubscribed(5000),
+        _availableCountries.value
+    )
 
     init {
         getMediaDetails(
@@ -86,6 +112,13 @@ class DetailViewModel @Inject constructor(
                     selectedSeasonNumber = season.seasonNumber
                     getSeasonDetail(detail.id, selectedSeasonNumber)
                     labelsRes.add(R.string.episodes)
+                }
+                if (detail.watchProviders != null) {
+                    _availableCountries.value = detail.watchProviders.keys
+                    availableState = availableState.copy(
+                        selectedCountry = "United States"
+                    )
+                    println(detail.watchProviders.keys)
                 }
                 if (detail.similar != null) {
                     labelsRes.add(R.string.similar)
@@ -189,6 +222,26 @@ class DetailViewModel @Inject constructor(
             }
             is DetailUiEvent.SetSelectedTab -> {
                 selectedTab = event.tabIndex
+            }
+            is DetailUiEvent.SetSelectedCountry -> {
+                availableState = availableState.copy(
+                    selectedCountry = event.country,
+                    isSearchActive = !availableState.isSearchActive
+                )
+                _availableSearchQuery.value = ""
+            }
+            is DetailUiEvent.SetAvailableSearchQuery -> {
+                _availableSearchQuery.value = event.query
+            }
+            DetailUiEvent.ChangeAvailableSearchState -> {
+                availableState = availableState.copy(
+                    isSearchActive = !availableState.isSearchActive
+                )
+            }
+            DetailUiEvent.ChangeAvailableDialogState -> {
+                availableState = availableState.copy(
+                    isDialogShown = !availableState.isDialogShown
+                )
             }
         }
     }

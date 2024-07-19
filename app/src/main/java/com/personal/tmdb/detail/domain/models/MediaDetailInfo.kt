@@ -3,6 +3,7 @@ package com.personal.tmdb.detail.domain.models
 import com.personal.tmdb.core.domain.models.MediaResponseInfo
 import com.personal.tmdb.detail.data.models.BelongsToCollection
 import com.personal.tmdb.detail.data.models.ContentRatings
+import com.personal.tmdb.detail.data.models.Available
 import com.personal.tmdb.detail.data.models.CreatedBy
 import com.personal.tmdb.detail.data.models.Credits
 import com.personal.tmdb.detail.data.models.Genre
@@ -34,4 +35,5 @@ data class MediaDetailInfo(
     val similar: MediaResponseInfo?,
     val tagline: String?,
     val voteAverage: Float?,
+    val watchProviders: Map<String, Available>?,
 )

@@ -56,4 +56,16 @@
     <string name="similar">Similar</string>
     <string name="no_similar">No similar content was found.</string>
     <string name="no_recommendations">We don\'t have enough data to suggest any movies based on %s. You can help by rating movies you\'ve seen.</string>
+    <string name="powered_by">Powered by:</string>
+    <string name="stream">Stream</string>
+    <string name="free">Free</string>
+    <string name="buy">Buy</string>
+    <string name="rent">Rent</string>
+    <string name="ads">Ads</string>
+    <string name="now_streaming">Now Streaming</string>
+    <string name="for_free">For Free</string>
+    <string name="with_ads">With Ads</string>
+    <string name="rent_buy_available">Available to Rent or Buy</string>
+    <string name="watch_now">Watch Now</string>
+    <string name="watch_link_not_provided">TMDB API does not provide the actual deep links to the content, so please proceed to the official TMDB website.</string>
 </resources>

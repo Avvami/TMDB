@@ -6,6 +6,7 @@ object C {
     const val BACKDROP_W1280 = "w1280"
     const val POSTER_W300 = "w300"
     const val STILL_W300 = "w300"
+    const val LOGO_W92 = "w92"
     const val MEDIA_ID = "mediaId"
     const val COLLECTION_ID = "collectionId"
     const val MEDIA_TYPE = "mediaType"

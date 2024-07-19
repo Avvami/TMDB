@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -30,7 +29,6 @@ fun GradientButton(
     ) {
         Box(
             modifier = Modifier
-                .height(ButtonDefaults.MinHeight)
                 .fillMaxSize()
                 .background(gradient)
                 .padding(horizontal = 16.dp, vertical = 8.dp),

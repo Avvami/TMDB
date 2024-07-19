@@ -32,11 +32,11 @@ fun formatVoteAverageToColor(vote: Float): Color {
 }
 
 fun formatVoteAverage(voteAverage: Float): String {
-    val roundedValue = "%.1f".format(voteAverage).toFloat()
+    val roundedValue = (Math.round(voteAverage * 10) / 10.0).toFloat()
     return when {
         roundedValue == 0f -> "NR"
         roundedValue % 1.0 == 0.0 -> roundedValue.toInt().toString()
-        else -> roundedValue.toString()
+        else -> "%.1f".format(voteAverage)
     }
 }
 

@@ -5,6 +5,7 @@ import com.personal.tmdb.detail.data.models.MediaDetailDto
 import com.personal.tmdb.detail.domain.models.MediaDetailInfo
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 fun MediaDetailDto.toMediaDetailInfo(): MediaDetailInfo {
     val releaseDate: LocalDate? = try {
@@ -37,6 +38,7 @@ fun MediaDetailDto.toMediaDetailInfo(): MediaDetailInfo {
         seasons = seasons,
         similar = similar?.toMediaResponseInfo(),
         tagline = if (tagline.isNullOrEmpty()) null else tagline,
-        voteAverage = voteAverage?.toFloat()
+        voteAverage = voteAverage?.toFloat(),
+        watchProviders = watchProviders?.watchProvidersResults?.mapKeys { (key, _) -> Locale("", key).displayCountry}
     )
 }

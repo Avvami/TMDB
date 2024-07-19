@@ -39,6 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEachIndexed
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.personal.tmdb.R
 import com.personal.tmdb.core.presentation.components.MediaPoster
 import com.personal.tmdb.detail.presentation.detail.components.DetailScreenShimmer
@@ -111,6 +112,9 @@ fun DetailScreen(
                     item {
                         Trailer(
                             info = { info },
+                            availableSearchQuery = detailViewModel.availableSearchQuery.collectAsStateWithLifecycle(),
+                            availableCountries = detailViewModel.availableCountries.collectAsStateWithLifecycle(),
+                            availableState = detailViewModel::availableState,
                             detailUiEvent = detailViewModel::detailUiEvent
                         )
                     }
@@ -173,14 +177,13 @@ fun DetailScreen(
                                                 )
                                             }
                                         }
-                                        R.string.available -> {
-
-                                        }
                                         R.string.recommendations -> {
                                             info.recommendations?.results?.let { recommendations ->
                                                 if (recommendations.isEmpty()) {
                                                     Text(
-                                                        modifier = Modifier.padding(vertical = 8.dp).fillMaxWidth(),
+                                                        modifier = Modifier
+                                                            .padding(vertical = 8.dp)
+                                                            .fillMaxWidth(),
                                                         text = stringResource(id = R.string.no_recommendations, info.name ?: ""),
                                                         style = MaterialTheme.typography.bodyLarge,
                                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -215,7 +218,9 @@ fun DetailScreen(
                                             info.similar?.results?.let { similar ->
                                                 if (similar.isEmpty()) {
                                                     Text(
-                                                        modifier = Modifier.padding(vertical = 8.dp).fillMaxWidth(),
+                                                        modifier = Modifier
+                                                            .padding(vertical = 8.dp)
+                                                            .fillMaxWidth(),
                                                         text = stringResource(id = R.string.no_similar),
                                                         style = MaterialTheme.typography.bodyLarge,
                                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
