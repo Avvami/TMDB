@@ -89,45 +89,50 @@ fun Trailer(
         }
         if (!info().watchProviders.isNullOrEmpty()) {
             info().watchProviders?.let { watchProviders ->
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { detailUiEvent(DetailUiEvent.ChangeAvailableDialogState) }
-                        .background(tmdbDarkBlue.copy(alpha = .8f))
-                        .padding(4.dp)
-                        .align(Alignment.BottomCenter),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    watchProviders[availableState().selectedCountry]?.let { country ->
+                watchProviders.getOrElse(availableState().selectedCountry) {
+                    watchProviders.entries.firstOrNull()?.key?.let { country ->
+                        detailUiEvent(DetailUiEvent.SetSelectedCountry(country))
+                    }
+                    watchProviders.entries.firstOrNull()?.value
+                }?.let { available ->
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { detailUiEvent(DetailUiEvent.ChangeAvailableDialogState) }
+                            .background(tmdbDarkBlue.copy(alpha = .8f))
+                            .padding(4.dp)
+                            .align(Alignment.BottomCenter),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         when {
-                            country.free?.firstOrNull() != null -> {
+                            available.free?.firstOrNull() != null -> {
                                 WatchNow(
-                                    source = country.free.first(),
+                                    source = available.free.first(),
                                     available = R.string.for_free
                                 )
                             }
-                            country.flatrate?.firstOrNull() != null -> {
+                            available.flatrate?.firstOrNull() != null -> {
                                 WatchNow(
-                                    source = country.flatrate.first(),
+                                    source = available.flatrate.first(),
                                     available = R.string.now_streaming
                                 )
                             }
-                            country.rent?.firstOrNull() != null -> {
+                            available.rent?.firstOrNull() != null -> {
                                 WatchNow(
-                                    source = country.rent.first(),
+                                    source = available.rent.first(),
                                     available = R.string.rent_buy_available
                                 )
                             }
-                            country.buy?.firstOrNull() != null -> {
+                            available.buy?.firstOrNull() != null -> {
                                 WatchNow(
-                                    source = country.buy.first(),
+                                    source = available.buy.first(),
                                     available = R.string.rent_buy_available
                                 )
                             }
-                            country.ads?.firstOrNull() != null -> {
+                            available.ads?.firstOrNull() != null -> {
                                 WatchNow(
-                                    source = country.ads.first(),
+                                    source = available.ads.first(),
                                     available = R.string.with_ads
                                 )
                             }

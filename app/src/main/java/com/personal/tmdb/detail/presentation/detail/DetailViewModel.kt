@@ -226,7 +226,7 @@ class DetailViewModel @Inject constructor(
             is DetailUiEvent.SetSelectedCountry -> {
                 availableState = availableState.copy(
                     selectedCountry = event.country,
-                    isSearchActive = !availableState.isSearchActive
+                    isSearchActive = false
                 )
                 _availableSearchQuery.value = ""
             }
