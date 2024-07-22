@@ -269,56 +269,60 @@ fun Details(
                         )
                     }
                     info().credits?.cast?.let { cast ->
-                        Row(
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(2.dp))
-                                .clickable { /*TODO: Go to cast screen*/ },
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(2.dp)
-                        ) {
-                            val annotatedString = buildAnnotatedString {
-                                val starring = stringResource(id = R.string.starring)
-                                withStyle(
-                                    style = SpanStyle(
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        fontStyle = MaterialTheme.typography.labelLarge.fontStyle,
-                                        fontSize = MaterialTheme.typography.labelLarge.fontSize,
-                                        fontWeight = MaterialTheme.typography.labelLarge.fontWeight
-                                    )
-                                ) {
-                                    append("$starring ")
+                        if (cast.isNotEmpty()) {
+                            Row(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(2.dp))
+                                    .clickable { /*TODO: Go to cast screen*/ },
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(2.dp)
+                            ) {
+                                val annotatedString = buildAnnotatedString {
+                                    val starring = stringResource(id = R.string.starring)
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            fontStyle = MaterialTheme.typography.labelLarge.fontStyle,
+                                            fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                                            fontWeight = MaterialTheme.typography.labelLarge.fontWeight
+                                        )
+                                    ) {
+                                        append("$starring ")
+                                    }
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
+                                            fontSize = MaterialTheme.typography.bodyMedium.fontSize
+                                        )
+                                    ) {
+                                        append(cast.joinToString(", ") { it.name.toString() })
+                                    }
                                 }
-                                withStyle(
-                                    style = SpanStyle(
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                        fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
-                                        fontSize = MaterialTheme.typography.bodyMedium.fontSize
-                                    )
-                                ) {
-                                    append(cast.joinToString(", ") { it.name.toString() })
-                                }
+                                Text(
+                                    modifier = Modifier.weight(1f, false),
+                                    text = annotatedString,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                Text(
+                                    text = stringResource(id = R.string.more),
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
                             }
-                            Text(
-                                modifier = Modifier.weight(1f, false),
-                                text = annotatedString,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                            Text(
-                                text = stringResource(id = R.string.more),
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
                         }
                     }
                     info().genres?.let { genres ->
-                        AnnotatedListText(
-                            titlePrefix = stringResource(id = R.string.genres),
-                            items = genres.map { genre ->
-                                AnnotatedItem(id = genre.id, name = genre.name)
-                            },
-                            onNavigateTo = onNavigateTo
-                        )
+                        if (genres.isNotEmpty()) {
+                            AnnotatedListText(
+                                titlePrefix = stringResource(id = R.string.genres),
+                                items = genres.map { genre ->
+                                    AnnotatedItem(id = genre.id, name = genre.name)
+                                },
+                                onNavigateTo = onNavigateTo
+                            )
+                        }
                     }
                 }
             }
