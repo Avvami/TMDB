@@ -9,12 +9,17 @@ import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 fun CollectionDto.toCollectionInfo(): CollectionInfo {
+    val mediaList = parts?.map { it.toMediaInfo() }
     return CollectionInfo(
+        averageRating = (mediaList?.takeIf { it.isNotEmpty() }
+            ?.sumOf { it.voteAverage?.toDouble() ?: 0.0 }
+            ?.div(mediaList.filter { (it.voteAverage ?: 0f) > 0f }.size)
+            ?: 0.0).toFloat(),
         backdropPath = backdropPath,
         id = id,
         name = name,
         overview = overview,
-        parts = parts?.map { it.toMediaInfo() },
+        parts = mediaList,
         posterPath = posterPath
     )
 }

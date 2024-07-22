@@ -255,12 +255,8 @@ fun CollectionScreen(
                                                             horizontalArrangement = Arrangement.spacedBy(8.dp),
                                                             verticalAlignment = Alignment.CenterVertically
                                                         ) {
-                                                            val averageRating = mediaList.takeIf { it.isNotEmpty() }
-                                                                ?.sumOf { it.voteAverage?.toDouble() ?: 0.0 }
-                                                                ?.div(mediaList.size)
-                                                                ?: 0.0
                                                             Text(
-                                                                text = formatVoteAverage(averageRating.toFloat()),
+                                                                text = formatVoteAverage(collectionInfo.averageRating),
                                                                 style = MaterialTheme.typography.titleLarge,
                                                                 fontWeight = FontWeight.Medium,
                                                                 color = backgroundLight
