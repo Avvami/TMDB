@@ -15,13 +15,13 @@ data class Crew(
     @Json(name = "gender")
     val gender: Int?,
     @Json(name = "id")
-    val id: Int?,
+    val id: Int,
     @Json(name = "job")
     val job: String?,
     @Json(name = "known_for_department")
     val knownForDepartment: String?,
     @Json(name = "name")
-    val name: String?,
+    val name: String,
     @Json(name = "original_name")
     val originalName: String?,
     @Json(name = "popularity")

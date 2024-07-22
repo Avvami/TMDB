@@ -29,8 +29,11 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.personal.tmdb.R
@@ -245,49 +248,27 @@ fun Details(
                     overflow = TextOverflow.Ellipsis
                 )
             }
-            info().credits?.cast?.let { cast ->
-                if (cast.isNotEmpty()) {
-                    Column {
-                        info().createdBy?.firstOrNull()?.let { createdBy ->
-                            createdBy.name?.let { name ->
-                                Row(
-                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                                ) {
-                                    Text(
-                                        text = stringResource(id = R.string.creator),
-                                        style = MaterialTheme.typography.labelLarge,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                    Text(
-                                        text = name,
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                }
-                            }
-                        }
-                        info().credits?.crew?.find { it.department == "Directing" }?.let { director ->
-                            director.name?.let { name ->
-                                Row(
-                                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                                ) {
-                                    Text(
-                                        text = stringResource(id = R.string.director),
-                                        style = MaterialTheme.typography.labelLarge,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                    Text(
-                                        text = name,
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                }
-                            }
-                        }
+            if (info().credits != null || !info().genres.isNullOrEmpty()) {
+                Column {
+                    info().createdBy?.firstOrNull()?.let { createdBy ->
+                        AnnotatedListText(
+                            titlePrefix = stringResource(id = R.string.creator),
+                            items = listOf(
+                                AnnotatedItem(id = createdBy.id, name = createdBy.name)
+                            ),
+                            onNavigateTo = onNavigateTo
+                        )
+                    }
+                    info().credits?.crew?.find { it.department == "Directing" }?.let { director ->
+                        AnnotatedListText(
+                            titlePrefix = stringResource(id = R.string.director),
+                            items = listOf(
+                                AnnotatedItem(id = director.id, name = director.name)
+                            ),
+                            onNavigateTo = onNavigateTo
+                        )
+                    }
+                    info().credits?.cast?.let { cast ->
                         Row(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(2.dp))
@@ -295,29 +276,49 @@ fun Details(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(2.dp)
                         ) {
-                            Row(
-                                modifier = Modifier.weight(1f, false),
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                Text(
-                                    text = stringResource(id = R.string.starring),
-                                    style = MaterialTheme.typography.labelLarge,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                                Text(
-                                    text = cast.take(5).joinToString(", ") { it.name.toString() },
-                                    style = MaterialTheme.typography.bodyMedium,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
+                            val annotatedString = buildAnnotatedString {
+                                val starring = stringResource(id = R.string.starring)
+                                withStyle(
+                                    style = SpanStyle(
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        fontStyle = MaterialTheme.typography.labelLarge.fontStyle,
+                                        fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                                        fontWeight = MaterialTheme.typography.labelLarge.fontWeight
+                                    )
+                                ) {
+                                    append("$starring ")
+                                }
+                                withStyle(
+                                    style = SpanStyle(
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                        fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
+                                        fontSize = MaterialTheme.typography.bodyMedium.fontSize
+                                    )
+                                ) {
+                                    append(cast.joinToString(", ") { it.name.toString() })
+                                }
                             }
+                            Text(
+                                modifier = Modifier.weight(1f, false),
+                                text = annotatedString,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
                             Text(
                                 text = stringResource(id = R.string.more),
                                 style = MaterialTheme.typography.labelMedium,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
+                    }
+                    info().genres?.let { genres ->
+                        AnnotatedListText(
+                            titlePrefix = stringResource(id = R.string.genres),
+                            items = genres.map { genre ->
+                                AnnotatedItem(id = genre.id, name = genre.name)
+                            },
+                            onNavigateTo = onNavigateTo
+                        )
                     }
                 }
             }
@@ -354,7 +355,10 @@ fun Details(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clip(MaterialTheme.shapes.small)
-                                    .shimmerEffect(backgroundLight, backgroundLight.copy(alpha = .3f)),
+                                    .shimmerEffect(
+                                        backgroundLight,
+                                        backgroundLight.copy(alpha = .3f)
+                                    ),
                                 text = "",
                                 style = MaterialTheme.typography.bodyMedium,
                                 color = Color.Transparent,
