@@ -7,6 +7,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
+import com.personal.tmdb.core.navigation.RootNavGraph
 
 data class AnnotatedItem(
     val id: Int,
@@ -16,6 +17,7 @@ data class AnnotatedItem(
 @Composable
 fun AnnotatedListText(
     modifier: Modifier = Modifier,
+    annotationTag: AnnotationTag,
     titlePrefix: String? = null,
     items: List<AnnotatedItem>,
     titlePrefixStyle: SpanStyle = SpanStyle(
@@ -40,7 +42,7 @@ fun AnnotatedListText(
         items.forEachIndexed { index, item ->
             val start = length
             addStringAnnotation(
-                tag = "ITEM",
+                tag = annotationTag.name,
                 annotation = item.id.toString(),
                 start = start,
                 end = start + item.name.length
@@ -59,15 +61,25 @@ fun AnnotatedListText(
         modifier = modifier,
         text = annotatedString,
         onClick = { offset ->
-            annotatedString.getStringAnnotations(tag = "ITEM", start = offset, end = offset)
+            annotatedString.getStringAnnotations(tag = annotationTag.name, start = offset, end = offset)
                 .firstOrNull()?.let { annotation ->
                     val itemId = annotation.item.toIntOrNull()
                     val item = items.find { it.id == itemId }
                     if (item != null) {
-                        println("${item.id} ${item.name}")
-//                        onNavigateTo()
+                        when (annotationTag) {
+                            AnnotationTag.GENRE -> {
+                                /*TODO: Navigate to genre screen*/
+                            }
+                            AnnotationTag.CAST -> {
+                                onNavigateTo(RootNavGraph.PERSON + "/${item.id}")
+                            }
+                        }
                     }
                 }
         }
     )
+}
+
+enum class AnnotationTag {
+    GENRE, CAST
 }

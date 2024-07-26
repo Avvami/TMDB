@@ -14,4 +14,5 @@ object C {
     const val SEARCH_TYPE = "searchType"
     const val SEARCH_QUERY = "searchQuery"
     const val MEDIA_NAME = "contentName"
+    const val PERSON_ID = "personId"
 }

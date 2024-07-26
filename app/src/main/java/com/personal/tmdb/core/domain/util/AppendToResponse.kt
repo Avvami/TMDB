@@ -8,7 +8,7 @@ fun appendToResponse(mediaType: String): String {
     return when (media) {
         MediaType.TV -> listOf("content_ratings", "aggregate_credits", "similar", "recommendations", "watch/providers")
         MediaType.MOVIE -> listOf("credits", "release_dates", "similar", "recommendations", "watch/providers")
-        MediaType.PERSON -> listOf("images", "movie_credits", "tv_credits")
+        MediaType.PERSON -> listOf("combined_credits", "external_ids", "images")
         else -> listOf()
     }.joinToString(",")
 }

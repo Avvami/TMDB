@@ -20,6 +20,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.personal.tmdb.R
+import com.personal.tmdb.core.navigation.RootNavGraph
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.shimmerEffect
 
@@ -35,7 +36,9 @@ fun CastInfoCard(
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable {  }
+            .clickable {
+                onNavigateTo(RootNavGraph.PERSON + "/${profileId}")
+            }
             .padding(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
     ) {

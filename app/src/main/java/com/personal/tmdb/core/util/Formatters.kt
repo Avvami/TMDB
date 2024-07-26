@@ -55,3 +55,12 @@ fun formatEpisodesCount(numberOfEpisodes: Int): String {
 }
 
 fun formatDate(localDate: LocalDate): String = localDate.format(DateTimeFormatter.ofPattern("MMM d, yyyy"))
+
+fun formatGender(genderCode: Int, context: Context): String {
+    return when (genderCode) {
+        1 -> UiText.StringResource(R.string.female).asString(context)
+        2 -> UiText.StringResource(R.string.male).asString(context)
+        3 -> UiText.StringResource(R.string.non_binary).asString(context)
+        else -> UiText.StringResource(R.string.gender_not_specified).asString(context)
+    }
+}

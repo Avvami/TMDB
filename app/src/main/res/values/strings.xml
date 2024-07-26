@@ -71,4 +71,8 @@
     <string name="genres">Genres:</string>
     <string name="cast">Cast</string>
     <string name="crew">Crew</string>
+    <string name="gender_not_specified">Gender not specified</string>
+    <string name="female">Female</string>
+    <string name="male">Male</string>
+    <string name="non_binary">Non-binary</string>
 </resources>

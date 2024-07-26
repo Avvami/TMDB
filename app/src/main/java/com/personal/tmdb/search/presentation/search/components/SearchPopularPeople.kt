@@ -20,6 +20,7 @@ import com.personal.tmdb.R
 import com.personal.tmdb.core.presentation.MediaState
 import com.personal.tmdb.core.presentation.components.MediaPoster
 import com.personal.tmdb.core.presentation.components.MediaPosterShimmer
+import com.personal.tmdb.core.util.MediaType
 import com.personal.tmdb.core.util.shimmerEffect
 
 @Composable
@@ -65,6 +66,7 @@ fun SearchPopularPeople(
                                 .clip(RoundedCornerShape(18.dp)),
                             onNavigateTo = onNavigateTo,
                             mediaInfo = mediaInfo,
+                            mediaType = MediaType.PERSON,
                             showTitle = true,
                             showVoteAverage = true
                         )

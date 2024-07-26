@@ -13,6 +13,7 @@ import com.personal.tmdb.core.util.C
 import com.personal.tmdb.detail.presentation.cast.CastScreen
 import com.personal.tmdb.detail.presentation.collection.CollectionScreen
 import com.personal.tmdb.detail.presentation.detail.DetailScreen
+import com.personal.tmdb.detail.presentation.person.PersonScreen
 import com.personal.tmdb.home.presentation.home.HomeScreen
 import com.personal.tmdb.search.presentation.search.SearchScreen
 import com.personal.tmdb.settings.presentation.settings.SettingsScreen
@@ -129,6 +130,21 @@ fun RootNavigationGraph(
                 }
             )
         }
+        animatedComposable(
+            route = RootNavGraph.PERSON + "/{${C.PERSON_ID}}",
+            arguments = listOf(
+                navArgument(C.PERSON_ID) { type = NavType.IntType; nullable = false}
+            )
+        ) {
+            PersonScreen(
+                navigateBack = onNavigateBack,
+                onNavigateTo = { route ->
+                    navController.navigate(route = route) {
+                        launchSingleTop = true
+                    }
+                }
+            )
+        }
     }
 }
 
@@ -142,4 +158,5 @@ object RootNavGraph {
     const val SEARCH = "detail_screen"
     const val COLLECTION = "collection_screen"
     const val CAST = "cast_screen"
+    const val PERSON = "person_screen"
 }

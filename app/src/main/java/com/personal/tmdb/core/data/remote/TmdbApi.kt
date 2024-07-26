@@ -5,6 +5,7 @@ import com.personal.tmdb.core.data.models.MediaResponseDto
 import com.personal.tmdb.detail.data.models.CollectionDto
 import com.personal.tmdb.detail.data.models.Credits
 import com.personal.tmdb.detail.data.models.MediaDetailDto
+import com.personal.tmdb.detail.data.models.PersonDto
 import com.personal.tmdb.detail.data.models.SeasonDto
 import retrofit2.http.GET
 import retrofit2.http.Headers
@@ -70,4 +71,12 @@ interface TmdbApi {
         @Path("method") method: String,
         @Query("language") language: String?
     ): Credits
+
+    @Headers("Authorization: Bearer ${BuildConfig.TMDB_API_KEY}")
+    @GET("3/person/{person_id}?")
+    suspend fun getPerson(
+        @Path("person_id") personId: Int,
+        @Query("language") language: String?,
+        @Query("append_to_response") appendToResponse: String?
+    ): PersonDto
 }

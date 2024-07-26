@@ -254,6 +254,7 @@ fun Details(
                 Column {
                     info().createdBy?.firstOrNull()?.let { createdBy ->
                         AnnotatedListText(
+                            annotationTag = AnnotationTag.CAST,
                             titlePrefix = stringResource(id = R.string.creator),
                             items = listOf(
                                 AnnotatedItem(id = createdBy.id, name = createdBy.name)
@@ -263,6 +264,7 @@ fun Details(
                     }
                     info().credits?.crew?.find { it.department == "Directing" }?.let { director ->
                         AnnotatedListText(
+                            annotationTag = AnnotationTag.CAST,
                             titlePrefix = stringResource(id = R.string.director),
                             items = listOf(
                                 AnnotatedItem(id = director.id, name = director.name)
@@ -363,6 +365,7 @@ fun Details(
                     info().genres?.let { genres ->
                         if (genres.isNotEmpty()) {
                             AnnotatedListText(
+                                annotationTag = AnnotationTag.GENRE,
                                 titlePrefix = stringResource(id = R.string.genres),
                                 items = genres.map { genre ->
                                     AnnotatedItem(id = genre.id, name = genre.name)
