@@ -39,6 +39,7 @@ import coil.compose.AsyncImage
 import com.personal.tmdb.R
 import com.personal.tmdb.core.navigation.RootNavGraph
 import com.personal.tmdb.core.util.C
+import com.personal.tmdb.core.util.MediaType
 import com.personal.tmdb.core.util.formatDate
 import com.personal.tmdb.core.util.formatRuntime
 import com.personal.tmdb.core.util.formatTvShowRuntime
@@ -55,6 +56,7 @@ import com.personal.tmdb.ui.theme.tmdbDarkBlue
 @Composable
 fun Details(
     onNavigateTo: (route: String) -> Unit,
+    mediaType: MediaType?,
     info: () -> MediaDetailInfo,
     collectionState: () -> CollectionState,
     isOverviewCollapsed: () -> Boolean,
@@ -273,7 +275,7 @@ fun Details(
                             Row(
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(2.dp))
-                                    .clickable { /*TODO: Go to cast screen*/ },
+                                    .clickable { onNavigateTo(RootNavGraph.CAST + "/${info().name ?: ""}/${mediaType?.name?.lowercase() ?: ""}/${info().id}") },
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(2.dp)
                             ) {
@@ -296,7 +298,52 @@ fun Details(
                                             fontSize = MaterialTheme.typography.bodyMedium.fontSize
                                         )
                                     ) {
-                                        append(cast.joinToString(", ") { it.name.toString() })
+                                        append(cast.joinToString(", ") { it.name })
+                                    }
+                                }
+                                Text(
+                                    modifier = Modifier.weight(1f, false),
+                                    text = annotatedString,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
+                                Text(
+                                    text = stringResource(id = R.string.more),
+                                    style = MaterialTheme.typography.labelMedium,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                    }
+                    info().aggregateCredits?.cast?.let { cast ->
+                        if (cast.isNotEmpty()) {
+                            Row(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(2.dp))
+                                    .clickable { onNavigateTo(RootNavGraph.CAST + "/${info().name ?: ""}/${mediaType?.name?.lowercase() ?: ""}/${info().id}") },
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(2.dp)
+                            ) {
+                                val annotatedString = buildAnnotatedString {
+                                    val starring = stringResource(id = R.string.starring)
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            fontStyle = MaterialTheme.typography.labelLarge.fontStyle,
+                                            fontSize = MaterialTheme.typography.labelLarge.fontSize,
+                                            fontWeight = MaterialTheme.typography.labelLarge.fontWeight
+                                        )
+                                    ) {
+                                        append("$starring ")
+                                    }
+                                    withStyle(
+                                        style = SpanStyle(
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                            fontStyle = MaterialTheme.typography.bodyMedium.fontStyle,
+                                            fontSize = MaterialTheme.typography.bodyMedium.fontSize
+                                        )
+                                    ) {
+                                        append(cast.joinToString(", ") { it.name })
                                     }
                                 }
                                 Text(

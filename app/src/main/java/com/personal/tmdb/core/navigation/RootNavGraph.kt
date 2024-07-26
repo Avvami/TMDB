@@ -10,6 +10,7 @@ import com.personal.tmdb.MainViewModel
 import com.personal.tmdb.auth.presentation.auth.AuthScreen
 import com.personal.tmdb.core.presentation.components.animatedComposable
 import com.personal.tmdb.core.util.C
+import com.personal.tmdb.detail.presentation.cast.CastScreen
 import com.personal.tmdb.detail.presentation.collection.CollectionScreen
 import com.personal.tmdb.detail.presentation.detail.DetailScreen
 import com.personal.tmdb.home.presentation.home.HomeScreen
@@ -111,6 +112,23 @@ fun RootNavigationGraph(
                 preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle(),
             )
         }
+        animatedComposable(
+            route = RootNavGraph.CAST + "/{${C.MEDIA_NAME}}/{${C.MEDIA_TYPE}}/{${C.MEDIA_ID}}",
+            arguments = listOf(
+                navArgument(C.MEDIA_NAME) { type = NavType.StringType; nullable = false},
+                navArgument(C.MEDIA_TYPE) { type = NavType.StringType; nullable = false},
+                navArgument(C.MEDIA_ID) { type = NavType.IntType; nullable = false}
+            )
+        ) {
+            CastScreen(
+                navigateBack = onNavigateBack,
+                onNavigateTo = { route ->
+                    navController.navigate(route = route) {
+                        launchSingleTop = true
+                    }
+                }
+            )
+        }
     }
 }
 
@@ -123,4 +141,5 @@ object RootNavGraph {
     const val DETAIL = "detail_screen"
     const val SEARCH = "detail_screen"
     const val COLLECTION = "collection_screen"
+    const val CAST = "cast_screen"
 }

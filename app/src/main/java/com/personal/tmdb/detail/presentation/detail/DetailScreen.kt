@@ -121,6 +121,7 @@ fun DetailScreen(
                     item {
                         Details(
                             onNavigateTo = onNavigateTo,
+                            mediaType = detailViewModel.detailState.mediaType,
                             info = { info },
                             collectionState = detailViewModel::collectionState,
                             isOverviewCollapsed = detailViewModel::isOverviewCollapsed,

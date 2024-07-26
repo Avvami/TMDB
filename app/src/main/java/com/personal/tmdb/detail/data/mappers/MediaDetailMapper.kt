@@ -1,7 +1,9 @@
 package com.personal.tmdb.detail.data.mappers
 
 import com.personal.tmdb.core.data.mappers.toMediaResponseInfo
+import com.personal.tmdb.detail.data.models.Credits
 import com.personal.tmdb.detail.data.models.MediaDetailDto
+import com.personal.tmdb.detail.domain.models.CreditsInfo
 import com.personal.tmdb.detail.domain.models.MediaDetailInfo
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -17,6 +19,7 @@ fun MediaDetailDto.toMediaDetailInfo(): MediaDetailInfo {
         null
     }
     return MediaDetailInfo(
+        aggregateCredits = aggregateCredits,
         backdropPath = backdropPath,
         belongsToCollection = belongsToCollection,
         contentRatings = contentRatings,
@@ -40,5 +43,12 @@ fun MediaDetailDto.toMediaDetailInfo(): MediaDetailInfo {
         tagline = if (tagline.isNullOrEmpty()) null else tagline,
         voteAverage = voteAverage?.toFloat(),
         watchProviders = watchProviders?.watchProvidersResults?.mapKeys { (key, _) -> Locale("", key).displayCountry}
+    )
+}
+
+fun Credits.toCreditsInfo(): CreditsInfo {
+    return CreditsInfo(
+        cast = cast,
+        crew = crew?.groupBy { it.department }
     )
 }

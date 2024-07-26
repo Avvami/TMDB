@@ -118,7 +118,6 @@ class DetailViewModel @Inject constructor(
                     availableState = availableState.copy(
                         selectedCountry = "United States"
                     )
-                    println(detail.watchProviders.keys)
                 }
                 if (detail.similar != null) {
                     labelsRes.add(R.string.similar)

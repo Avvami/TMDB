@@ -69,4 +69,6 @@
     <string name="watch_now">Watch Now</string>
     <string name="watch_link_not_provided">TMDB API does not provide the actual deep links to the content, so please proceed to the official TMDB website.</string>
     <string name="genres">Genres:</string>
+    <string name="cast">Cast</string>
+    <string name="crew">Crew</string>
 </resources>

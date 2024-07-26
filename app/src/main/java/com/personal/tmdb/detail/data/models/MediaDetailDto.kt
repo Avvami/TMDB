@@ -9,6 +9,8 @@ import com.squareup.moshi.JsonClass
 data class MediaDetailDto(
     @Json(name = "adult")
     val adult: Boolean?,
+    @Json(name = "aggregate_credits")
+    val aggregateCredits: Credits?,
     @Json(name = "backdrop_path")
     val backdropPath: String?,
     @Json(name = "belongs_to_collection")

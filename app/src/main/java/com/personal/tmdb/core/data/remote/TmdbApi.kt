@@ -3,6 +3,7 @@ package com.personal.tmdb.core.data.remote
 import com.personal.tmdb.BuildConfig
 import com.personal.tmdb.core.data.models.MediaResponseDto
 import com.personal.tmdb.detail.data.models.CollectionDto
+import com.personal.tmdb.detail.data.models.Credits
 import com.personal.tmdb.detail.data.models.MediaDetailDto
 import com.personal.tmdb.detail.data.models.SeasonDto
 import retrofit2.http.GET
@@ -60,4 +61,13 @@ interface TmdbApi {
         @Path("season_number") seasonNumber: Int,
         @Query("language") language: String?
     ): SeasonDto
+
+    @Headers("Authorization: Bearer ${BuildConfig.TMDB_API_KEY}")
+    @GET("3/{media_type}/{media_id}/{method}?")
+    suspend fun getCredits(
+        @Path("media_type") mediaType: String,
+        @Path("media_id") seriesId: Int,
+        @Path("method") method: String,
+        @Query("language") language: String?
+    ): Credits
 }

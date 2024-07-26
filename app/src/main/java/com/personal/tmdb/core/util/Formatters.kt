@@ -41,13 +41,16 @@ fun formatVoteAverage(voteAverage: Float): String {
 }
 
 fun formatTvShowRuntime(numberOfSeasons: Int, numberOfEpisodes: Int): String {
-    val episodes = when (numberOfEpisodes) {
+    return when (numberOfSeasons) {
+        1 -> formatEpisodesCount(numberOfEpisodes)
+        else -> "$numberOfSeasons Seasons"
+    }
+}
+
+fun formatEpisodesCount(numberOfEpisodes: Int): String {
+    return when (numberOfEpisodes) {
         1 -> "$numberOfEpisodes Episode"
         else -> "$numberOfEpisodes Episodes"
-    }
-    return when (numberOfSeasons) {
-        1 -> episodes
-        else -> "$numberOfSeasons Seasons"
     }
 }
 

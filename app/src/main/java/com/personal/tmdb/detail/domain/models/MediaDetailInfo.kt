@@ -1,9 +1,9 @@
 package com.personal.tmdb.detail.domain.models
 
 import com.personal.tmdb.core.domain.models.MediaResponseInfo
+import com.personal.tmdb.detail.data.models.Available
 import com.personal.tmdb.detail.data.models.BelongsToCollection
 import com.personal.tmdb.detail.data.models.ContentRatings
-import com.personal.tmdb.detail.data.models.Available
 import com.personal.tmdb.detail.data.models.CreatedBy
 import com.personal.tmdb.detail.data.models.Credits
 import com.personal.tmdb.detail.data.models.Genre
@@ -13,6 +13,7 @@ import com.personal.tmdb.detail.data.models.Season
 import java.time.LocalDate
 
 data class MediaDetailInfo(
+    val aggregateCredits: Credits?,
     val backdropPath: String?,
     val belongsToCollection: BelongsToCollection?,
     val contentRatings: ContentRatings?,

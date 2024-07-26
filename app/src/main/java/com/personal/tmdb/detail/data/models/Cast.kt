@@ -23,7 +23,7 @@ data class Cast(
     @Json(name = "known_for_department")
     val knownForDepartment: String?,
     @Json(name = "name")
-    val name: String?,
+    val name: String,
     @Json(name = "order")
     val order: Int?,
     @Json(name = "original_name")
@@ -31,5 +31,7 @@ data class Cast(
     @Json(name = "popularity")
     val popularity: Double?,
     @Json(name = "profile_path")
-    val profilePath: String?
+    val profilePath: String?,
+    @Json(name = "roles")
+    val roles: List<Role>?
 )

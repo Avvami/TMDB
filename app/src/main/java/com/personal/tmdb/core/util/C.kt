@@ -7,9 +7,11 @@ object C {
     const val POSTER_W300 = "w300"
     const val STILL_W300 = "w300"
     const val LOGO_W92 = "w92"
+    const val PROFILE_W185 = "w185"
     const val MEDIA_ID = "mediaId"
     const val COLLECTION_ID = "collectionId"
     const val MEDIA_TYPE = "mediaType"
     const val SEARCH_TYPE = "searchType"
     const val SEARCH_QUERY = "searchQuery"
+    const val MEDIA_NAME = "contentName"
 }
