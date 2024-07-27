@@ -7,7 +7,7 @@ import com.squareup.moshi.JsonClass
 @JsonClass(generateAdapter = true)
 data class CombinedCredits(
     @Json(name = "cast")
-    val cast: List<CombinedCast>?,
+    val cast: List<CombinedCastCrew>?,
     @Json(name = "crew")
-    val crew: List<CombinedCrew>?
+    val crew: List<CombinedCastCrew>?
 )

@@ -25,7 +25,17 @@ class PersonViewModel @Inject constructor(
     var personState by mutableStateOf(PersonState())
         private set
 
+    var personName by mutableStateOf("")
+        private set
+
+    var isBioCollapsed by mutableStateOf(true)
+        private set
+
+    var personCreditsState by mutableStateOf(PersonCreditsState())
+        private set
+
     init {
+        personName = savedStateHandle[C.PERSON_NAME] ?: ""
         getPerson(savedStateHandle[C.PERSON_ID] ?: 0)
     }
 
@@ -48,6 +58,10 @@ class PersonViewModel @Inject constructor(
                     }
                 }
             }
+            personCreditsState = personCreditsState.copy(
+                personCredits = personInfo?.combinedCreditsInfo,
+                selectedDepartment = if (!personInfo?.combinedCreditsInfo?.cast.isNullOrEmpty()) "Acting" else personInfo?.combinedCreditsInfo?.crew?.keys?.firstOrNull()
+            )
 
             personState = personState.copy(
                 personInfo = personInfo,
@@ -58,6 +72,10 @@ class PersonViewModel @Inject constructor(
     }
 
     fun personUiEvent(event: PersonUiEvent) {
-
+        when (event) {
+            PersonUiEvent.ChangeCollapsedBioState -> {
+                isBioCollapsed = !isBioCollapsed
+            }
+        }
     }
 }

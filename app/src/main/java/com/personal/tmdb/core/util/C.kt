@@ -5,6 +5,7 @@ object C {
     const val TMDB_IMAGES_BASE_URL = "https://image.tmdb.org/t/p/"
     const val BACKDROP_W1280 = "w1280"
     const val POSTER_W300 = "w300"
+    const val POSTER_W154 = "w154"
     const val STILL_W300 = "w300"
     const val LOGO_W92 = "w92"
     const val PROFILE_W185 = "w185"
@@ -15,4 +16,5 @@ object C {
     const val SEARCH_QUERY = "searchQuery"
     const val MEDIA_NAME = "contentName"
     const val PERSON_ID = "personId"
+    const val PERSON_NAME = "personName"
 }

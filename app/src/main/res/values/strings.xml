@@ -75,4 +75,15 @@
     <string name="female">Female</string>
     <string name="male">Male</string>
     <string name="non_binary">Non-binary</string>
+    <string name="personal_info">Personal Info</string>
+    <string name="known_for">Known For</string>
+    <string name="gender">Gender</string>
+    <string name="birthday">Birthday</string>
+    <string name="deathday">Day of Death</string>
+    <string name="place_of_birth">Place of Birth</string>
+    <string name="bio">Bio</string>
+    <string name="no_bio">We don\'t have a biography for %s</string>
+    <string name="acting">Acting</string>
+    <string name="person_starring">Starring</string>
+    <string name="dash">—</string>
 </resources>

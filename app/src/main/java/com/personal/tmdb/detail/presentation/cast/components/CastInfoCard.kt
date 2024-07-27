@@ -37,7 +37,7 @@ fun CastInfoCard(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                onNavigateTo(RootNavGraph.PERSON + "/${profileId}")
+                onNavigateTo(RootNavGraph.PERSON + "/${name}/${profileId}")
             }
             .padding(horizontal = 16.dp, vertical = 8.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp)

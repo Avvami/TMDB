@@ -9,7 +9,7 @@ fun PersonDto.toPersonInfo(): PersonInfo {
         alsoKnownAs = alsoKnownAs,
         biography = if (biography.isNullOrEmpty()) null else biography,
         birthday = convertStringToDate(birthday),
-        combinedCredits = combinedCredits,
+        combinedCreditsInfo = combinedCredits?.toCombinedCreditsInfo(),
         deathday = convertStringToDate(deathday),
         externalIds = externalIds,
         gender = gender,

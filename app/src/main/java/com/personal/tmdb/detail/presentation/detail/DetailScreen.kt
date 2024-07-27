@@ -79,8 +79,9 @@ fun DetailScreen(
         contentColor = MaterialTheme.colorScheme.onBackground
     ) { innerPadding ->
         LazyColumn(
-            contentPadding = innerPadding,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            modifier = Modifier.padding(innerPadding),
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+            contentPadding = PaddingValues(bottom = 16.dp)
         ) {
             if (detailViewModel.detailState.isLoading) {
                 item {

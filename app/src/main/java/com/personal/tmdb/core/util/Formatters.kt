@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.buildAnnotatedString
 import com.personal.tmdb.R
 import com.personal.tmdb.ui.theme.tmdbRatingGreen
 import com.personal.tmdb.ui.theme.tmdbRatingOrange
@@ -62,5 +64,19 @@ fun formatGender(genderCode: Int, context: Context): String {
         2 -> UiText.StringResource(R.string.male).asString(context)
         3 -> UiText.StringResource(R.string.non_binary).asString(context)
         else -> UiText.StringResource(R.string.gender_not_specified).asString(context)
+    }
+}
+
+fun formatPersonActing(numberOfEpisodes: Int?, character: String?): AnnotatedString {
+    return buildAnnotatedString {
+        numberOfEpisodes?.let {
+            append("(${formatEpisodesCount(it)})")
+        }
+        if (numberOfEpisodes != null && !character.isNullOrEmpty()) {
+            append(" ")
+        }
+        if (!character.isNullOrEmpty()) {
+            append("as $character")
+        }
     }
 }

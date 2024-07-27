@@ -64,7 +64,7 @@ fun MediaCard(
                         }
 
                         MediaType.PERSON -> {
-                            onNavigateTo(RootNavGraph.PERSON + "/${mediaInfo.id}")
+                            onNavigateTo(RootNavGraph.PERSON + "/${mediaInfo.name ?: ""}/${mediaInfo.id}")
                         }
 
                         else -> {
@@ -79,7 +79,7 @@ fun MediaCard(
                         }
 
                         MediaType.PERSON -> {
-                            onNavigateTo(RootNavGraph.PERSON + "/${mediaInfo.id}")
+                            onNavigateTo(RootNavGraph.PERSON + "/${mediaInfo.name ?: ""}/${mediaInfo.id}")
                         }
 
                         else -> {
@@ -243,7 +243,7 @@ fun MediaPoster(
                                 onNavigateTo(RootNavGraph.DETAIL + "/${mediaType.name.lowercase()}/${mediaInfo.id}")
                             }
                             MediaType.PERSON -> {
-                                onNavigateTo(RootNavGraph.PERSON + "/${mediaInfo.id}")
+                                onNavigateTo(RootNavGraph.PERSON + "/${mediaInfo.name ?: ""}/${mediaInfo.id}")
                             }
                             else -> {
                                 /*TODO: Navigate to lost your way screen*/
@@ -256,7 +256,7 @@ fun MediaPoster(
                                 onNavigateTo(RootNavGraph.DETAIL + "/${mediaType.name.lowercase()}/${mediaInfo.id}")
                             }
                             MediaType.PERSON -> {
-                                onNavigateTo(RootNavGraph.PERSON + "/${mediaInfo.id}")
+                                onNavigateTo(RootNavGraph.PERSON + "/${mediaInfo.name ?: ""}/${mediaInfo.id}")
                             }
                             else -> {
                                 /*TODO: Navigate to lost your way screen*/

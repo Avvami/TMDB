@@ -131,8 +131,9 @@ fun RootNavigationGraph(
             )
         }
         animatedComposable(
-            route = RootNavGraph.PERSON + "/{${C.PERSON_ID}}",
+            route = RootNavGraph.PERSON + "/{${C.PERSON_NAME}}/{${C.PERSON_ID}}",
             arguments = listOf(
+                navArgument(C.PERSON_NAME) { type = NavType.StringType; nullable = false},
                 navArgument(C.PERSON_ID) { type = NavType.IntType; nullable = false}
             )
         ) {

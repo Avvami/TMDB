@@ -5,11 +5,13 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class CombinedCrew(
+data class CombinedCastCrew(
     @Json(name = "adult")
     val adult: Boolean?,
     @Json(name = "backdrop_path")
     val backdropPath: String?,
+    @Json(name = "character")
+    val character: String?,
     @Json(name = "credit_id")
     val creditId: String?,
     @Json(name = "department")
@@ -28,6 +30,8 @@ data class CombinedCrew(
     val mediaType: String?,
     @Json(name = "name")
     val name: String?,
+    @Json(name = "order")
+    val order: Int?,
     @Json(name = "origin_country")
     val originCountry: List<String?>?,
     @Json(name = "original_language")

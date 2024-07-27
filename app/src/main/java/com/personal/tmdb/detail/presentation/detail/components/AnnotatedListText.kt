@@ -71,7 +71,7 @@ fun AnnotatedListText(
                                 /*TODO: Navigate to genre screen*/
                             }
                             AnnotationTag.CAST -> {
-                                onNavigateTo(RootNavGraph.PERSON + "/${item.id}")
+                                onNavigateTo(RootNavGraph.PERSON + "/${item.name}/${item.id}")
                             }
                         }
                     }

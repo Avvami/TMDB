@@ -5,8 +5,7 @@ import com.personal.tmdb.core.data.models.Result
 import com.personal.tmdb.core.domain.models.MediaInfo
 import com.personal.tmdb.core.domain.models.MediaResponseInfo
 import com.personal.tmdb.core.util.convertMediaType
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
+import com.personal.tmdb.core.util.convertStringToDate
 
 fun MediaResponseDto.toMediaResponseInfo(): MediaResponseInfo {
     return MediaResponseInfo(
@@ -18,14 +17,6 @@ fun MediaResponseDto.toMediaResponseInfo(): MediaResponseInfo {
 }
 
 fun Result.toMediaInfo(): MediaInfo {
-    val releaseDate: LocalDate? = try {
-        val dateString = firstAirDate?.takeIf { it.isNotBlank() } ?: releaseDate?.takeIf { it.isNotBlank() }
-        dateString?.let { string ->
-            LocalDate.parse(string, DateTimeFormatter.ISO_LOCAL_DATE)
-        }
-    } catch (e: Exception) {
-        null
-    }
     return MediaInfo(
         backdropPath = backdropPath,
         id = id,
@@ -33,7 +24,9 @@ fun Result.toMediaInfo(): MediaInfo {
         name = title ?: name,
         overview = if (overview.isNullOrEmpty()) null else overview,
         posterPath = posterPath ?: profilePath,
-        releaseDate = releaseDate,
+        releaseDate = convertStringToDate(
+            dateString = firstAirDate?.takeIf { it.isNotBlank() } ?: releaseDate?.takeIf { it.isNotBlank() }
+        ),
         voteAverage = voteAverage?.toFloat()
     )
 }

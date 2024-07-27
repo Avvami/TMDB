@@ -19,7 +19,7 @@ data class PersonDto(
     @Json(name = "deathday")
     val deathday: String?,
     @Json(name = "external_ids")
-    val externalIds: ExternalIds,
+    val externalIds: ExternalIds?,
     @Json(name = "gender")
     val gender: Int,
     @Json(name = "homepage")

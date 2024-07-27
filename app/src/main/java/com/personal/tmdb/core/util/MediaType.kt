@@ -8,7 +8,7 @@ enum class MediaType {
     UNKNOWN
 }
 
-fun convertMediaType(value: String): MediaType {
+fun convertMediaType(value: String?): MediaType {
     return when (value) {
         "multi" -> MediaType.MULTI
         "tv" -> MediaType.TV

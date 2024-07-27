@@ -66,7 +66,7 @@ fun Episodes(
     detailUiEvent: (DetailUiEvent) -> Unit
 ) {
     Column(
-        modifier = Modifier.padding(PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp))
+        modifier = Modifier.padding(horizontal = 16.dp)
     ) {
         if (seasons().size != 1) {
             seasons().find { it.seasonNumber == selectedSeasonNumber() }?.let { seasonInfo ->
