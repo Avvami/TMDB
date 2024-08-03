@@ -67,16 +67,19 @@ fun formatGender(genderCode: Int, context: Context): String {
     }
 }
 
-fun formatPersonActing(numberOfEpisodes: Int?, character: String?): AnnotatedString {
+fun formatPersonActing(numberOfEpisodes: Int?, character: String?, job: String?): AnnotatedString {
     return buildAnnotatedString {
         numberOfEpisodes?.let {
             append("(${formatEpisodesCount(it)})")
         }
-        if (numberOfEpisodes != null && !character.isNullOrEmpty()) {
+        if (numberOfEpisodes != null && (!character.isNullOrEmpty() || !job.isNullOrEmpty())) {
             append(" ")
         }
         if (!character.isNullOrEmpty()) {
             append("as $character")
+        }
+        if (!job.isNullOrEmpty()) {
+            append("... $job")
         }
     }
 }

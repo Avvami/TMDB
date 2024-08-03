@@ -3,12 +3,8 @@ package com.personal.tmdb.detail.presentation.person.components
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
@@ -23,16 +19,14 @@ import com.personal.tmdb.detail.data.models.ExternalIds
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun ExternalIdsRow(
+    modifier: Modifier = Modifier,
     externalIds: ExternalIds
 ) {
     CompositionLocalProvider(
         LocalOverscrollConfiguration provides null
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
-                .padding(horizontal = 16.dp),
+            modifier = modifier,
             horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
             verticalAlignment = Alignment.CenterVertically
         ) {

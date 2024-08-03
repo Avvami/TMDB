@@ -60,7 +60,7 @@ class PersonViewModel @Inject constructor(
             }
             personCreditsState = personCreditsState.copy(
                 personCredits = personInfo?.combinedCreditsInfo,
-                selectedDepartment = if (!personInfo?.combinedCreditsInfo?.cast.isNullOrEmpty()) "Acting" else personInfo?.combinedCreditsInfo?.crew?.keys?.firstOrNull()
+                selectedDepartment = ""
             )
 
             personState = personState.copy(
