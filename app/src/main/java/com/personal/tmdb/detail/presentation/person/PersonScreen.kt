@@ -9,7 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
@@ -149,8 +149,8 @@ fun PersonScreen(
                                 )
                             }
                         }
-                        knownFor?.values?.forEachIndexed { index, infos ->
-                            items(infos) { info ->
+                        knownFor?.values?.forEach { infos ->
+                            itemsIndexed(infos) { index, info ->
                                 Column(
                                     modifier = Modifier.padding(horizontal = 16.dp)
                                 ) {
@@ -158,7 +158,7 @@ fun PersonScreen(
                                         onNavigateTo = onNavigateTo,
                                         info = { info }
                                     )
-                                    if (index < knownFor.values.size - 1) {
+                                    if (index == infos.lastIndex) {
                                         HorizontalDivider()
                                     }
                                 }
