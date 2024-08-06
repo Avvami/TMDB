@@ -2,6 +2,7 @@ package com.personal.tmdb.detail.presentation.person.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,74 +22,76 @@ fun PersonalInfo(
     modifier: Modifier = Modifier,
     personInfo: () -> PersonInfo
 ) {
-    Column(
-        modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Text(
-            text = stringResource(id = R.string.personal_info),
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Medium
-        )
-        personInfo().knownForDepartment?.let { knownFor ->
-            Column {
-                Text(
-                    text = stringResource(id = R.string.known_for),
-                    style = MaterialTheme.typography.labelLarge
-                )
-                Text(
-                    text = knownFor,
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-        }
-        Column {
+    SelectionContainer {
+        Column(
+            modifier = modifier,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             Text(
-                text = stringResource(id = R.string.gender),
-                style = MaterialTheme.typography.labelLarge
+                text = stringResource(id = R.string.personal_info),
+                style = MaterialTheme.typography.titleLarge,
+                fontWeight = FontWeight.Medium
             )
-            Text(
-                text = formatGender(personInfo().gender, LocalContext.current),
-                style = MaterialTheme.typography.bodyMedium
-            )
-        }
-        personInfo().birthday?.let { birthday ->
-            Column {
-                Text(
-                    text = stringResource(id = R.string.birthday),
-                    style = MaterialTheme.typography.labelLarge
-                )
-                Text(
-                    text = if (personInfo().deathday == null)
-                        "${formatDate(birthday)} (${LocalDate.now().year - birthday.year} years old)"
-                    else
-                        formatDate(birthday),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-            }
-            personInfo().deathday?.let { deathday ->
+            personInfo().knownForDepartment?.let { knownFor ->
                 Column {
                     Text(
-                        text = stringResource(id = R.string.deathday),
+                        text = stringResource(id = R.string.known_for),
                         style = MaterialTheme.typography.labelLarge
                     )
                     Text(
-                        text = "${formatDate(deathday)} (${deathday.year - birthday.year} years old)",
+                        text = knownFor,
                         style = MaterialTheme.typography.bodyMedium
                     )
                 }
             }
-        }
-        personInfo().placeOfBirth?.let { placeOfBirth ->
             Column {
                 Text(
-                    text = stringResource(id = R.string.place_of_birth),
+                    text = stringResource(id = R.string.gender),
                     style = MaterialTheme.typography.labelLarge
                 )
                 Text(
-                    text = placeOfBirth,
+                    text = formatGender(personInfo().gender, LocalContext.current),
                     style = MaterialTheme.typography.bodyMedium
                 )
+            }
+            personInfo().birthday?.let { birthday ->
+                Column {
+                    Text(
+                        text = stringResource(id = R.string.birthday),
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                    Text(
+                        text = if (personInfo().deathday == null)
+                            "${formatDate(birthday)} (${LocalDate.now().year - birthday.year} years old)"
+                        else
+                            formatDate(birthday),
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+                personInfo().deathday?.let { deathday ->
+                    Column {
+                        Text(
+                            text = stringResource(id = R.string.deathday),
+                            style = MaterialTheme.typography.labelLarge
+                        )
+                        Text(
+                            text = "${formatDate(deathday)} (${deathday.year - birthday.year} years old)",
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
+                }
+            }
+            personInfo().placeOfBirth?.let { placeOfBirth ->
+                Column {
+                    Text(
+                        text = stringResource(id = R.string.place_of_birth),
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                    Text(
+                        text = placeOfBirth,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
             }
         }
     }

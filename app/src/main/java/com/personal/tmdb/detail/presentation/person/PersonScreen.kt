@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -49,11 +50,13 @@ fun PersonScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(
-                        text = personViewModel.personName,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    SelectionContainer {
+                        Text(
+                            text = personViewModel.personName,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 },
                 navigationIcon = {
                     IconButton(
@@ -112,13 +115,17 @@ fun PersonScreen(
                 }
                 item {
                     PersonalInfo(
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
                         personInfo = { personInfo }
                     )
                 }
                 item {
                     Bio(
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 8.dp),
                         personInfo = { personInfo },
                         isBioCollapsed = personViewModel::isBioCollapsed,
                         personUiEvent = personViewModel::personUiEvent
