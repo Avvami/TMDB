@@ -31,8 +31,12 @@ object AppModule {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
                 val defaultPreferences = ContentValues().apply {
-                    put("isDark", false)
                     put("sessionId", "")
+                    put("language", "en")
+                    put("corners", 18)
+                    put("useCards", true)
+                    put("showTitle", false)
+                    put("showVoteAverage", false)
                 }
                 db.insert("preferencesentity", SQLiteDatabase.CONFLICT_REPLACE, defaultPreferences)
             }

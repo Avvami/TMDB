@@ -9,6 +9,7 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -110,26 +111,45 @@ fun HomeModalDrawer(
                         )
                     }
                     AnimatedContent(
-                        targetState = preferencesState.value.isDark,
+                        targetState = preferencesState.value.darkTheme,
                         label = "Swap icon button anim",
                         transitionSpec = {
                             slideIntoContainer(towards = AnimatedContentTransitionScope.SlideDirection.Start, initialOffset = { it }) + scaleIn() togetherWith
                                     slideOutOfContainer(towards = AnimatedContentTransitionScope.SlideDirection.Start) + scaleOut()
                         }
                     ) { targetState ->
-                        if (targetState) {
-                            IconButton(onClick = { uiEvent(UiEvent.SetDarkMode(false)) }) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.icon_light_mode_fill1_wght400),
-                                    contentDescription = stringResource(id = R.string.light_mode)
-                                )
+                        when (targetState) {
+                            true -> {
+                                IconButton(onClick = { uiEvent(UiEvent.SetTheme(false)) }) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.icon_light_mode_fill1_wght400),
+                                        contentDescription = stringResource(id = R.string.light_mode)
+                                    )
+                                }
                             }
-                        } else {
-                            IconButton(onClick = { uiEvent(UiEvent.SetDarkMode(true)) }) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.icon_dark_mode_fill1_wght400),
-                                    contentDescription = stringResource(id = R.string.dark_mode)
-                                )
+                            false -> {
+                                IconButton(onClick = { uiEvent(UiEvent.SetTheme(true)) }) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.icon_dark_mode_fill1_wght400),
+                                        contentDescription = stringResource(id = R.string.dark_mode)
+                                    )
+                                }
+                            }
+                            else -> {
+                                val darkTheme = isSystemInDarkTheme()
+                                IconButton(onClick = { uiEvent(UiEvent.SetTheme(!darkTheme)) }) {
+                                    if (darkTheme) {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.icon_light_mode_fill1_wght400),
+                                            contentDescription = stringResource(id = R.string.light_mode)
+                                        )
+                                    } else {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.icon_dark_mode_fill1_wght400),
+                                            contentDescription = stringResource(id = R.string.dark_mode)
+                                        )
+                                    }
+                                }
                             }
                         }
                     }

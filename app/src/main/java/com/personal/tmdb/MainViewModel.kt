@@ -39,7 +39,7 @@ class MainViewModel @Inject constructor(
             localRepository.getPreferences().collect { preferencesEntity ->
                 _preferencesState.update {
                     it.copy(
-                        isDark = preferencesEntity.isDark,
+                        darkTheme = preferencesEntity.darkTheme,
                         sessionId = preferencesEntity.sessionId
                     )
                 }
@@ -73,9 +73,9 @@ class MainViewModel @Inject constructor(
 
     fun uiEvent(event: UiEvent) {
         when (event) {
-            is UiEvent.SetDarkMode -> {
+            is UiEvent.SetTheme -> {
                 viewModelScope.launch {
-                    localRepository.setDarkMode(event.darkMode)
+                    localRepository.setTheme(event.darkTheme)
                 }
             }
         }

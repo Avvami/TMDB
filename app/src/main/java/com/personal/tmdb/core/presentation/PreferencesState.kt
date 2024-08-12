@@ -1,6 +1,6 @@
 package com.personal.tmdb.core.presentation
 
 data class PreferencesState(
-    val isDark: Boolean = false,
+    val darkTheme: Boolean? = null,
     val sessionId: String = ""
 )

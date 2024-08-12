@@ -11,7 +11,17 @@ class LocalRepositoryImpl @Inject constructor(
 ): LocalRepository {
     override fun getPreferences(): Flow<PreferencesEntity> = preferencesDao.getPreferences()
 
-    override suspend fun setDarkMode(isDark: Boolean) = preferencesDao.setDarkMode(isDark)
+    override suspend fun setTheme(darkTheme: Boolean?) = preferencesDao.setTheme(darkTheme)
 
     override suspend fun setSessionId(sessionId: String) = preferencesDao.setSessionId(sessionId)
+
+    override suspend fun setLanguage(language: String) = preferencesDao.setLanguage(language)
+
+    override suspend fun setCorners(corners: Int) = preferencesDao.setCorners(corners)
+
+    override suspend fun setUseCards(useCards: Boolean) = preferencesDao.setUseCards(useCards)
+
+    override suspend fun setShowTitle(showTitle: Boolean) = preferencesDao.setShowTitle(showTitle)
+
+    override suspend fun setShowVoteAverage(showVoteAverage: Boolean) = preferencesDao.setShowVoteAverage(showVoteAverage)
 }

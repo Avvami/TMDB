@@ -65,7 +65,6 @@ import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.GradientButton
 import com.personal.tmdb.core.presentation.components.MediaPoster
 import com.personal.tmdb.core.presentation.components.MediaPosterShimmer
-import com.personal.tmdb.core.util.ApplySystemBarsTheme
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.MediaType
 import com.personal.tmdb.core.util.duotoneColorFilter
@@ -94,7 +93,6 @@ fun HomeScreen(
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
-    ApplySystemBarsTheme(applyLightStatusBars = preferencesState.value.isDark)
     ModalNavigationDrawer(
         drawerContent = {
             HomeModalDrawer(

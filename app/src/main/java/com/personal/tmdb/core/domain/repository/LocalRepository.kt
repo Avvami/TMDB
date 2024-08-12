@@ -7,7 +7,17 @@ interface LocalRepository {
 
     fun getPreferences(): Flow<PreferencesEntity>
 
-    suspend fun setDarkMode(isDark: Boolean)
+    suspend fun setTheme(darkTheme: Boolean?)
 
     suspend fun setSessionId(sessionId: String)
+
+    suspend fun setLanguage(language: String)
+
+    suspend fun setCorners(corners: Int)
+
+    suspend fun setUseCards(useCards: Boolean)
+
+    suspend fun setShowTitle(showTitle: Boolean)
+
+    suspend fun setShowVoteAverage(showVoteAverage: Boolean)
 }

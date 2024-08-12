@@ -6,6 +6,7 @@ import androidx.compose.animation.core.animateIntAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -88,9 +89,10 @@ fun CollectionScreen(
     }
     val view = LocalView.current
     val context = LocalContext.current
+    val darkTheme = isSystemInDarkTheme()
     DisposableEffect(key1 = Unit) {
         onDispose {
-            applyStatusBarsTheme(view, context, preferencesState.value.isDark)
+            applyStatusBarsTheme(view, context, preferencesState.value.darkTheme ?: darkTheme)
         }
     }
     val scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior()

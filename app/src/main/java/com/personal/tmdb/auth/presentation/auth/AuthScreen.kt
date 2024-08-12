@@ -3,6 +3,7 @@ package com.personal.tmdb.auth.presentation.auth
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -27,6 +28,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,6 +42,8 @@ import androidx.compose.ui.graphics.RadialGradientShader
 import androidx.compose.ui.graphics.Shader
 import androidx.compose.ui.graphics.ShaderBrush
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
@@ -47,7 +52,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.personal.tmdb.R
+import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.util.ApplySystemBarsTheme
+import com.personal.tmdb.core.util.applyStatusBarsTheme
 import com.personal.tmdb.ui.theme.backgroundLight
 import com.personal.tmdb.ui.theme.tmdbRadialDarkBlue
 import com.personal.tmdb.ui.theme.tmdbRadialDarkPurple
@@ -56,9 +63,19 @@ import com.personal.tmdb.ui.theme.tmdbRed
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AuthScreen(
-    navigateBack: () -> Unit
+    navigateBack: () -> Unit,
+    preferencesState: State<PreferencesState>,
 ) {
     ApplySystemBarsTheme(applyLightStatusBars = true)
+
+    val view = LocalView.current
+    val context = LocalContext.current
+    val darkTheme = isSystemInDarkTheme()
+    DisposableEffect(key1 = Unit) {
+        onDispose {
+            applyStatusBarsTheme(view, context, preferencesState.value.darkTheme ?: darkTheme)
+        }
+    }
     Scaffold(
         topBar = {
             TopAppBar(

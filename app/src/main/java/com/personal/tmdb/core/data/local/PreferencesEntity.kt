@@ -6,6 +6,11 @@ import androidx.room.PrimaryKey
 @Entity
 data class PreferencesEntity(
     @PrimaryKey val id: Int = 0,
-    val isDark: Boolean,
-    val sessionId: String
+    val darkTheme: Boolean? = null,
+    val sessionId: String,
+    val language: String,
+    val corners: Int,
+    val useCards: Boolean,
+    val showTitle: Boolean,
+    val showVoteAverage: Boolean
 )

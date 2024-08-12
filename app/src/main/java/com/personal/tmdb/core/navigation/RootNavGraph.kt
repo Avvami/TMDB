@@ -51,7 +51,8 @@ fun RootNavigationGraph(
             route = RootNavGraph.AUTH
         ) {
             AuthScreen(
-                navigateBack = onNavigateBack
+                navigateBack = onNavigateBack,
+                preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle(),
             )
         }
         animatedComposable(
