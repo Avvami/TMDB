@@ -12,8 +12,8 @@ interface PreferencesDao {
     @Query("UPDATE preferencesentity SET darkTheme = :darkTheme")
     suspend fun setTheme(darkTheme: Boolean?)
 
-    @Query("UPDATE preferencesentity SET sessionId = :sessionId")
-    suspend fun setSessionId(sessionId: String)
+    @Query("UPDATE preferencesentity SET accessToken = :accessToken, sessionId = :sessionId, accountId = :accountId")
+    suspend fun setAccessInfo(accessToken: String, sessionId: String, accountId: String)
 
     @Query("UPDATE preferencesentity SET language = :language")
     suspend fun setLanguage(language: String)

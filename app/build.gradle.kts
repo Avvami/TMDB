@@ -109,6 +109,9 @@ dependencies {
 
     // Splash API
     implementation("androidx.core:core-splashscreen:1.0.1")
+
+    // Chrome custom tabs
+    implementation ("androidx.browser:browser:1.8.0")
 }
 
 kapt {

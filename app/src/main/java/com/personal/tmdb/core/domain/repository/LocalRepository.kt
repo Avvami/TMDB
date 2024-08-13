@@ -9,7 +9,7 @@ interface LocalRepository {
 
     suspend fun setTheme(darkTheme: Boolean?)
 
-    suspend fun setSessionId(sessionId: String)
+    suspend fun setAccessInfo(accessToken: String, sessionId: String, accountId: String)
 
     suspend fun setLanguage(language: String)
 

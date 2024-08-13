@@ -7,6 +7,8 @@ import androidx.room.PrimaryKey
 data class PreferencesEntity(
     @PrimaryKey val id: Int = 0,
     val darkTheme: Boolean? = null,
+    val accessToken: String,
+    val accountId: String,
     val sessionId: String,
     val language: String,
     val corners: Int,

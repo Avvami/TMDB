@@ -34,6 +34,7 @@ import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
@@ -41,6 +42,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -50,6 +52,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -60,6 +63,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.personal.tmdb.R
 import com.personal.tmdb.UiEvent
+import com.personal.tmdb.UserState
 import com.personal.tmdb.core.navigation.RootNavGraph
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.GradientButton
@@ -67,6 +71,7 @@ import com.personal.tmdb.core.presentation.components.MediaPoster
 import com.personal.tmdb.core.presentation.components.MediaPosterShimmer
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.MediaType
+import com.personal.tmdb.core.util.UiText
 import com.personal.tmdb.core.util.duotoneColorFilter
 import com.personal.tmdb.core.util.shimmerEffect
 import com.personal.tmdb.home.presentation.home.components.drawer.HomeModalDrawer
@@ -87,11 +92,33 @@ fun HomeScreen(
     onNavigateTo: (route: String) -> Unit,
     preferencesState: State<PreferencesState>,
     homeState: () -> HomeState,
+    userState: State<UserState>,
     uiEvent: (UiEvent) -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = userState.value.showSnackDone) {
+        if (userState.value.showSnackDone) {
+            scope.launch {
+                homeViewModel.snackbarHostState.showSnackbar(
+                    message = UiText.StringResource(R.string.signed_in_as, userState.value.userInfo?.username ?: "...").asString(context)
+                )
+            }.also { uiEvent(UiEvent.DropSnackDone) }
+        }
+    }
+
+    LaunchedEffect(key1 = userState.value.error) {
+        if (userState.value.error != null) {
+            scope.launch {
+                homeViewModel.snackbarHostState.showSnackbar(
+                    message = userState.value.error ?: "What happened??"
+                )
+            }.also { uiEvent(UiEvent.DropError) }
+        }
+    }
 
     ModalNavigationDrawer(
         drawerContent = {
@@ -142,6 +169,9 @@ fun HomeScreen(
                         }
                     }
                 )
+            },
+            snackbarHost = {
+                SnackbarHost(hostState = homeViewModel.snackbarHostState)
             },
             containerColor = MaterialTheme.colorScheme.background,
             contentColor = MaterialTheme.colorScheme.onBackground

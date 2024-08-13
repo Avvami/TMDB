@@ -31,6 +31,8 @@ object AppModule {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
                 val defaultPreferences = ContentValues().apply {
+                    put("accessToken", "")
+                    put("accountId", "")
                     put("sessionId", "")
                     put("language", "en")
                     put("corners", 18)
@@ -64,4 +66,8 @@ object AppModule {
             .build()
             .create(TmdbApi::class.java)
     }
+
+    @Singleton
+    @Provides
+    fun provideSharedPreferenses(@ApplicationContext appContext: Context) = appContext.getSharedPreferences("localCache", Context.MODE_PRIVATE)
 }

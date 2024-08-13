@@ -1,14 +1,22 @@
 package com.personal.tmdb.core.data.remote
 
 import com.personal.tmdb.BuildConfig
+import com.personal.tmdb.auth.data.models.AccessTokenBody
+import com.personal.tmdb.auth.data.models.AccessTokenDto
+import com.personal.tmdb.auth.data.models.RedirectToBody
+import com.personal.tmdb.auth.data.models.RequestTokenBody
+import com.personal.tmdb.auth.data.models.RequestTokenDto
+import com.personal.tmdb.auth.data.models.SessionDto
 import com.personal.tmdb.core.data.models.MediaResponseDto
 import com.personal.tmdb.detail.data.models.CollectionDto
 import com.personal.tmdb.detail.data.models.Credits
 import com.personal.tmdb.detail.data.models.MediaDetailDto
 import com.personal.tmdb.detail.data.models.PersonDto
 import com.personal.tmdb.detail.data.models.SeasonDto
+import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.Headers
+import retrofit2.http.POST
 import retrofit2.http.Path
 import retrofit2.http.Query
 
@@ -79,4 +87,22 @@ interface TmdbApi {
         @Query("language") language: String?,
         @Query("append_to_response") appendToResponse: String?
     ): PersonDto
+
+    @Headers("Authorization: Bearer ${BuildConfig.TMDB_API_KEY}")
+    @POST("4/auth/request_token")
+    suspend fun createRequestToken(
+        @Body redirectTo: RedirectToBody
+    ): RequestTokenDto
+
+    @Headers("Authorization: Bearer ${BuildConfig.TMDB_API_KEY}")
+    @POST("4/auth/access_token")
+    suspend fun createAccessToken(
+        @Body requestToken: RequestTokenBody
+    ): AccessTokenDto
+
+    @Headers("Authorization: Bearer ${BuildConfig.TMDB_API_KEY}")
+    @POST("3/authentication/session/convert/4")
+    suspend fun createSession(
+        @Body accessToken: AccessTokenBody
+    ): SessionDto
 }

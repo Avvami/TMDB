@@ -1,12 +1,16 @@
 package com.personal.tmdb.core.navigation
 
+import android.content.Intent
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.personal.tmdb.MainViewModel
+import com.personal.tmdb.UiEvent
 import com.personal.tmdb.auth.presentation.auth.AuthScreen
 import com.personal.tmdb.core.presentation.components.animatedComposable
 import com.personal.tmdb.core.util.C
@@ -34,8 +38,21 @@ fun RootNavigationGraph(
         startDestination = RootNavGraph.HOME
     ) {
         animatedComposable(
-            route = RootNavGraph.HOME
-        ) {
+            route = RootNavGraph.HOME,
+            deepLinks = listOf(
+                navDeepLink {
+                    uriPattern = "${C.REDIRECT_URL}/{${C.APPROVED}}"; action = Intent.ACTION_VIEW
+                }
+            ),
+            arguments = listOf(
+                navArgument(C.APPROVED) { type = NavType.StringType; nullable = true }
+            )
+        ) { entry ->
+            LaunchedEffect(key1 = true) {
+                if (entry.arguments?.getString(C.APPROVED)?.toBooleanStrictOrNull() == true) {
+                    mainViewModel.uiEvent(UiEvent.SignInUser)
+                }
+            }
             HomeScreen(
                 onNavigateTo = { route ->
                     navController.navigate(route = route) {
@@ -44,6 +61,7 @@ fun RootNavigationGraph(
                 },
                 preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle(),
                 homeState = mainViewModel::homeState,
+                userState = mainViewModel.userState.collectAsStateWithLifecycle(),
                 uiEvent = mainViewModel::uiEvent
             )
         }
@@ -53,6 +71,8 @@ fun RootNavigationGraph(
             AuthScreen(
                 navigateBack = onNavigateBack,
                 preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle(),
+                userState = mainViewModel.userState.collectAsStateWithLifecycle(),
+                uiEvent = mainViewModel::uiEvent
             )
         }
         animatedComposable(

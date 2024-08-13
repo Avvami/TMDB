@@ -13,7 +13,7 @@ class LocalRepositoryImpl @Inject constructor(
 
     override suspend fun setTheme(darkTheme: Boolean?) = preferencesDao.setTheme(darkTheme)
 
-    override suspend fun setSessionId(sessionId: String) = preferencesDao.setSessionId(sessionId)
+    override suspend fun setAccessInfo(accessToken: String, sessionId: String, accountId: String) = preferencesDao.setAccessInfo(accessToken, sessionId, accountId)
 
     override suspend fun setLanguage(language: String) = preferencesDao.setLanguage(language)
 
