@@ -68,7 +68,7 @@ class MainViewModel @Inject constructor(
         }
         viewModelScope.launch {
             preferencesFlow
-                .distinctUntilChangedBy { it.sessionId }
+                .distinctUntilChangedBy { listOf(it.accessToken, it.accountId, it.sessionId) }
                 .collect { preferencesEntity ->
                     _userState.update {
                         it.copy(
@@ -77,7 +77,6 @@ class MainViewModel @Inject constructor(
                             sessionId = preferencesEntity.sessionId
                         )
                     }
-                    println("TRIGGER GET USER DETAILS")
                     getUserDetails(preferencesEntity.sessionId)
                 }
         }
@@ -173,7 +172,7 @@ class MainViewModel @Inject constructor(
     }
 
     private fun getUserDetails(sessionId: String) {
-        println("Get USER DETAILS")
+        if (sessionId.isBlank()) return
         viewModelScope.launch {
             _userState.update { it.copy(isLoading = true) }
 
