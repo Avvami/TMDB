@@ -7,6 +7,7 @@ import com.personal.tmdb.auth.data.models.RedirectToBody
 import com.personal.tmdb.auth.data.models.RequestTokenBody
 import com.personal.tmdb.auth.data.models.RequestTokenDto
 import com.personal.tmdb.auth.data.models.SessionDto
+import com.personal.tmdb.auth.data.models.UserDto
 import com.personal.tmdb.core.data.models.MediaResponseDto
 import com.personal.tmdb.detail.data.models.CollectionDto
 import com.personal.tmdb.detail.data.models.Credits
@@ -105,4 +106,10 @@ interface TmdbApi {
     suspend fun createSession(
         @Body accessToken: AccessTokenBody
     ): SessionDto
+
+    @Headers("Authorization: Bearer ${BuildConfig.TMDB_API_KEY}")
+    @GET("3/account?")
+    suspend fun getUserDetails(
+        @Query("session_id") sessionId: String
+    ): UserDto
 }

@@ -71,7 +71,6 @@ import com.personal.tmdb.core.presentation.components.MediaPoster
 import com.personal.tmdb.core.presentation.components.MediaPosterShimmer
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.MediaType
-import com.personal.tmdb.core.util.UiText
 import com.personal.tmdb.core.util.duotoneColorFilter
 import com.personal.tmdb.core.util.shimmerEffect
 import com.personal.tmdb.home.presentation.home.components.drawer.HomeModalDrawer
@@ -104,7 +103,7 @@ fun HomeScreen(
         if (userState.value.showSnackDone) {
             scope.launch {
                 homeViewModel.snackbarHostState.showSnackbar(
-                    message = UiText.StringResource(R.string.signed_in_as, userState.value.userInfo?.username ?: "...").asString(context)
+                    message = context.getString(R.string.signed_in_successfully)
                 )
             }.also { uiEvent(UiEvent.DropSnackDone) }
         }
@@ -127,6 +126,7 @@ fun HomeScreen(
                 drawerState = drawerState,
                 closeDrawer = { scope.launch { drawerState.close() } },
                 preferencesState = preferencesState,
+                userState = userState,
                 uiEvent = uiEvent
             )
         },

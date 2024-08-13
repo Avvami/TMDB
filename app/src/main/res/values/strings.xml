@@ -86,5 +86,5 @@
     <string name="acting">Acting</string>
     <string name="person_starring">Starring</string>
     <string name="dash">—</string>
-    <string name="signed_in_as">Signed in as %s</string>
+    <string name="signed_in_successfully">Signed in successfully</string>
 </resources>

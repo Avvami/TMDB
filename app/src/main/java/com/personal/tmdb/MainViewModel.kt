@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.personal.tmdb.auth.data.models.AccessTokenBody
 import com.personal.tmdb.auth.data.models.RedirectToBody
 import com.personal.tmdb.auth.data.models.RequestTokenBody
+import com.personal.tmdb.auth.domain.models.UserInfo
 import com.personal.tmdb.auth.domain.repository.AuthRepository
 import com.personal.tmdb.core.domain.repository.LocalCache
 import com.personal.tmdb.core.domain.repository.LocalRepository
@@ -19,8 +20,11 @@ import com.personal.tmdb.home.domain.repository.HomeRepository
 import com.personal.tmdb.home.presentation.home.HomeState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -46,16 +50,36 @@ class MainViewModel @Inject constructor(
         private set
 
     init {
+        val preferencesFlow = localRepository.getPreferences().shareIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            replay = 1
+        )
+
         viewModelScope.launch {
-            localRepository.getPreferences().collect { preferencesEntity ->
+            preferencesFlow.collect { preferencesEntity ->
                 _preferencesState.update {
                     it.copy(
-                        darkTheme = preferencesEntity.darkTheme,
-                        sessionId = preferencesEntity.sessionId
+                        darkTheme = preferencesEntity.darkTheme
                     )
                 }
                 holdSplash = false
             }
+        }
+        viewModelScope.launch {
+            preferencesFlow
+                .distinctUntilChangedBy { it.sessionId }
+                .collect { preferencesEntity ->
+                    _userState.update {
+                        it.copy(
+                            accessToken = preferencesEntity.accessToken,
+                            accountId = preferencesEntity.accountId,
+                            sessionId = preferencesEntity.sessionId
+                        )
+                    }
+                    println("TRIGGER GET USER DETAILS")
+                    getUserDetails(preferencesEntity.sessionId)
+                }
         }
         getTrendingList(TimeWindow.DAY)
     }
@@ -112,8 +136,6 @@ class MainViewModel @Inject constructor(
 
     private fun signInUser() {
         viewModelScope.launch {
-            _userState.update { it.copy(isLoading = true) }
-
             authRepository.createAccessToken(RequestTokenBody(localCache.getRequestToken())).let { result ->
                 when(result) {
                     is Resource.Error -> {
@@ -147,8 +169,33 @@ class MainViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
 
-            _userState.update { it.copy(isLoading = false) }
+    private fun getUserDetails(sessionId: String) {
+        println("Get USER DETAILS")
+        viewModelScope.launch {
+            _userState.update { it.copy(isLoading = true) }
+
+            var userInfo: UserInfo? = null
+
+            authRepository.getUserDetails(sessionId).let { result ->
+                when (result) {
+                    is Resource.Error -> {
+                        /*TODO: Something about it?*/
+                    }
+                    is Resource.Success -> {
+                        userInfo = result.data
+                    }
+                }
+            }
+
+            _userState.update {
+                it.copy(
+                    isLoading = false,
+                    userInfo = userInfo
+                )
+            }
         }
     }
 

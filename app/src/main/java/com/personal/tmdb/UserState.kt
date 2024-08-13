@@ -1,6 +1,6 @@
 package com.personal.tmdb
 
-import com.personal.tmdb.core.domain.models.UserInfo
+import com.personal.tmdb.auth.domain.models.UserInfo
 
 data class UserState(
     val isLoading: Boolean = false,
@@ -10,5 +10,5 @@ data class UserState(
     val requestToken: String? = null,
     val accessToken: String? = null,
     val sessionId: String? = null,
-    val v4Id: String? = null
+    val accountId: String? = null
 )
