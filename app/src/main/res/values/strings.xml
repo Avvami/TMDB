@@ -87,4 +87,7 @@
     <string name="person_starring">Starring</string>
     <string name="dash">—</string>
     <string name="signed_in_successfully">Signed in successfully</string>
+    <string name="list_view">List view</string>
+    <string name="cards">Cards</string>
+    <string name="posters">Posters</string>
 </resources>

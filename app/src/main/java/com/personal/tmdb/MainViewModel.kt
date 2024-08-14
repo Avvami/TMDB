@@ -60,7 +60,12 @@ class MainViewModel @Inject constructor(
             preferencesFlow.collect { preferencesEntity ->
                 _preferencesState.update {
                     it.copy(
-                        darkTheme = preferencesEntity.darkTheme
+                        darkTheme = preferencesEntity.darkTheme,
+                        language = preferencesEntity.language,
+                        corners = preferencesEntity.corners,
+                        useCards = preferencesEntity.useCards,
+                        showTitle = preferencesEntity.showTitle,
+                        showVoteAverage = preferencesEntity.showVoteAverage
                     )
                 }
                 holdSplash = false
@@ -219,6 +224,12 @@ class MainViewModel @Inject constructor(
             }
             UiEvent.DropError -> {
                 _userState.update { it.copy(error = null) }
+            }
+
+            is UiEvent.SetUseCards -> {
+                viewModelScope.launch {
+                    localRepository.setUseCards(event.userCards)
+                }
             }
         }
     }

@@ -1,5 +1,8 @@
 package com.personal.tmdb.core.presentation.components
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalSharedTransitionApi
+import androidx.compose.animation.SharedTransitionScope
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -43,6 +46,7 @@ import com.personal.tmdb.core.util.formatVoteAverage
 import com.personal.tmdb.core.util.shimmerEffect
 import com.personal.tmdb.ui.theme.backgroundLight
 import com.personal.tmdb.ui.theme.onBackgroundLight
+import java.time.LocalDate
 
 @Composable
 fun MediaCard(
@@ -158,6 +162,7 @@ fun MediaCard(
         }
     }
 }
+
 @Composable
 fun MediaCardShimmer(
     modifier: Modifier = Modifier
@@ -343,6 +348,166 @@ fun MediaPosterShimmer(
                 text = "",
                 minLines = 2,
                 maxLines = 2,
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+fun MediaCardPreview(
+    modifier: Modifier = Modifier,
+    showVoteAverage: Boolean,
+    corners: Int,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope
+) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(corners.dp))
+            .background(MaterialTheme.colorScheme.surfaceContainer)
+            .padding(8.dp),
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Box(
+            modifier = Modifier
+                .height(150.dp)
+                .aspectRatio(0.675f)
+                .clip(RoundedCornerShape(corners.dp))
+        ) {
+            with(sharedTransitionScope) {
+                AsyncImage(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .sharedElement(
+                            rememberSharedContentState(key = "Poster"),
+                            animatedVisibilityScope = animatedVisibilityScope
+                        )
+                        .clip(RoundedCornerShape(corners.dp)),
+                    model = C.TMDB_IMAGES_BASE_URL + C.POSTER_W300 + "/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg",
+                    placeholder = painterResource(id = R.drawable.placeholder),
+                    error = painterResource(id = R.drawable.placeholder),
+                    contentDescription = "Poster",
+                    contentScale = ContentScale.Crop
+                )
+            }
+            androidx.compose.animation.AnimatedVisibility(visible = showVoteAverage) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(onBackgroundLight.copy(.3f))
+                        .align(Alignment.BottomCenter),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterHorizontally)
+                ) {
+                    Text(
+                        text = formatVoteAverage(8.5.toFloat()),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = backgroundLight
+                    )
+                    Icon(
+                        modifier = Modifier.size(14.dp),
+                        painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
+                        contentDescription = null,
+                        tint = backgroundLight
+                    )
+                }
+            }
+        }
+        Column {
+            Text(
+                text = "Spirited Away",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+            Text(
+                text = formatDate(LocalDate.of(2002, 9, 20)),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+            Spacer(modifier = Modifier.height(12.dp))
+            Text(
+                text = "A young girl, Chihiro, becomes trapped in a strange new world of spirits. When her parents undergo a mysterious transformation, she must call upon the courage she never knew she had to free her family.",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 4,
+                overflow = TextOverflow.Ellipsis
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalSharedTransitionApi::class)
+@Composable
+fun MediaPosterPreview(
+    modifier: Modifier = Modifier,
+    showTitle: Boolean,
+    showVoteAverage: Boolean,
+    corners: Int,
+    sharedTransitionScope: SharedTransitionScope,
+    animatedVisibilityScope: AnimatedVisibilityScope
+) {
+    Column(
+        modifier = Modifier.width(IntrinsicSize.Min),
+        verticalArrangement = Arrangement.spacedBy(2.dp),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Box(
+            modifier = modifier
+        ) {
+            with(sharedTransitionScope) {
+                AsyncImage(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .sharedElement(
+                            rememberSharedContentState(key = "Poster"),
+                            animatedVisibilityScope = animatedVisibilityScope
+                        )
+                        .height(150.dp)
+                        .aspectRatio(0.675f)
+                        .clip(RoundedCornerShape(corners.dp)),
+                    model = C.TMDB_IMAGES_BASE_URL + C.POSTER_W300 + "/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg",
+                    placeholder = painterResource(id = R.drawable.placeholder),
+                    error = painterResource(id = R.drawable.placeholder),
+                    contentDescription = "Poster",
+                    contentScale = ContentScale.Crop
+                )
+            }
+            androidx.compose.animation.AnimatedVisibility(visible = showVoteAverage) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(onBackgroundLight.copy(.3f))
+                        .align(Alignment.BottomCenter),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterHorizontally)
+                ) {
+                    Text(
+                        text = formatVoteAverage(8.5.toFloat()),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = backgroundLight
+                    )
+                    Icon(
+                        modifier = Modifier.size(14.dp),
+                        painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
+                        contentDescription = null,
+                        tint = backgroundLight
+                    )
+                }
+            }
+        }
+        androidx.compose.animation.AnimatedVisibility(visible = showTitle) {
+            Text(
+                modifier = Modifier.fillMaxWidth(),
+                text = "Spirited Away",
+                style = MaterialTheme.typography.labelLarge,
+                color = MaterialTheme.colorScheme.onBackground,
+                textAlign = TextAlign.Center,
+                minLines = 2,
+                maxLines = 2,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }

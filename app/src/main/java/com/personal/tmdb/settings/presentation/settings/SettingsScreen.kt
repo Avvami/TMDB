@@ -57,6 +57,7 @@ import com.personal.tmdb.BuildConfig
 import com.personal.tmdb.R
 import com.personal.tmdb.UiEvent
 import com.personal.tmdb.UserState
+import com.personal.tmdb.core.navigation.RootNavGraph
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.util.ApplyStatusBarsTheme
 import com.personal.tmdb.core.util.C
@@ -124,7 +125,7 @@ fun SettingsScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(bottom = innerPadding.calculateBottomPadding()),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             if (!userState.value.sessionId.isNullOrEmpty()) {
                 item {
@@ -253,7 +254,6 @@ fun SettingsScreen(
                         }
                         HorizontalDivider(
                             modifier = Modifier.padding(start = 52.dp),
-//                            thickness = .5.dp,
                             color = MaterialTheme.colorScheme.background
                         )
                         Row(
@@ -276,7 +276,6 @@ fun SettingsScreen(
                         }
                         HorizontalDivider(
                             modifier = Modifier.padding(start = 52.dp),
-//                            thickness = .5.dp,
                             color = MaterialTheme.colorScheme.background
                         )
                         Row(
@@ -299,7 +298,6 @@ fun SettingsScreen(
                         }
                         HorizontalDivider(
                             modifier = Modifier.padding(start = 52.dp),
-//                            thickness = .5.dp,
                             color = MaterialTheme.colorScheme.background
                         )
                         Row(
@@ -353,13 +351,12 @@ fun SettingsScreen(
                     }
                     HorizontalDivider(
                         modifier = Modifier.padding(start = 52.dp),
-//                        thickness = .5.dp,
                         color = MaterialTheme.colorScheme.background
                     )
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { /*TODO: Navigate to appearance*/ }
+                            .clickable { onNavigateTo(RootNavGraph.APPEARANCE) }
                             .padding(horizontal = 16.dp, vertical = 12.dp),
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                         verticalAlignment = Alignment.CenterVertically
@@ -406,7 +403,6 @@ fun SettingsScreen(
                     }
                     HorizontalDivider(
                         modifier = Modifier.padding(start = 52.dp),
-//                        thickness = .5.dp,
                         color = MaterialTheme.colorScheme.background
                     )
                     Row(

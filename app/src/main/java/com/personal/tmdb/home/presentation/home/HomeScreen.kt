@@ -368,48 +368,50 @@ fun HomeScreen(
                         }
                     }
                 }
-                item {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(IntrinsicSize.Min)
-                    ) {
-                        Box(modifier = Modifier.fillMaxSize()) {
-                            Image(
-                                modifier = Modifier.matchParentSize(),
-                                painter = painterResource(id = R.drawable.join_tmdb_bg),
-                                contentDescription = "Backdrop",
-                                contentScale = ContentScale.Crop,
-                                colorFilter = duotoneColorFilter(duotonePurpleLight, duotonePurpleDark)
-                            )
-                        }
-                        Column(
-                            modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp),
-                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                if (userState.value.sessionId.isNullOrEmpty()) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(IntrinsicSize.Min)
                         ) {
-                            Column(
-                                verticalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                Text(
-                                    text = stringResource(id = R.string.join_today),
-                                    style = MaterialTheme.typography.headlineMedium,
-                                    fontWeight = FontWeight.Medium,
-                                    color = backgroundLight
-                                )
-                                Text(
-                                    text = stringResource(id = R.string.join_today_benefits),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = backgroundLight
+                            Box(modifier = Modifier.fillMaxSize()) {
+                                Image(
+                                    modifier = Modifier.matchParentSize(),
+                                    painter = painterResource(id = R.drawable.join_tmdb_bg),
+                                    contentDescription = "Backdrop",
+                                    contentScale = ContentScale.Crop,
+                                    colorFilter = duotoneColorFilter(duotonePurpleLight, duotonePurpleDark)
                                 )
                             }
-                            GradientButton(
-                                modifier = Modifier
-                                    .widthIn(max = 400.dp)
-                                    .fillMaxWidth(),
-                                onClick = { /*TODO: Open sign up link*/ },
-                                gradient = Brush.horizontalGradient(listOf(gradientPurpleDark, gradientPurpleLight))
+                            Column(
+                                modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp),
+                                verticalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
-                                Text(text = stringResource(id = R.string.sign_up), color = backgroundLight)
+                                Column(
+                                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                                ) {
+                                    Text(
+                                        text = stringResource(id = R.string.join_today),
+                                        style = MaterialTheme.typography.headlineMedium,
+                                        fontWeight = FontWeight.Medium,
+                                        color = backgroundLight
+                                    )
+                                    Text(
+                                        text = stringResource(id = R.string.join_today_benefits),
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = backgroundLight
+                                    )
+                                }
+                                GradientButton(
+                                    modifier = Modifier
+                                        .widthIn(max = 400.dp)
+                                        .fillMaxWidth(),
+                                    onClick = { /*TODO: Open sign up link*/ },
+                                    gradient = Brush.horizontalGradient(listOf(gradientPurpleDark, gradientPurpleLight))
+                                ) {
+                                    Text(text = stringResource(id = R.string.sign_up), color = backgroundLight)
+                                }
                             }
                         }
                     }

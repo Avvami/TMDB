@@ -7,4 +7,5 @@ sealed interface UiEvent {
     data object SignInUser: UiEvent
     data object DropSnackDone: UiEvent
     data object DropError: UiEvent
+    data class SetUseCards(val userCards: Boolean): UiEvent
 }

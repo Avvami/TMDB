@@ -20,6 +20,7 @@ import com.personal.tmdb.detail.presentation.detail.DetailScreen
 import com.personal.tmdb.detail.presentation.person.PersonScreen
 import com.personal.tmdb.home.presentation.home.HomeScreen
 import com.personal.tmdb.search.presentation.search.SearchScreen
+import com.personal.tmdb.settings.presentation.appearance.AppearanceScreen
 import com.personal.tmdb.settings.presentation.settings.SettingsScreen
 
 @Composable
@@ -169,6 +170,21 @@ fun RootNavigationGraph(
                 }
             )
         }
+        animatedComposable(
+            route = RootNavGraph.APPEARANCE
+        ) {
+            AppearanceScreen(
+                navigateBack = onNavigateBack,
+                onNavigateTo = { route ->
+                    navController.navigate(route = route) {
+                        launchSingleTop = true
+                    }
+                },
+                preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle(),
+                userState = mainViewModel.userState.collectAsStateWithLifecycle(),
+                uiEvent = mainViewModel::uiEvent
+            )
+        }
     }
 }
 
@@ -183,4 +199,5 @@ object RootNavGraph {
     const val COLLECTION = "collection_screen"
     const val CAST = "cast_screen"
     const val PERSON = "person_screen"
+    const val APPEARANCE = "appearance_screen"
 }
