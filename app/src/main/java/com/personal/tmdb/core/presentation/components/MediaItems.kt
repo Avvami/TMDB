@@ -3,6 +3,12 @@ package com.personal.tmdb.core.presentation.components
 import androidx.compose.animation.AnimatedVisibilityScope
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.animation.SharedTransitionScope
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -371,20 +377,20 @@ fun MediaCardPreview(
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Box(
-            modifier = Modifier
-                .height(150.dp)
-                .aspectRatio(0.675f)
-                .clip(RoundedCornerShape(corners.dp))
-        ) {
-            with(sharedTransitionScope) {
+        with(sharedTransitionScope) {
+            Box(
+                modifier = Modifier
+                    .height(150.dp)
+                    .aspectRatio(0.675f)
+                    .clip(RoundedCornerShape(corners.dp))
+                    .sharedElement(
+                        rememberSharedContentState(key = "Poster"),
+                        animatedVisibilityScope = animatedVisibilityScope
+                    )
+            ) {
                 AsyncImage(
                     modifier = Modifier
                         .fillMaxSize()
-                        .sharedElement(
-                            rememberSharedContentState(key = "Poster"),
-                            animatedVisibilityScope = animatedVisibilityScope
-                        )
                         .clip(RoundedCornerShape(corners.dp)),
                     model = C.TMDB_IMAGES_BASE_URL + C.POSTER_W300 + "/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg",
                     placeholder = painterResource(id = R.drawable.placeholder),
@@ -392,26 +398,21 @@ fun MediaCardPreview(
                     contentDescription = "Poster",
                     contentScale = ContentScale.Crop
                 )
-            }
-            androidx.compose.animation.AnimatedVisibility(visible = showVoteAverage) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(onBackgroundLight.copy(.3f))
-                        .align(Alignment.BottomCenter),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterHorizontally)
+                androidx.compose.animation.AnimatedVisibility(
+                    visible = showVoteAverage,
+                    enter = scaleIn(initialScale = .7f) + fadeIn(),
+                    exit = scaleOut(targetScale = .7f) + fadeOut()
                 ) {
                     Text(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .clip(RoundedCornerShape((corners / 3).dp))
+                            .background(onBackgroundLight.copy(.5f))
+                            .padding(horizontal = 4.dp)
+                            .align(Alignment.TopStart),
                         text = formatVoteAverage(8.5.toFloat()),
-                        style = MaterialTheme.typography.labelLarge,
+                        style = MaterialTheme.typography.labelMedium,
                         color = backgroundLight
-                    )
-                    Icon(
-                        modifier = Modifier.size(14.dp),
-                        painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
-                        contentDescription = null,
-                        tint = backgroundLight
                     )
                 }
             }
@@ -454,17 +455,17 @@ fun MediaPosterPreview(
         verticalArrangement = Arrangement.spacedBy(2.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Box(
-            modifier = modifier
-        ) {
-            with(sharedTransitionScope) {
+        with(sharedTransitionScope) {
+            Box(
+                modifier = modifier
+                    .sharedElement(
+                        rememberSharedContentState(key = "Poster"),
+                        animatedVisibilityScope = animatedVisibilityScope
+                    )
+            ) {
                 AsyncImage(
                     modifier = Modifier
                         .fillMaxSize()
-                        .sharedElement(
-                            rememberSharedContentState(key = "Poster"),
-                            animatedVisibilityScope = animatedVisibilityScope
-                        )
                         .height(150.dp)
                         .aspectRatio(0.675f)
                         .clip(RoundedCornerShape(corners.dp)),
@@ -474,38 +475,36 @@ fun MediaPosterPreview(
                     contentDescription = "Poster",
                     contentScale = ContentScale.Crop
                 )
-            }
-            androidx.compose.animation.AnimatedVisibility(visible = showVoteAverage) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(onBackgroundLight.copy(.3f))
-                        .align(Alignment.BottomCenter),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterHorizontally)
+                androidx.compose.animation.AnimatedVisibility(
+                    visible = showVoteAverage,
+                    enter = scaleIn(initialScale = .7f) + fadeIn(),
+                    exit = scaleOut(targetScale = .7f) + fadeOut()
                 ) {
                     Text(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .clip(RoundedCornerShape((corners / 3).dp))
+                            .background(onBackgroundLight.copy(.5f))
+                            .padding(horizontal = 4.dp)
+                            .align(Alignment.TopStart),
                         text = formatVoteAverage(8.5.toFloat()),
-                        style = MaterialTheme.typography.labelLarge,
+                        style = MaterialTheme.typography.labelMedium,
                         color = backgroundLight
-                    )
-                    Icon(
-                        modifier = Modifier.size(14.dp),
-                        painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
-                        contentDescription = null,
-                        tint = backgroundLight
                     )
                 }
             }
         }
-        androidx.compose.animation.AnimatedVisibility(visible = showTitle) {
+        androidx.compose.animation.AnimatedVisibility(
+            visible = showTitle,
+            enter = slideInVertically() + scaleIn(initialScale = .7f) + fadeIn(),
+            exit = slideOutVertically() + scaleOut(targetScale = .7f) + fadeOut()
+        ) {
             Text(
                 modifier = Modifier.fillMaxWidth(),
                 text = "Spirited Away",
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center,
-                minLines = 2,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis
             )

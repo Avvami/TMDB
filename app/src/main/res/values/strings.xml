@@ -90,4 +90,11 @@
     <string name="list_view">List view</string>
     <string name="cards">Cards</string>
     <string name="posters">Posters</string>
+    <string name="add_title">Add title to the posters</string>
+    <string name="show_user_score">Show user score</string>
+    <string name="light">Light</string>
+    <string name="system">System</string>
+    <string name="dark">Dark</string>
+    <string name="theme">Theme</string>
+    <string name="corners">Corners</string>
 </resources>

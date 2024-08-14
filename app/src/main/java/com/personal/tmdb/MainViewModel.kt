@@ -19,6 +19,7 @@ import com.personal.tmdb.core.util.TimeWindow
 import com.personal.tmdb.home.domain.repository.HomeRepository
 import com.personal.tmdb.home.presentation.home.HomeState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -48,6 +49,8 @@ class MainViewModel @Inject constructor(
 
     var homeState by mutableStateOf(HomeState())
         private set
+
+    private var cornersJob: Job? = null
 
     init {
         val preferencesFlow = localRepository.getPreferences().shareIn(
@@ -229,6 +232,22 @@ class MainViewModel @Inject constructor(
             is UiEvent.SetUseCards -> {
                 viewModelScope.launch {
                     localRepository.setUseCards(event.userCards)
+                }
+            }
+            is UiEvent.SetShowTitle -> {
+                viewModelScope.launch {
+                    localRepository.setShowTitle(event.showTitle)
+                }
+            }
+            is UiEvent.SetShowVoteAverage -> {
+                viewModelScope.launch {
+                    localRepository.setShowVoteAverage(event.showVoteAverage)
+                }
+            }
+            is UiEvent.SetCorners -> {
+                cornersJob?.cancel()
+                cornersJob = viewModelScope.launch {
+                    localRepository.setCorners(event.corners)
                 }
             }
         }

@@ -31,13 +31,15 @@ import com.personal.tmdb.UserState
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.MediaCardPreview
 import com.personal.tmdb.core.presentation.components.MediaPosterPreview
+import com.personal.tmdb.settings.presentation.appearance.components.Corners
 import com.personal.tmdb.settings.presentation.appearance.components.ListView
+import com.personal.tmdb.settings.presentation.appearance.components.ShowAdditionalInfo
+import com.personal.tmdb.settings.presentation.appearance.components.Theme
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
 fun AppearanceScreen(
     navigateBack: () -> Unit,
-    onNavigateTo: (route: String) -> Unit,
     preferencesState: State<PreferencesState>,
     userState: State<UserState>,
     uiEvent: (UiEvent) -> Unit
@@ -109,6 +111,24 @@ fun AppearanceScreen(
             }
             item {
                 ListView(
+                    preferencesState = preferencesState,
+                    uiEvent = uiEvent
+                )
+            }
+            item {
+                Corners(
+                    preferencesState = preferencesState,
+                    uiEvent = uiEvent
+                )
+            }
+            item {
+                ShowAdditionalInfo(
+                    preferencesState = preferencesState,
+                    uiEvent = uiEvent
+                )
+            }
+            item {
+                Theme(
                     preferencesState = preferencesState,
                     uiEvent = uiEvent
                 )
