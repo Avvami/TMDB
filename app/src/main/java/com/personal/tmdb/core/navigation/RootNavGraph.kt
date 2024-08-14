@@ -85,6 +85,8 @@ fun RootNavigationGraph(
                         launchSingleTop = true
                     }
                 },
+                preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle(),
+                userState = mainViewModel.userState.collectAsStateWithLifecycle(),
                 uiEvent = mainViewModel::uiEvent
             )
         }

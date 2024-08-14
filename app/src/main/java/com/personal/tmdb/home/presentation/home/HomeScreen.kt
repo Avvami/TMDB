@@ -374,15 +374,15 @@ fun HomeScreen(
                             .fillMaxWidth()
                             .height(IntrinsicSize.Min)
                     ) {
-                        AsyncImage(
-                            modifier = Modifier.fillMaxSize(),
-                            model = C.TMDB_IMAGES_BASE_URL + C.BACKDROP_W1280 + "/lMnoYqPIAVL0YaLP5YjRy7iwaYv.jpg",
-                            contentDescription = "Backdrop",
-                            contentScale = ContentScale.Crop,
-                            placeholder = painterResource(id = R.drawable.placeholder),
-                            error = painterResource(id = R.drawable.placeholder),
-                            colorFilter = duotoneColorFilter(duotonePurpleLight, duotonePurpleDark)
-                        )
+                        Box(modifier = Modifier.fillMaxSize()) {
+                            Image(
+                                modifier = Modifier.matchParentSize(),
+                                painter = painterResource(id = R.drawable.join_tmdb_bg),
+                                contentDescription = "Backdrop",
+                                contentScale = ContentScale.Crop,
+                                colorFilter = duotoneColorFilter(duotonePurpleLight, duotonePurpleDark)
+                            )
+                        }
                         Column(
                             modifier = Modifier.padding(horizontal = 16.dp, vertical = 24.dp),
                             verticalArrangement = Arrangement.spacedBy(16.dp)
