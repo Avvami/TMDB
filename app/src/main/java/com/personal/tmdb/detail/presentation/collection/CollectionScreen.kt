@@ -155,6 +155,7 @@ fun CollectionScreen(
                         contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
                         onNavigateTo = onNavigateTo,
                         mediaList = { parts },
+                        isLoading = { collectionViewModel.collectionState.isLoading },
                         preferencesState = preferencesState,
                         emptyListContent = {
                             Text(

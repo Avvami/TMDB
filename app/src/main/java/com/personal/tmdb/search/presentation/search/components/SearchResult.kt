@@ -51,6 +51,7 @@ fun SearchResult(
             topItemContent = {
                 Row(
                     modifier = Modifier
+                        .fillMaxWidth()
                         .padding(bottom = 8.dp)
                         .clip(MaterialTheme.shapes.small)
                         .shimmerEffect()
@@ -80,6 +81,7 @@ fun SearchResult(
                 onNavigateTo = onNavigateTo,
                 mediaList = { results },
                 mediaType = mediaType,
+                isLoading = { searchState().isLoading },
                 preferencesState = preferencesState,
                 emptyListContent = {
                     Column(

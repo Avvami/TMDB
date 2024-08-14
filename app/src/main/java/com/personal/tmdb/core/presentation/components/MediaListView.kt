@@ -28,6 +28,7 @@ fun MediaListView(
     topItemContent: @Composable (() -> Unit)? = null,
     mediaList: () -> List<MediaInfo>,
     mediaType: MediaType? = null,
+    isLoading: () -> Boolean,
     emptyListContent: @Composable (() -> Unit)? = null,
     preferencesState: State<PreferencesState>
 ) {
@@ -46,26 +47,34 @@ fun MediaListView(
                         content()
                     }
                 }
-                if (mediaList().isEmpty()) {
-                    emptyListContent?.let { content ->
-                        item {
-                            content()
-                        }
-                    }
-                } else {
-                    items(
-                        count = mediaList().size,
-                        key = { mediaList()[it].id }
-                    ) { index ->
-                        val mediaInfo = mediaList()[index]
-                        MediaCard(
-                            modifier = Modifier.animateItem(),
-                            onNavigateTo = onNavigateTo,
-                            mediaInfo = mediaInfo,
-                            mediaType = mediaType,
-                            showVoteAverage = preferencesState.value.useCards,
+                if (isLoading()) {
+                    items(count = 15) {
+                        MediaCardShimmer(
                             corners = preferencesState.value.corners
                         )
+                    }
+                } else {
+                    if (mediaList().isEmpty()) {
+                        emptyListContent?.let { content ->
+                            item {
+                                content()
+                            }
+                        }
+                    } else {
+                        items(
+                            count = mediaList().size,
+                            key = { mediaList()[it].id }
+                        ) { index ->
+                            val mediaInfo = mediaList()[index]
+                            MediaCard(
+                                modifier = Modifier.animateItem(),
+                                onNavigateTo = onNavigateTo,
+                                mediaInfo = mediaInfo,
+                                mediaType = mediaType,
+                                showVoteAverage = preferencesState.value.useCards,
+                                corners = preferencesState.value.corners
+                            )
+                        }
                     }
                 }
             }
@@ -84,33 +93,46 @@ fun MediaListView(
                         content()
                     }
                 }
-                if (mediaList().isEmpty()) {
-                    emptyListContent?.let { content ->
-                        item(
-                            span = { GridItemSpan(maxLineSpan) }
-                        ) {
-                            content()
-                        }
-                    }
-                } else {
-                    items(
-                        count = mediaList().size,
-                        key = { mediaList()[it].id }
-                    ) { index ->
-                        val mediaInfo = mediaList()[index]
-                        MediaPoster(
+                if (isLoading()) {
+                    items(count = 15) {
+                        MediaPosterShimmer(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .aspectRatio(0.675f)
                                 .clip(RoundedCornerShape(preferencesState.value.corners.dp))
-                                .animateItem(),
-                            onNavigateTo = onNavigateTo,
-                            mediaInfo = mediaInfo,
-                            mediaType = mediaType,
-                            showTitle = preferencesState.value.showTitle,
-                            showVoteAverage = preferencesState.value.showVoteAverage,
-                            corners = preferencesState.value.corners
+                                .shimmerEffect(),
+                            showTitle = preferencesState.value.showTitle
                         )
+                    }
+                } else {
+                    if (mediaList().isEmpty()) {
+                        emptyListContent?.let { content ->
+                            item(
+                                span = { GridItemSpan(maxLineSpan) }
+                            ) {
+                                content()
+                            }
+                        }
+                    } else {
+                        items(
+                            count = mediaList().size,
+                            key = { mediaList()[it].id }
+                        ) { index ->
+                            val mediaInfo = mediaList()[index]
+                            MediaPoster(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .aspectRatio(0.675f)
+                                    .clip(RoundedCornerShape(preferencesState.value.corners.dp))
+                                    .animateItem(),
+                                onNavigateTo = onNavigateTo,
+                                mediaInfo = mediaInfo,
+                                mediaType = mediaType,
+                                showTitle = preferencesState.value.showTitle,
+                                showVoteAverage = preferencesState.value.showVoteAverage,
+                                corners = preferencesState.value.corners
+                            )
+                        }
                     }
                 }
             }
