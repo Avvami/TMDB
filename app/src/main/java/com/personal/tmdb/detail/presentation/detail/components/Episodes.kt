@@ -28,6 +28,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,6 +46,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.DialogWindowProvider
 import com.personal.tmdb.R
+import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.detail.data.models.Season
 import com.personal.tmdb.detail.domain.models.MediaDetailInfo
 import com.personal.tmdb.detail.presentation.detail.DetailUiEvent
@@ -63,6 +65,7 @@ fun Episodes(
     selectedSeasonNumber: () -> Int,
     isSeasonDropdownExpanded: () -> Boolean,
     isSeasonOverviewCollapsed: () -> Boolean,
+    preferencesState: State<PreferencesState>,
     detailUiEvent: (DetailUiEvent) -> Unit
 ) {
     Column(
@@ -199,7 +202,8 @@ fun Episodes(
                                     .padding(vertical = 8.dp)
                                     .clip(MaterialTheme.shapes.extraSmall)
                                     .clickable { /*TODO: Navigate to episode detail*/ },
-                                episodeInfo = { episodeInfo }
+                                episodeInfo = { episodeInfo },
+                                preferencesState = preferencesState
                             )
                             if (index != seasonInfo.episodes.lastIndex) {
                                 HorizontalDivider()

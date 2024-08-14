@@ -15,6 +15,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -28,6 +29,7 @@ import androidx.compose.ui.unit.offset
 import androidx.compose.ui.unit.sp
 import com.personal.tmdb.R
 import com.personal.tmdb.core.presentation.MediaState
+import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.MediaListView
 import com.personal.tmdb.core.presentation.components.MediaListViewShimmer
 import com.personal.tmdb.core.util.MediaType
@@ -39,16 +41,13 @@ fun SearchResult(
     searchState: () -> MediaState,
     mediaType: MediaType,
     onNavigateTo: (route: String) -> Unit,
-    useCards: () -> Boolean,
-    showTitle: () -> Boolean,
-    showVoteAverage: () -> Boolean,
+    preferencesState: State<PreferencesState>,
     searchUiEvent: (SearchUiEvent) -> Unit
 ) {
     if (searchState().isLoading && searchState().mediaResponseInfo == null) {
         MediaListViewShimmer(
             contentPadding = PaddingValues(16.dp),
-            useCards = useCards,
-            showTitle = showTitle,
+            preferencesState = preferencesState,
             topItemContent = {
                 Row(
                     modifier = Modifier
@@ -81,9 +80,7 @@ fun SearchResult(
                 onNavigateTo = onNavigateTo,
                 mediaList = { results },
                 mediaType = mediaType,
-                useCards = useCards,
-                showTitle = showTitle,
-                showVoteAverage = showVoteAverage,
+                preferencesState = preferencesState,
                 emptyListContent = {
                     Column(
                         verticalArrangement = Arrangement.spacedBy(8.dp)

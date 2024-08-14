@@ -27,6 +27,7 @@ import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
@@ -34,6 +35,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.personal.tmdb.R
+import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.util.convertMediaType
 import com.personal.tmdb.search.presentation.search.components.SearchPopularPeople
 import com.personal.tmdb.search.presentation.search.components.SearchResult
@@ -44,6 +46,7 @@ import com.personal.tmdb.search.presentation.search.components.SearchTrending
 fun SearchScreen(
     navigateBack: () -> Unit,
     onNavigateTo: (route: String) -> Unit,
+    preferencesState: State<PreferencesState>,
     searchViewModel: SearchViewModel = hiltViewModel()
 ) {
     Scaffold(
@@ -156,7 +159,8 @@ fun SearchScreen(
                         item {
                             SearchPopularPeople(
                                 onNavigateTo = onNavigateTo,
-                                popularState = searchViewModel::popularState
+                                popularState = searchViewModel::popularState,
+                                preferencesState = preferencesState
                             )
                         }
                     }
@@ -165,9 +169,7 @@ fun SearchScreen(
                         searchState = searchViewModel::searchState,
                         mediaType = convertMediaType(searchViewModel.searchType),
                         onNavigateTo = onNavigateTo,
-                        useCards = { false },
-                        showTitle = { true },
-                        showVoteAverage = { true },
+                        preferencesState = preferencesState,
                         searchUiEvent = searchViewModel::searchUiEvent
                     )
                 }

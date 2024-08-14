@@ -102,7 +102,8 @@ fun RootNavigationGraph(
                 navigateBack = onNavigateBack,
                 onNavigateTo = { route ->
                     navController.navigate(route = route)
-                }
+                },
+                preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle()
             )
         }
         animatedComposable(
@@ -118,7 +119,8 @@ fun RootNavigationGraph(
                     navController.navigate(route = route) {
                         launchSingleTop = true
                     }
-                }
+                },
+                preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle()
             )
         }
         animatedComposable(
@@ -167,7 +169,8 @@ fun RootNavigationGraph(
                     navController.navigate(route = route) {
                         launchSingleTop = true
                     }
-                }
+                },
+                preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle()
             )
         }
         animatedComposable(
@@ -175,11 +178,6 @@ fun RootNavigationGraph(
         ) {
             AppearanceScreen(
                 navigateBack = onNavigateBack,
-                onNavigateTo = { route ->
-                    navController.navigate(route = route) {
-                        launchSingleTop = true
-                    }
-                },
                 preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle(),
                 userState = mainViewModel.userState.collectAsStateWithLifecycle(),
                 uiEvent = mainViewModel::uiEvent

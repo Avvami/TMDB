@@ -19,6 +19,7 @@ import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,20 +33,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.offset
 import com.personal.tmdb.R
+import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.MediaListViewShimmer
 import com.personal.tmdb.core.util.shimmerEffect
 
 @Composable
 fun CollectionScreenShimmer(
     innerPadding: PaddingValues,
-    useCards: () -> Boolean,
-    showTitle: () -> Boolean
+    preferencesState: State<PreferencesState>
 ) {
     MediaListViewShimmer(
         modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding()),
         contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
-        useCards = useCards,
-        showTitle = showTitle,
+        preferencesState = preferencesState,
         topItemContent = {
             val sidePadding = (-16).dp
             Column(

@@ -1,6 +1,5 @@
 package com.personal.tmdb.settings.presentation.appearance.components
 
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -32,40 +31,38 @@ fun ShowAdditionalInfo(
     Column(
         modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainerLow)
     ) {
-        AnimatedVisibility(visible = !preferencesState.value.useCards) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { uiEvent(UiEvent.SetShowTitle(!preferencesState.value.showTitle)) }
+                .padding(horizontal = 16.dp, vertical = 4.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { uiEvent(UiEvent.SetShowTitle(!preferencesState.value.showTitle)) }
-                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                modifier = Modifier.weight(1f),
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Row(
-                    modifier = Modifier.weight(1f),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.icon_title_fill0_wght400),
-                        contentDescription = stringResource(id = R.string.add_title),
-                        tint = MaterialTheme.colorScheme.outline
-                    )
-                    Text(
-                        text = stringResource(id = R.string.add_title),
-                        style = MaterialTheme.typography.bodyLarge
-                    )
-                }
-                Switch(
-                    checked = preferencesState.value.showTitle,
-                    onCheckedChange = { uiEvent(UiEvent.SetShowTitle(!preferencesState.value.showTitle)) }
+                Icon(
+                    painter = painterResource(id = R.drawable.icon_title_fill0_wght400),
+                    contentDescription = stringResource(id = R.string.add_title),
+                    tint = MaterialTheme.colorScheme.outline
+                )
+                Text(
+                    text = stringResource(id = R.string.add_title),
+                    style = MaterialTheme.typography.bodyLarge
                 )
             }
-            HorizontalDivider(
-                modifier = Modifier.padding(start = 52.dp),
-                color = MaterialTheme.colorScheme.background
+            Switch(
+                checked = preferencesState.value.showTitle,
+                onCheckedChange = { uiEvent(UiEvent.SetShowTitle(!preferencesState.value.showTitle)) }
             )
         }
+        HorizontalDivider(
+            modifier = Modifier.padding(start = 52.dp),
+            color = MaterialTheme.colorScheme.background
+        )
         Row(
             modifier = Modifier
                 .fillMaxWidth()

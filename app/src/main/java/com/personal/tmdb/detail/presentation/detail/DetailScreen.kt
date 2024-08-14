@@ -1,6 +1,5 @@
 package com.personal.tmdb.detail.presentation.detail
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,6 +28,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,17 +41,19 @@ import androidx.compose.ui.util.fastForEachIndexed
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.personal.tmdb.R
+import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.MediaPoster
 import com.personal.tmdb.detail.presentation.detail.components.DetailScreenShimmer
 import com.personal.tmdb.detail.presentation.detail.components.Details
 import com.personal.tmdb.detail.presentation.detail.components.Episodes
 import com.personal.tmdb.detail.presentation.detail.components.Trailer
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(
     navigateBack: () -> Unit,
     onNavigateTo: (route: String) -> Unit,
+    preferencesState: State<PreferencesState>,
     detailViewModel: DetailViewModel = hiltViewModel()
 ) {
     Scaffold(
@@ -126,6 +128,7 @@ fun DetailScreen(
                             info = { info },
                             collectionState = detailViewModel::collectionState,
                             isOverviewCollapsed = detailViewModel::isOverviewCollapsed,
+                            preferencesState = preferencesState,
                             detailUiEvent = detailViewModel::detailUiEvent
                         )
                     }
@@ -175,6 +178,7 @@ fun DetailScreen(
                                                     selectedSeasonNumber = detailViewModel::selectedSeasonNumber,
                                                     isSeasonDropdownExpanded = detailViewModel::isSeasonDropdownExpanded,
                                                     isSeasonOverviewCollapsed = detailViewModel::isSeasonOverviewCollapsed,
+                                                    preferencesState = preferencesState,
                                                     detailUiEvent = detailViewModel::detailUiEvent
                                                 )
                                             }
@@ -205,11 +209,12 @@ fun DetailScreen(
                                                                 modifier = Modifier
                                                                     .height(150.dp)
                                                                     .aspectRatio(0.675f)
-                                                                    .clip(RoundedCornerShape(18.dp)),
+                                                                    .clip(RoundedCornerShape(preferencesState.value.corners.dp)),
                                                                 onNavigateTo = onNavigateTo,
                                                                 mediaInfo = mediaInfo,
-                                                                showTitle = true,
-                                                                showVoteAverage = true
+                                                                showTitle = preferencesState.value.showTitle,
+                                                                showVoteAverage = preferencesState.value.showVoteAverage,
+                                                                corners = preferencesState.value.corners
                                                             )
                                                         }
                                                     }
@@ -242,12 +247,13 @@ fun DetailScreen(
                                                                 modifier = Modifier
                                                                     .height(150.dp)
                                                                     .aspectRatio(0.675f)
-                                                                    .clip(RoundedCornerShape(18.dp)),
+                                                                    .clip(RoundedCornerShape(preferencesState.value.corners.dp)),
                                                                 onNavigateTo = onNavigateTo,
                                                                 mediaInfo = mediaInfo,
                                                                 mediaType = detailViewModel.detailState.mediaType,
-                                                                showTitle = true,
-                                                                showVoteAverage = true
+                                                                showTitle = preferencesState.value.showTitle,
+                                                                showVoteAverage = preferencesState.value.showVoteAverage,
+                                                                corners = preferencesState.value.corners
                                                             )
                                                         }
                                                     }

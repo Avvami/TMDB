@@ -22,6 +22,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.personal.tmdb.R
 import com.personal.tmdb.core.navigation.RootNavGraph
+import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.MediaType
 import com.personal.tmdb.core.util.formatDate
@@ -61,6 +63,7 @@ fun Details(
     info: () -> MediaDetailInfo,
     collectionState: () -> CollectionState,
     isOverviewCollapsed: () -> Boolean,
+    preferencesState: State<PreferencesState>,
     detailUiEvent: (DetailUiEvent) -> Unit
 ) {
     val context = LocalContext.current
@@ -382,7 +385,7 @@ fun Details(
                     Box(
                         modifier = Modifier
                             .height(IntrinsicSize.Min)
-                            .clip(MaterialTheme.shapes.large)
+                            .clip(RoundedCornerShape((preferencesState.value.corners / 1.125).dp))
                             .clickable { onNavigateTo(RootNavGraph.COLLECTION + "/${belongToCollection.id}") }
                     ) {
                         AsyncImage(

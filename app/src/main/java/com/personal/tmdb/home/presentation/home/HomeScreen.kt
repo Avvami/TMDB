@@ -340,9 +340,9 @@ fun HomeScreen(
                                         modifier = Modifier
                                             .height(150.dp)
                                             .aspectRatio(0.675f)
-                                            .clip(RoundedCornerShape(18.dp))
+                                            .clip(RoundedCornerShape(preferencesState.value.corners.dp))
                                             .shimmerEffect(),
-                                        showTitle = true
+                                        showTitle = preferencesState.value.showTitle
                                     )
                                 }
                             } else {
@@ -356,11 +356,12 @@ fun HomeScreen(
                                             modifier = Modifier
                                                 .height(150.dp)
                                                 .aspectRatio(0.675f)
-                                                .clip(RoundedCornerShape(18.dp)),
+                                                .clip(RoundedCornerShape(preferencesState.value.corners.dp)),
                                             onNavigateTo = onNavigateTo,
                                             mediaInfo = mediaInfo,
-                                            showTitle = true,
-                                            showVoteAverage = true
+                                            showTitle = preferencesState.value.showTitle,
+                                            showVoteAverage = preferencesState.value.showVoteAverage,
+                                            corners = preferencesState.value.corners
                                         )
                                     }
                                 }

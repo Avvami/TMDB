@@ -145,8 +145,7 @@ fun CollectionScreen(
         if (collectionViewModel.collectionState.isLoading) {
             CollectionScreenShimmer(
                 innerPadding = innerPadding,
-                useCards = { true },
-                showTitle = { true }
+                preferencesState = preferencesState
             )
         } else {
             collectionViewModel.collectionState.collectionInfo?.let { collectionInfo ->
@@ -156,9 +155,7 @@ fun CollectionScreen(
                         contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
                         onNavigateTo = onNavigateTo,
                         mediaList = { parts },
-                        useCards = { true },
-                        showTitle = { true },
-                        showVoteAverage = { true },
+                        preferencesState = preferencesState,
                         emptyListContent = {
                             Text(
                                 modifier = Modifier.fillMaxWidth(),

@@ -1,7 +1,6 @@
 package com.personal.tmdb.core.presentation.components
 
 import androidx.compose.animation.AnimatedContent
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
@@ -12,14 +11,15 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.core.domain.models.MediaInfo
+import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.util.MediaType
 import com.personal.tmdb.core.util.shimmerEffect
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MediaListView(
     modifier: Modifier = Modifier,
@@ -29,12 +29,10 @@ fun MediaListView(
     mediaList: () -> List<MediaInfo>,
     mediaType: MediaType? = null,
     emptyListContent: @Composable (() -> Unit)? = null,
-    useCards: () -> Boolean,
-    showTitle: () -> Boolean,
-    showVoteAverage: () -> Boolean
+    preferencesState: State<PreferencesState>
 ) {
     AnimatedContent(
-        targetState = useCards(),
+        targetState = preferencesState.value.useCards,
         label = ""
     ) { targetState ->
         if (targetState) {
@@ -61,11 +59,12 @@ fun MediaListView(
                     ) { index ->
                         val mediaInfo = mediaList()[index]
                         MediaCard(
-                            modifier = Modifier.animateItemPlacement(),
+                            modifier = Modifier.animateItem(),
                             onNavigateTo = onNavigateTo,
                             mediaInfo = mediaInfo,
                             mediaType = mediaType,
-                            showVoteAverage = showVoteAverage()
+                            showVoteAverage = preferencesState.value.useCards,
+                            corners = preferencesState.value.corners
                         )
                     }
                 }
@@ -103,13 +102,14 @@ fun MediaListView(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .aspectRatio(0.675f)
-                                .clip(RoundedCornerShape(18.dp))
-                                .animateItemPlacement(),
+                                .clip(RoundedCornerShape(preferencesState.value.corners.dp))
+                                .animateItem(),
                             onNavigateTo = onNavigateTo,
                             mediaInfo = mediaInfo,
                             mediaType = mediaType,
-                            showTitle = showTitle(),
-                            showVoteAverage = showVoteAverage()
+                            showTitle = preferencesState.value.showTitle,
+                            showVoteAverage = preferencesState.value.showVoteAverage,
+                            corners = preferencesState.value.corners
                         )
                     }
                 }
@@ -123,11 +123,10 @@ fun MediaListViewShimmer(
     modifier: Modifier = Modifier,
     contentPadding: PaddingValues,
     topItemContent: @Composable (() -> Unit)? = null,
-    useCards: () -> Boolean,
-    showTitle: () -> Boolean
+    preferencesState: State<PreferencesState>
 ) {
     AnimatedContent(
-        targetState = useCards(),
+        targetState = preferencesState.value.useCards,
         label = ""
     ) { targetState ->
         if (targetState) {
@@ -142,7 +141,9 @@ fun MediaListViewShimmer(
                     }
                 }
                 items(count = 15) {
-                    MediaCardShimmer()
+                    MediaCardShimmer(
+                        corners = preferencesState.value.corners
+                    )
                 }
             }
         } else {
@@ -165,9 +166,9 @@ fun MediaListViewShimmer(
                         modifier = Modifier
                             .fillMaxWidth()
                             .aspectRatio(0.675f)
-                            .clip(RoundedCornerShape(18.dp))
+                            .clip(RoundedCornerShape(preferencesState.value.corners.dp))
                             .shimmerEffect(),
-                        showTitle = showTitle()
+                        showTitle = preferencesState.value.showTitle
                     )
                 }
             }

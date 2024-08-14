@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,6 +28,7 @@ import androidx.compose.ui.util.fastForEach
 import coil.compose.AsyncImage
 import com.personal.tmdb.R
 import com.personal.tmdb.core.navigation.RootNavGraph
+import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.MediaType
 import com.personal.tmdb.core.util.formatPersonActing
@@ -35,7 +38,8 @@ import com.personal.tmdb.detail.domain.models.CombinedCastCrewInfo
 fun PersonKnownForMedia(
     modifier: Modifier = Modifier,
     onNavigateTo: (route: String) -> Unit,
-    info: () -> CombinedCastCrewInfo
+    info: () -> CombinedCastCrewInfo,
+    preferencesState: State<PreferencesState>
 ) {
     Row(
         modifier = modifier
@@ -80,7 +84,7 @@ fun PersonKnownForMedia(
                 modifier = Modifier
                     .height(80.dp)
                     .aspectRatio(0.675f)
-                    .clip(MaterialTheme.shapes.small),
+                    .clip(RoundedCornerShape((preferencesState.value.corners / 2.25).dp)),
                 model = C.TMDB_IMAGES_BASE_URL + C.POSTER_W154 + info().posterPath,
                 placeholder = painterResource(id = R.drawable.placeholder),
                 error = painterResource(id = R.drawable.placeholder),

@@ -22,10 +22,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -60,23 +58,22 @@ fun MediaCard(
     onNavigateTo: (route: String) -> Unit,
     mediaInfo: MediaInfo,
     mediaType: MediaType? = null,
-    showVoteAverage: Boolean
+    showVoteAverage: Boolean,
+    corners: Int
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(18.dp))
+            .clip(RoundedCornerShape(corners.dp))
             .clickable {
                 mediaType?.let { mediaType ->
                     when (mediaType) {
                         MediaType.TV, MediaType.MOVIE -> {
                             onNavigateTo(RootNavGraph.DETAIL + "/${mediaType.name.lowercase()}/${mediaInfo.id}")
                         }
-
                         MediaType.PERSON -> {
                             onNavigateTo(RootNavGraph.PERSON + "/${mediaInfo.name ?: ""}/${mediaInfo.id}")
                         }
-
                         else -> {
                             /*TODO: Navigate to lost your way screen*/
                         }
@@ -87,11 +84,9 @@ fun MediaCard(
                         MediaType.TV, MediaType.MOVIE -> {
                             onNavigateTo(RootNavGraph.DETAIL + "/${mediaType.name.lowercase()}/${mediaInfo.id}")
                         }
-
                         MediaType.PERSON -> {
                             onNavigateTo(RootNavGraph.PERSON + "/${mediaInfo.name ?: ""}/${mediaInfo.id}")
                         }
-
                         else -> {
                             /*TODO: Navigate to lost your way screen*/
                         }
@@ -107,7 +102,7 @@ fun MediaCard(
             modifier = Modifier
                 .height(150.dp)
                 .aspectRatio(0.675f)
-                .clip(RoundedCornerShape(18.dp))
+                .clip(RoundedCornerShape(corners.dp))
         ) {
             AsyncImage(
                 modifier = Modifier.fillMaxSize(),
@@ -118,26 +113,17 @@ fun MediaCard(
                 contentScale = ContentScale.Crop
             )
             if (showVoteAverage && mediaInfo.voteAverage != null) {
-                Row(
+                Text(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .background(onBackgroundLight.copy(.3f))
-                        .align(Alignment.BottomCenter),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterHorizontally)
-                ) {
-                    Text(
-                        text = formatVoteAverage(mediaInfo.voteAverage),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = backgroundLight
-                    )
-                    Icon(
-                        modifier = Modifier.size(14.dp),
-                        painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
-                        contentDescription = null,
-                        tint = backgroundLight
-                    )
-                }
+                        .padding(8.dp)
+                        .clip(RoundedCornerShape((corners / 3).dp))
+                        .background(onBackgroundLight.copy(.5f))
+                        .padding(horizontal = 4.dp)
+                        .align(Alignment.TopStart),
+                    text = formatVoteAverage(8.5.toFloat()),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = backgroundLight
+                )
             }
         }
         Column {
@@ -171,11 +157,12 @@ fun MediaCard(
 
 @Composable
 fun MediaCardShimmer(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    corners: Int
 ) {
     Row(
         modifier = modifier
-            .clip(RoundedCornerShape(18.dp))
+            .clip(RoundedCornerShape(corners.dp))
             .background(MaterialTheme.colorScheme.surfaceContainerLow)
             .padding(8.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -185,7 +172,7 @@ fun MediaCardShimmer(
             modifier = Modifier
                 .height(150.dp)
                 .aspectRatio(0.675f)
-                .clip(RoundedCornerShape(18.dp))
+                .clip(RoundedCornerShape(corners.dp))
                 .shimmerEffect()
         ) {
             Text(
@@ -238,7 +225,8 @@ fun MediaPoster(
     mediaInfo: MediaInfo,
     mediaType: MediaType? = null,
     showTitle: Boolean,
-    showVoteAverage: Boolean
+    showVoteAverage: Boolean,
+    corners: Int
 ) {
     Column(
         modifier = Modifier.width(IntrinsicSize.Min),
@@ -285,29 +273,20 @@ fun MediaPoster(
                 contentScale = ContentScale.Crop
             )
             if (showVoteAverage && mediaInfo.voteAverage != null) {
-                Row(
+                Text(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .background(onBackgroundLight.copy(.3f))
-                        .align(Alignment.BottomCenter),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(2.dp, Alignment.CenterHorizontally)
-                ) {
-                    Text(
-                        text = formatVoteAverage(mediaInfo.voteAverage),
-                        style = MaterialTheme.typography.labelLarge,
-                        color = backgroundLight
-                    )
-                    Icon(
-                        modifier = Modifier.size(14.dp),
-                        painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
-                        contentDescription = null,
-                        tint = backgroundLight
-                    )
-                }
+                        .padding(8.dp)
+                        .clip(RoundedCornerShape((corners / 3).dp))
+                        .background(onBackgroundLight.copy(.5f))
+                        .padding(horizontal = 4.dp)
+                        .align(Alignment.TopStart),
+                    text = formatVoteAverage(8.5.toFloat()),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = backgroundLight
+                )
             }
         }
-        if (showTitle || mediaType?.equals(MediaType.PERSON) == true) {
+        if (showTitle || mediaType?.equals(MediaType.PERSON) == true || mediaInfo.mediaType?.equals(MediaType.PERSON) == true) {
             mediaInfo.name?.let { name ->
                 Text(
                     modifier = Modifier.fillMaxWidth(),
@@ -380,18 +359,16 @@ fun MediaCardPreview(
         with(sharedTransitionScope) {
             Box(
                 modifier = Modifier
-                    .height(150.dp)
-                    .aspectRatio(0.675f)
-                    .clip(RoundedCornerShape(corners.dp))
                     .sharedElement(
                         rememberSharedContentState(key = "Poster"),
                         animatedVisibilityScope = animatedVisibilityScope
                     )
+                    .height(150.dp)
+                    .aspectRatio(0.675f)
+                    .clip(RoundedCornerShape(corners.dp))
             ) {
                 AsyncImage(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clip(RoundedCornerShape(corners.dp)),
+                    modifier = Modifier.fillMaxSize(),
                     model = C.TMDB_IMAGES_BASE_URL + C.POSTER_W300 + "/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg",
                     placeholder = painterResource(id = R.drawable.placeholder),
                     error = painterResource(id = R.drawable.placeholder),
@@ -462,13 +439,12 @@ fun MediaPosterPreview(
                         rememberSharedContentState(key = "Poster"),
                         animatedVisibilityScope = animatedVisibilityScope
                     )
+                    .height(150.dp)
+                    .aspectRatio(0.675f)
+                    .clip(RoundedCornerShape(corners.dp))
             ) {
                 AsyncImage(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .height(150.dp)
-                        .aspectRatio(0.675f)
-                        .clip(RoundedCornerShape(corners.dp)),
+                    modifier = Modifier.fillMaxSize(),
                     model = C.TMDB_IMAGES_BASE_URL + C.POSTER_W300 + "/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg",
                     placeholder = painterResource(id = R.drawable.placeholder),
                     error = painterResource(id = R.drawable.placeholder),

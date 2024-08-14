@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
@@ -18,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
 import com.personal.tmdb.core.presentation.MediaState
+import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.MediaPoster
 import com.personal.tmdb.core.presentation.components.MediaPosterShimmer
 import com.personal.tmdb.core.util.MediaType
@@ -26,7 +28,8 @@ import com.personal.tmdb.core.util.shimmerEffect
 @Composable
 fun SearchPopularPeople(
     onNavigateTo: (route: String) -> Unit,
-    popularState: () -> MediaState
+    popularState: () -> MediaState,
+    preferencesState: State<PreferencesState>,
 ) {
     Column(
         verticalArrangement = Arrangement.spacedBy(16.dp)
@@ -47,7 +50,7 @@ fun SearchPopularPeople(
                         modifier = Modifier
                             .height(150.dp)
                             .aspectRatio(0.675f)
-                            .clip(RoundedCornerShape(18.dp))
+                            .clip(RoundedCornerShape(preferencesState.value.corners.dp))
                             .shimmerEffect(),
                         showTitle = true
                     )
@@ -63,12 +66,13 @@ fun SearchPopularPeople(
                             modifier = Modifier
                                 .height(150.dp)
                                 .aspectRatio(0.675f)
-                                .clip(RoundedCornerShape(18.dp)),
+                                .clip(RoundedCornerShape(preferencesState.value.corners.dp)),
                             onNavigateTo = onNavigateTo,
                             mediaInfo = mediaInfo,
                             mediaType = MediaType.PERSON,
-                            showTitle = true,
-                            showVoteAverage = true
+                            showTitle = preferencesState.value.showTitle,
+                            showVoteAverage = preferencesState.value.showVoteAverage,
+                            corners = preferencesState.value.corners
                         )
                     }
                 }

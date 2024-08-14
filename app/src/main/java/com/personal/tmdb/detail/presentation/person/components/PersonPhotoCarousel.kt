@@ -14,6 +14,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
@@ -23,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import coil.compose.AsyncImage
 import com.personal.tmdb.R
+import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.detail.domain.models.PersonInfo
 import kotlin.math.absoluteValue
@@ -31,7 +33,8 @@ import kotlin.math.absoluteValue
 @Composable
 fun PersonPhotoCarousel(
     modifier: Modifier = Modifier,
-    personInfo: () -> PersonInfo
+    personInfo: () -> PersonInfo,
+    preferencesState: State<PreferencesState>
 ) {
     val pageCount = if ((personInfo().images?.profiles?.size ?: 0) > 1) 250 else 1
     val horizontalPagerState = rememberPagerState(
@@ -59,7 +62,7 @@ fun PersonPhotoCarousel(
                         modifier = Modifier
                             .height(230.dp)
                             .aspectRatio(0.675f)
-                            .clip(RoundedCornerShape(18.dp)),
+                            .clip(RoundedCornerShape(preferencesState.value.corners.dp)),
                         model = C.TMDB_IMAGES_BASE_URL + C.POSTER_W300,
                         placeholder = painterResource(id = R.drawable.placeholder),
                         error = painterResource(id = R.drawable.placeholder),
@@ -90,7 +93,7 @@ fun PersonPhotoCarousel(
                                         scaleY = scale
                                     }
                                 }
-                                .clip(RoundedCornerShape(18.dp))
+                                .clip(RoundedCornerShape(preferencesState.value.corners.dp))
                                 .clickable { },
                             model = C.TMDB_IMAGES_BASE_URL + C.POSTER_W300 + profiles[page % profiles.size]?.filePath,
                             placeholder = painterResource(id = R.drawable.placeholder),

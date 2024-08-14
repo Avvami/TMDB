@@ -17,6 +17,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,6 +33,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.personal.tmdb.R
+import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.formatDate
 import com.personal.tmdb.core.util.formatRuntime
@@ -43,7 +45,8 @@ import com.personal.tmdb.detail.domain.models.EpisodeInfo
 @Composable
 fun Episode(
     modifier: Modifier = Modifier,
-    episodeInfo: () -> EpisodeInfo
+    episodeInfo: () -> EpisodeInfo,
+    preferencesState: State<PreferencesState>
 ) {
     Column(
         modifier = modifier,
@@ -57,7 +60,7 @@ fun Episode(
                 modifier = Modifier
                     .height(80.dp)
                     .aspectRatio(1.625f)
-                    .clip(RoundedCornerShape(18.dp)),
+                    .clip(RoundedCornerShape(preferencesState.value.corners.dp)),
                 model = C.TMDB_IMAGES_BASE_URL + C.STILL_W300 + episodeInfo().stillPath,
                 placeholder = painterResource(id = R.drawable.placeholder),
                 error = painterResource(id = R.drawable.placeholder),
