@@ -1,5 +1,6 @@
 package com.personal.tmdb.detail.presentation.detail.components
 
+import android.net.Uri
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -327,7 +328,7 @@ fun Details(
                                 Row(
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(2.dp))
-                                        .clickable { onNavigateTo(RootNavGraph.CAST + "/${info().name ?: ""}/${mediaType?.name?.lowercase() ?: ""}/${info().id}") },
+                                        .clickable { onNavigateTo(RootNavGraph.CAST + "/${Uri.encode(info().name ?: "") ?: ""}/${mediaType?.name?.lowercase() ?: ""}/${info().id}") },
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(2.dp)
                                 ) {

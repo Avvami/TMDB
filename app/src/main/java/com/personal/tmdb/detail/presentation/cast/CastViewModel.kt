@@ -1,5 +1,6 @@
 package com.personal.tmdb.detail.presentation.cast
 
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -23,7 +24,7 @@ class CastViewModel @Inject constructor(
     var castState by mutableStateOf(CastState())
         private set
 
-    var mediaName = savedStateHandle[C.MEDIA_NAME] ?: ""
+    var mediaName = Uri.decode(savedStateHandle[C.MEDIA_NAME] ?: "") ?: ""
 
     init {
         getCast(
