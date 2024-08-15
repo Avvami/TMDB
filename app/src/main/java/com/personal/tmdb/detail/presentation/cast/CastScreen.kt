@@ -114,7 +114,7 @@ fun CastScreen(
                             )
                         }
                     }
-                    credits.crew?.let { crew ->
+                    if (!credits.crew.isNullOrEmpty()) {
                         stickyHeader(
                             contentType = "mainHeader"
                         ) {
@@ -130,8 +130,8 @@ fun CastScreen(
                                 )
                             }
                         }
-                        crew.forEach { (department, crewList) ->
-                            department?.let {
+                        credits.crew.forEach { (department, crewList) ->
+                            if (!department.isNullOrEmpty()) {
                                 stickyHeader(
                                     contentType = "subHeader"
                                 ) {
@@ -148,8 +148,8 @@ fun CastScreen(
                                     }
                                 }
                             }
-                            crewList?.let { list ->
-                                items(list) { crew ->
+                            if (!crewList.isNullOrEmpty()) {
+                                items(crewList) { crew ->
                                     CastInfoCard(
                                         onNavigateTo = onNavigateTo,
                                         profileId = crew.id,
