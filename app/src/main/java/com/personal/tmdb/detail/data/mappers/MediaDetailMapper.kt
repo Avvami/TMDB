@@ -42,6 +42,7 @@ fun MediaDetailDto.toMediaDetailInfo(): MediaDetailInfo {
         similar = similar?.toMediaResponseInfo(),
         tagline = if (tagline.isNullOrEmpty()) null else tagline,
         voteAverage = voteAverage?.toFloat(),
+        voteCount = voteCount,
         watchProviders = watchProviders?.watchProvidersResults?.mapKeys { (key, _) -> Locale("", key).displayCountry}
     )
 }

@@ -2,6 +2,7 @@ package com.personal.tmdb.detail.presentation.detail.components
 
 import android.net.Uri
 import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -16,8 +17,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.selection.SelectionContainer
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.rounded.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -40,6 +44,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import com.personal.tmdb.R
+import com.personal.tmdb.UserState
 import com.personal.tmdb.core.navigation.RootNavGraph
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.util.C
@@ -54,6 +59,7 @@ import com.personal.tmdb.detail.domain.models.MediaDetailInfo
 import com.personal.tmdb.detail.presentation.collection.CollectionState
 import com.personal.tmdb.detail.presentation.detail.DetailUiEvent
 import com.personal.tmdb.ui.theme.backgroundLight
+import com.personal.tmdb.ui.theme.justWatch
 import com.personal.tmdb.ui.theme.tmdbDarkBlue
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -65,6 +71,7 @@ fun Details(
     collectionState: () -> CollectionState,
     isOverviewCollapsed: () -> Boolean,
     preferencesState: State<PreferencesState>,
+    userState: State<UserState>,
     detailUiEvent: (DetailUiEvent) -> Unit
 ) {
     val context = LocalContext.current
@@ -90,6 +97,9 @@ fun Details(
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
+                        val userCountryCode = userState.value.userInfo?.iso31661 ?: "US"
+                        val contentRatingResult = info().contentRatings?.contentRatingsResults?.find { it.iso31661 == userCountryCode }
+                        val releaseDateResult = info().releaseDates?.releaseDatesResults?.find { it.iso31661 == userCountryCode }
                         info().releaseDate?.let { releaseDate ->
                             Text(
                                 modifier = Modifier.align(Alignment.CenterVertically),
@@ -98,53 +108,8 @@ fun Details(
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
                         }
-                        info().contentRatings?.contentRatingsResults?.find { it.iso31661 == "US" }?.let { result ->
-                            if (result.rating.isNotEmpty()) {
-                                Icon(
-                                    modifier = Modifier
-                                        .size(6.dp)
-                                        .align(Alignment.CenterVertically),
-                                    painter = painterResource(id = R.drawable.icon_fiber_manual_record_fill1_wght400),
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                                Text(
-                                    modifier = Modifier
-                                        .clip(MaterialTheme.shapes.extraSmall)
-                                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                                        .padding(horizontal = 8.dp)
-                                        .align(Alignment.CenterVertically),
-                                    text = result.rating,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                        }
-                        info().releaseDates?.releaseDatesResults?.find { it.iso31661 == "US" }?.let { result ->
-                            result.releaseDates?.find { it.certification.isNotEmpty() }?.let { release ->
-                                if (release.certification.isNotEmpty()) {
-                                    Icon(
-                                        modifier = Modifier
-                                            .size(6.dp)
-                                            .align(Alignment.CenterVertically),
-                                        painter = painterResource(id = R.drawable.icon_fiber_manual_record_fill1_wght400),
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                    Text(
-                                        modifier = Modifier
-                                            .clip(MaterialTheme.shapes.extraSmall)
-                                            .background(MaterialTheme.colorScheme.surfaceVariant)
-                                            .padding(horizontal = 8.dp)
-                                            .align(Alignment.CenterVertically),
-                                        text = release.certification,
-                                        style = MaterialTheme.typography.bodyLarge,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                }
-                            }
-                        }
-                        info().runtime?.let { runtime ->
+                        if (info().releaseDate != null
+                            && (contentRatingResult != null || releaseDateResult?.releaseDates?.any { it.certification.isNotEmpty() } == true)) {
                             Icon(
                                 modifier = Modifier
                                     .size(6.dp)
@@ -153,6 +118,57 @@ fun Details(
                                 contentDescription = null,
                                 tint = MaterialTheme.colorScheme.onSurfaceVariant
                             )
+                        }
+                        contentRatingResult?.rating?.takeIf { it.isNotEmpty() }?.let { rating ->
+                            Text(
+                                modifier = Modifier
+                                    .clip(MaterialTheme.shapes.extraSmall)
+                                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                                    .padding(horizontal = 8.dp)
+                                    .align(Alignment.CenterVertically),
+                                text = rating,
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        if (contentRatingResult == null && releaseDateResult?.releaseDates?.any { it.certification.isNotEmpty() } == false) {
+                            Icon(
+                                modifier = Modifier
+                                    .size(6.dp)
+                                    .align(Alignment.CenterVertically),
+                                painter = painterResource(id = R.drawable.icon_fiber_manual_record_fill1_wght400),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        releaseDateResult?.releaseDates
+                            ?.find { it.certification.isNotEmpty() }
+                            ?.certification
+                            ?.takeIf { it.isNotEmpty() }
+                            ?.let { certification ->
+                                Text(
+                                    modifier = Modifier
+                                        .clip(MaterialTheme.shapes.extraSmall)
+                                        .background(MaterialTheme.colorScheme.surfaceVariant)
+                                        .padding(horizontal = 8.dp)
+                                        .align(Alignment.CenterVertically),
+                                    text = certification,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        if ((contentRatingResult != null || releaseDateResult?.releaseDates?.any { it.certification.isNotEmpty() } == true)
+                            && (info().runtime != null || (info().numberOfSeasons != null && info().numberOfEpisodes != null))) {
+                            Icon(
+                                modifier = Modifier
+                                    .size(6.dp)
+                                    .align(Alignment.CenterVertically),
+                                painter = painterResource(id = R.drawable.icon_fiber_manual_record_fill1_wght400),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        info().runtime?.let { runtime ->
                             Text(
                                 modifier = Modifier.align(Alignment.CenterVertically),
                                 text = formatRuntime(runtime, context),
@@ -161,17 +177,9 @@ fun Details(
                             )
                         }
                         if (info().numberOfSeasons != null && info().numberOfEpisodes != null) {
-                            Icon(
-                                modifier = Modifier
-                                    .size(6.dp)
-                                    .align(Alignment.CenterVertically),
-                                painter = painterResource(id = R.drawable.icon_fiber_manual_record_fill1_wght400),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
                             Text(
                                 modifier = Modifier.align(Alignment.CenterVertically),
-                                text = formatTvShowRuntime(info().numberOfSeasons!!, info().numberOfEpisodes!!),
+                                text = formatTvShowRuntime(info().numberOfSeasons ?: 0, info().numberOfEpisodes ?: 0),
                                 style = MaterialTheme.typography.bodyLarge,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
@@ -179,7 +187,9 @@ fun Details(
                     }
                 }
                 info().voteAverage?.let { voteAverage ->
-                    Column {
+                    Column(
+                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
                         LinearProgressIndicator(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -192,40 +202,95 @@ fun Details(
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceBetween
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             Row(
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(2.dp)
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                Text(
-                                    text = formatVoteAverage(voteAverage),
-                                    style = MaterialTheme.typography.labelLarge,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                                Icon(
-                                    modifier = Modifier.size(14.dp),
-                                    painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                            }
-                            if (false) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(2.dp)
+                                Box(
+                                    modifier = Modifier
+                                        .sizeIn(minWidth = 32.dp, minHeight = 32.dp)
+                                        .clip(MaterialTheme.shapes.small)
+                                        .background(justWatch),
+                                    contentAlignment = Alignment.Center
                                 ) {
+                                    Image(
+                                        modifier = Modifier.size(20.dp),
+                                        painter = painterResource(id = R.drawable.tmdb_logo_square),
+                                        contentDescription = stringResource(id = R.string.tmdb)
+                                    )
+                                }
+                                Column {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(2.dp)
+                                    ) {
+                                        Text(
+                                            text = formatVoteAverage(voteAverage),
+                                            style = MaterialTheme.typography.labelLarge,
+                                            color = MaterialTheme.colorScheme.onBackground
+                                        )
+                                        Icon(
+                                            modifier = Modifier.size(14.dp),
+                                            painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
+                                            contentDescription = null,
+                                            tint = MaterialTheme.colorScheme.onBackground
+                                        )
+                                    }
+                                    info().voteCount?.takeIf { it != 0 }?.let { voteCount ->
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(2.dp)
+                                        ) {
+                                            Text(
+                                                text = voteCount.toString(),
+                                                style = MaterialTheme.typography.labelSmall,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                            Icon(
+                                                modifier = Modifier.size(12.dp),
+                                                painter = painterResource(id = R.drawable.icon_group_fill0_wght400),
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                            Row(
+                                modifier = Modifier
+                                    .clip(MaterialTheme.shapes.small)
+                                    .clickable { /*TODO: Show rate bottom sheet*/ },
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Box(
+                                    modifier = Modifier
+                                        .sizeIn(minWidth = 32.dp, minHeight = 32.dp)
+                                        .clip(MaterialTheme.shapes.small)
+                                        .background(MaterialTheme.colorScheme.surfaceContainer),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    if (/*TODO: Not rated by user*/true) {
+                                        Icon(
+                                            modifier = Modifier.size(20.dp),
+                                            imageVector = Icons.Rounded.Add,
+                                            contentDescription = "Add rating",
+                                            tint = MaterialTheme.colorScheme.primary
+                                        )
+                                    } else {
+                                        /*TODO: User rating*/
+                                    }
+                                }
+                                if (/*TODO: Not rated by user*/true) {
                                     Text(
-                                        text = "Your: 10",
-                                        style = MaterialTheme.typography.labelLarge,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        text = stringResource(id = R.string.rate_now),
+                                        style = MaterialTheme.typography.titleMedium,
+                                        color = MaterialTheme.colorScheme.primary
                                     )
-                                    Icon(
-                                        modifier = Modifier.size(14.dp),
-                                        painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
+                                } else {
+                                    /*TODO: User rating*/
                                 }
                             }
                         }
@@ -328,7 +393,15 @@ fun Details(
                                 Row(
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(2.dp))
-                                        .clickable { onNavigateTo(RootNavGraph.CAST + "/${Uri.encode(info().name ?: "") ?: ""}/${mediaType?.name?.lowercase() ?: ""}/${info().id}") },
+                                        .clickable {
+                                            onNavigateTo(
+                                                RootNavGraph.CAST + "/${
+                                                    Uri.encode(
+                                                        info().name ?: ""
+                                                    ) ?: ""
+                                                }/${mediaType?.name?.lowercase() ?: ""}/${info().id}"
+                                            )
+                                        },
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(2.dp)
                                 ) {

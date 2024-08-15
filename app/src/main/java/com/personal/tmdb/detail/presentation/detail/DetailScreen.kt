@@ -41,6 +41,7 @@ import androidx.compose.ui.util.fastForEachIndexed
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.personal.tmdb.R
+import com.personal.tmdb.UserState
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.MediaPoster
 import com.personal.tmdb.detail.presentation.detail.components.DetailScreenShimmer
@@ -54,6 +55,7 @@ fun DetailScreen(
     navigateBack: () -> Unit,
     onNavigateTo: (route: String) -> Unit,
     preferencesState: State<PreferencesState>,
+    userState: State<UserState>,
     detailViewModel: DetailViewModel = hiltViewModel()
 ) {
     Scaffold(
@@ -129,6 +131,7 @@ fun DetailScreen(
                             collectionState = detailViewModel::collectionState,
                             isOverviewCollapsed = detailViewModel::isOverviewCollapsed,
                             preferencesState = preferencesState,
+                            userState = userState,
                             detailUiEvent = detailViewModel::detailUiEvent
                         )
                     }

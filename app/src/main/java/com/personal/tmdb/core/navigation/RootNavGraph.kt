@@ -103,7 +103,8 @@ fun RootNavigationGraph(
                 onNavigateTo = { route ->
                     navController.navigate(route = route)
                 },
-                preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle()
+                preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle(),
+                userState = mainViewModel.userState.collectAsStateWithLifecycle()
             )
         }
         animatedComposable(
