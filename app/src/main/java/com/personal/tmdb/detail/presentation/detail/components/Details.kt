@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.FlowRowScope
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -74,7 +75,6 @@ fun Details(
     userState: State<UserState>,
     detailUiEvent: (DetailUiEvent) -> Unit
 ) {
-    val context = LocalContext.current
     SelectionContainer {
         Column(
             modifier = Modifier.padding(horizontal = 16.dp),
@@ -93,96 +93,24 @@ fun Details(
                             fontWeight = FontWeight.Medium
                         )
                     }
-                    FlowRow(
-                        horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        val userCountryCode = userState.value.userInfo?.iso31661 ?: "US"
-                        val contentRatingResult = info().contentRatings?.contentRatingsResults?.find { it.iso31661 == userCountryCode }
-                        val releaseDateResult = info().releaseDates?.releaseDatesResults?.find { it.iso31661 == userCountryCode }
-                        info().releaseDate?.let { releaseDate ->
-                            Text(
-                                modifier = Modifier.align(Alignment.CenterVertically),
-                                text = formatDate(releaseDate),
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        if (info().releaseDate != null
-                            && (contentRatingResult != null || releaseDateResult?.releaseDates?.any { it.certification.isNotEmpty() } == true)) {
-                            Icon(
-                                modifier = Modifier
-                                    .size(6.dp)
-                                    .align(Alignment.CenterVertically),
-                                painter = painterResource(id = R.drawable.icon_fiber_manual_record_fill1_wght400),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        contentRatingResult?.rating?.takeIf { it.isNotEmpty() }?.let { rating ->
-                            Text(
-                                modifier = Modifier
-                                    .clip(MaterialTheme.shapes.extraSmall)
-                                    .background(MaterialTheme.colorScheme.surfaceVariant)
-                                    .padding(horizontal = 8.dp)
-                                    .align(Alignment.CenterVertically),
-                                text = rating,
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        if (contentRatingResult == null && releaseDateResult?.releaseDates?.any { it.certification.isNotEmpty() } == false) {
-                            Icon(
-                                modifier = Modifier
-                                    .size(6.dp)
-                                    .align(Alignment.CenterVertically),
-                                painter = painterResource(id = R.drawable.icon_fiber_manual_record_fill1_wght400),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        releaseDateResult?.releaseDates
-                            ?.find { it.certification.isNotEmpty() }
-                            ?.certification
-                            ?.takeIf { it.isNotEmpty() }
-                            ?.let { certification ->
-                                Text(
-                                    modifier = Modifier
-                                        .clip(MaterialTheme.shapes.extraSmall)
-                                        .background(MaterialTheme.colorScheme.surfaceVariant)
-                                        .padding(horizontal = 8.dp)
-                                        .align(Alignment.CenterVertically),
-                                    text = certification,
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
+                    contentRow(info = info, userState = userState).takeIf { it.isNotEmpty() }?.let { components ->
+                        FlowRow(
+                            horizontalArrangement = Arrangement.spacedBy(6.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            components.forEachIndexed { index, component ->
+                                component()
+                                if (index != components.lastIndex) {
+                                    Icon(
+                                        modifier = Modifier
+                                            .size(6.dp)
+                                            .align(Alignment.CenterVertically),
+                                        painter = painterResource(id = R.drawable.icon_fiber_manual_record_fill1_wght400),
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
                             }
-                        if ((contentRatingResult != null || releaseDateResult?.releaseDates?.any { it.certification.isNotEmpty() } == true)
-                            && (info().runtime != null || (info().numberOfSeasons != null && info().numberOfEpisodes != null))) {
-                            Icon(
-                                modifier = Modifier
-                                    .size(6.dp)
-                                    .align(Alignment.CenterVertically),
-                                painter = painterResource(id = R.drawable.icon_fiber_manual_record_fill1_wght400),
-                                contentDescription = null,
-                                tint = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        info().runtime?.let { runtime ->
-                            Text(
-                                modifier = Modifier.align(Alignment.CenterVertically),
-                                text = formatRuntime(runtime, context),
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        if (info().numberOfSeasons != null && info().numberOfEpisodes != null) {
-                            Text(
-                                modifier = Modifier.align(Alignment.CenterVertically),
-                                text = formatTvShowRuntime(info().numberOfSeasons ?: 0, info().numberOfEpisodes ?: 0),
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
                         }
                     }
                 }
@@ -513,6 +441,81 @@ fun Details(
                             }
                         }
                     }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+fun contentRow(
+    info: () -> MediaDetailInfo,
+    userState: State<UserState>
+): List<@Composable (FlowRowScope.() -> Unit)> {
+    return with(info()) {
+        val userCountryCode = userState.value.userInfo?.iso31661 ?: "US"
+        val tvShowContentRating = contentRatings?.contentRatingsResults?.find { it.iso31661 == userCountryCode }?.rating?.takeIf { it.isNotEmpty() }
+        val movieContentRating = releaseDates?.releaseDatesResults?.find { it.iso31661 == userCountryCode }?.releaseDates
+            ?.find { it.certification.isNotEmpty() }?.certification?.takeIf { it.isNotEmpty() }
+        buildList<@Composable FlowRowScope.() -> Unit> {
+            releaseDate?.let { releaseDate ->
+                add {
+                    Text(
+                        text = formatDate(releaseDate),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.align(Alignment.CenterVertically)
+                    )
+                }
+            }
+            tvShowContentRating?.let { showRating ->
+                add {
+                    Text(
+                        modifier = Modifier
+                            .clip(MaterialTheme.shapes.extraSmall)
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .padding(horizontal = 8.dp)
+                            .align(Alignment.CenterVertically),
+                        text = showRating,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+            movieContentRating?.let { movieRating ->
+                add {
+                    Text(
+                        modifier = Modifier
+                            .clip(MaterialTheme.shapes.extraSmall)
+                            .background(MaterialTheme.colorScheme.surfaceVariant)
+                            .padding(horizontal = 8.dp)
+                            .align(Alignment.CenterVertically),
+                        text = movieRating,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+            runtime?.let { runtime ->
+                val context = LocalContext.current
+                add {
+                    Text(
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                        text = formatRuntime(runtime, context),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
+            }
+            if (numberOfSeasons != null && numberOfEpisodes != null) {
+                add {
+                    Text(
+                        modifier = Modifier.align(Alignment.CenterVertically),
+                        text = formatTvShowRuntime(numberOfSeasons, numberOfEpisodes),
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
             }
         }
