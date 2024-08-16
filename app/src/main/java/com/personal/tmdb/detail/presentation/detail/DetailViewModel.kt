@@ -1,13 +1,11 @@
 package com.personal.tmdb.detail.presentation.detail
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.personal.tmdb.R
 import com.personal.tmdb.core.domain.util.appendToResponse
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.Resource
@@ -39,18 +37,6 @@ class DetailViewModel @Inject constructor(
         private set
 
     var seasonState by mutableStateOf(SeasonState())
-        private set
-
-    var selectedSeasonNumber by mutableIntStateOf(0)
-        private set
-
-    var pageLabelsRes by mutableStateOf(listOf<Int>())
-        private set
-
-    var pagerPageCount by mutableStateOf<Int?>(null)
-        private set
-
-    var selectedTab by mutableIntStateOf(0)
         private set
 
     var availableState by mutableStateOf(AvailableState())
@@ -104,31 +90,6 @@ class DetailViewModel @Inject constructor(
             mediaDetail?.belongsToCollection?.let { collection ->
                 getCollection(collectionId = collection.id)
             }
-            mediaDetail?.let { detail ->
-                val labelsRes = mutableListOf<Int>()
-
-                if (!detail.seasons.isNullOrEmpty()) {
-                    val season = detail.seasons.find { it.seasonNumber == 1 } ?: detail.seasons[0]
-                    selectedSeasonNumber = season.seasonNumber
-                    getSeasonDetail(detail.id, selectedSeasonNumber)
-                    labelsRes.add(R.string.episodes)
-                }
-                if (detail.watchProviders != null) {
-                    _availableCountries.value = detail.watchProviders.keys
-                    availableState = availableState.copy(
-                        selectedCountry = "United States"
-                    )
-                }
-                if (detail.similar != null) {
-                    labelsRes.add(R.string.similar)
-                }
-                if (detail.recommendations != null) {
-                    labelsRes.add(R.string.recommendations)
-                }
-
-                pageLabelsRes = labelsRes
-                pagerPageCount = labelsRes.size
-            }
 
             detailState = detailState.copy(
                 mediaDetail = mediaDetail,
@@ -166,6 +127,7 @@ class DetailViewModel @Inject constructor(
     }
 
     private fun getSeasonDetail(seriesId: Int, seasonNumber: Int, language: String? = null) {
+        /*TODO: Moving to separate screen*/
         viewModelScope.launch {
             seasonState = seasonState.copy(
                 isLoading = true,
@@ -216,11 +178,7 @@ class DetailViewModel @Inject constructor(
             }
             is DetailUiEvent.SetSelectedSeason -> {
                 isSeasonOverviewCollapsed = true
-                selectedSeasonNumber = event.seasonNumber
-                getSeasonDetail(event.seriesId, selectedSeasonNumber)
-            }
-            is DetailUiEvent.SetSelectedTab -> {
-                selectedTab = event.tabIndex
+                getSeasonDetail(event.seriesId, 1)
             }
             is DetailUiEvent.SetSelectedCountry -> {
                 availableState = availableState.copy(

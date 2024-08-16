@@ -1,5 +1,7 @@
 package com.personal.tmdb.detail.presentation.detail
 
+import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,33 +13,28 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ScrollableTabRow
-import androidx.compose.material3.Tab
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.util.fastForEachIndexed
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.personal.tmdb.R
@@ -46,10 +43,9 @@ import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.MediaPoster
 import com.personal.tmdb.detail.presentation.detail.components.DetailScreenShimmer
 import com.personal.tmdb.detail.presentation.detail.components.Details
-import com.personal.tmdb.detail.presentation.detail.components.Episodes
 import com.personal.tmdb.detail.presentation.detail.components.Trailer
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun DetailScreen(
     navigateBack: () -> Unit,
@@ -136,131 +132,94 @@ fun DetailScreen(
                         )
                     }
                     item {
-                        detailViewModel.pagerPageCount?.let { pageCount ->
-                            Column(
-                                verticalArrangement = Arrangement.spacedBy(8.dp)
-                            ) {
-                                val horizontalPagerState = rememberPagerState(
-                                    initialPage = detailViewModel.selectedTab,
-                                    pageCount = { pageCount }
-                                )
-                                LaunchedEffect(key1 = detailViewModel.selectedTab) {
-                                    horizontalPagerState.animateScrollToPage(detailViewModel.selectedTab)
-                                }
-                                ScrollableTabRow(
-                                    selectedTabIndex = detailViewModel.selectedTab,
-                                    containerColor = Color.Transparent,
-                                    edgePadding = 16.dp
+                        HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+                    }
+                    if (!info.similar?.results.isNullOrEmpty()) {
+                        info.similar?.results?.let { similar ->
+                            item {
+                                Column(
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)
                                 ) {
-                                    detailViewModel.pageLabelsRes.fastForEachIndexed { index, stringRes ->
-                                        Tab(
-                                            selected = index == detailViewModel.selectedTab,
-                                            onClick = {
-                                                detailViewModel.detailUiEvent(DetailUiEvent.SetSelectedTab(index))
-                                            },
-                                            text = {
-                                                Text(text = stringResource(id = stringRes))
-                                            }
-                                        )
-                                    }
-                                }
-                                HorizontalPager(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    state = horizontalPagerState,
-                                    verticalAlignment = Alignment.Top,
-                                    userScrollEnabled = false
-                                ) { page ->
-                                    when (detailViewModel.pageLabelsRes[page]) {
-                                        R.string.episodes -> {
-                                            info.seasons?.let { seasons ->
-                                                Episodes(
+                                    Text(
+                                        modifier = Modifier.padding(start = 16.dp),
+                                        text = stringResource(id = R.string.similar),
+                                        style = MaterialTheme.typography.titleLarge,
+                                        fontWeight = FontWeight.Medium
+                                    )
+                                    CompositionLocalProvider(
+                                        LocalOverscrollConfiguration provides null
+                                    ) {
+                                        LazyRow(
+                                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                        ) {
+                                            items(
+                                                count = similar.size,
+                                                key = { similar[it].id }
+                                            ) { index ->
+                                                val mediaInfo = similar[index]
+                                                MediaPoster(
+                                                    modifier = Modifier
+                                                        .height(150.dp)
+                                                        .aspectRatio(0.675f)
+                                                        .clip(
+                                                            RoundedCornerShape(
+                                                                preferencesState.value.corners.dp
+                                                            )
+                                                        ),
                                                     onNavigateTo = onNavigateTo,
-                                                    seasonState = detailViewModel::seasonState,
-                                                    seasons = { seasons },
-                                                    detailInfo = { info },
-                                                    selectedSeasonNumber = detailViewModel::selectedSeasonNumber,
-                                                    isSeasonDropdownExpanded = detailViewModel::isSeasonDropdownExpanded,
-                                                    isSeasonOverviewCollapsed = detailViewModel::isSeasonOverviewCollapsed,
-                                                    preferencesState = preferencesState,
-                                                    detailUiEvent = detailViewModel::detailUiEvent
+                                                    mediaInfo = mediaInfo,
+                                                    mediaType = detailViewModel.detailState.mediaType,
+                                                    showTitle = preferencesState.value.showTitle,
+                                                    showVoteAverage = preferencesState.value.showVoteAverage,
+                                                    corners = preferencesState.value.corners
                                                 )
                                             }
                                         }
-                                        R.string.recommendations -> {
-                                            info.recommendations?.results?.let { recommendations ->
-                                                if (recommendations.isEmpty()) {
-                                                    Text(
-                                                        modifier = Modifier
-                                                            .padding(vertical = 8.dp)
-                                                            .fillMaxWidth(),
-                                                        text = stringResource(id = R.string.no_recommendations, info.name ?: ""),
-                                                        style = MaterialTheme.typography.bodyLarge,
-                                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                        textAlign = TextAlign.Center
-                                                    )
-                                                } else {
-                                                    LazyRow(
-                                                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                                                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                                    ) {
-                                                        items(
-                                                            count = recommendations.size,
-                                                            key = { recommendations[it].id }
-                                                        ) { index ->
-                                                            val mediaInfo = recommendations[index]
-                                                            MediaPoster(
-                                                                modifier = Modifier
-                                                                    .height(150.dp)
-                                                                    .aspectRatio(0.675f)
-                                                                    .clip(RoundedCornerShape(preferencesState.value.corners.dp)),
-                                                                onNavigateTo = onNavigateTo,
-                                                                mediaInfo = mediaInfo,
-                                                                showTitle = preferencesState.value.showTitle,
-                                                                showVoteAverage = preferencesState.value.showVoteAverage,
-                                                                corners = preferencesState.value.corners
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    if (!info.recommendations?.results.isNullOrEmpty()) {
+                        info.recommendations?.results?.let { recommendations ->
+                            item {
+                                Column(
+                                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                                ) {
+                                    Text(
+                                        modifier = Modifier.padding(start = 16.dp),
+                                        text = stringResource(id = R.string.recommendations),
+                                        style = MaterialTheme.typography.titleLarge,
+                                        fontWeight = FontWeight.Medium
+                                    )
+                                    CompositionLocalProvider(
+                                        LocalOverscrollConfiguration provides null
+                                    ) {
+                                        LazyRow(
+                                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+                                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                        ) {
+                                            items(
+                                                count = recommendations.size,
+                                                key = { recommendations[it].id }
+                                            ) { index ->
+                                                val mediaInfo = recommendations[index]
+                                                MediaPoster(
+                                                    modifier = Modifier
+                                                        .height(150.dp)
+                                                        .aspectRatio(0.675f)
+                                                        .clip(
+                                                            RoundedCornerShape(
+                                                                preferencesState.value.corners.dp
                                                             )
-                                                        }
-                                                    }
-                                                }
-                                            }
-                                        }
-                                        R.string.similar -> {
-                                            info.similar?.results?.let { similar ->
-                                                if (similar.isEmpty()) {
-                                                    Text(
-                                                        modifier = Modifier
-                                                            .padding(vertical = 8.dp)
-                                                            .fillMaxWidth(),
-                                                        text = stringResource(id = R.string.no_similar),
-                                                        style = MaterialTheme.typography.bodyLarge,
-                                                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                                        textAlign = TextAlign.Center
-                                                    )
-                                                } else {
-                                                    LazyRow(
-                                                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                                                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                                    ) {
-                                                        items(
-                                                            count = similar.size,
-                                                            key = { similar[it].id }
-                                                        ) { index ->
-                                                            val mediaInfo = similar[index]
-                                                            MediaPoster(
-                                                                modifier = Modifier
-                                                                    .height(150.dp)
-                                                                    .aspectRatio(0.675f)
-                                                                    .clip(RoundedCornerShape(preferencesState.value.corners.dp)),
-                                                                onNavigateTo = onNavigateTo,
-                                                                mediaInfo = mediaInfo,
-                                                                mediaType = detailViewModel.detailState.mediaType,
-                                                                showTitle = preferencesState.value.showTitle,
-                                                                showVoteAverage = preferencesState.value.showVoteAverage,
-                                                                corners = preferencesState.value.corners
-                                                            )
-                                                        }
-                                                    }
-                                                }
+                                                        ),
+                                                    onNavigateTo = onNavigateTo,
+                                                    mediaInfo = mediaInfo,
+                                                    showTitle = preferencesState.value.showTitle,
+                                                    showVoteAverage = preferencesState.value.showVoteAverage,
+                                                    corners = preferencesState.value.corners
+                                                )
                                             }
                                         }
                                     }
