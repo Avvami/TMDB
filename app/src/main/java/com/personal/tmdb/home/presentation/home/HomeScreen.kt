@@ -69,6 +69,7 @@ import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.GradientButton
 import com.personal.tmdb.core.presentation.components.MediaPoster
 import com.personal.tmdb.core.presentation.components.MediaPosterShimmer
+import com.personal.tmdb.core.presentation.components.MediaRowView
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.MediaType
 import com.personal.tmdb.core.util.duotoneColorFilter
@@ -321,19 +322,9 @@ fun HomeScreen(
                     }
                 }
                 item {
-                    Column(
-                        verticalArrangement = Arrangement.spacedBy(16.dp)
-                    ) {
-                        Text(
-                            modifier = Modifier.padding(start = 16.dp),
-                            text = stringResource(id = R.string.trending),
-                            style = MaterialTheme.typography.titleLarge,
-                            fontWeight = FontWeight.Medium
-                        )
-                        LazyRow(
-                            contentPadding = PaddingValues(horizontal = 16.dp),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
+                    MediaRowView(
+                        titleRes = R.string.trending,
+                        items = {
                             if (homeState().trending == null) {
                                 items(15) {
                                     MediaPosterShimmer(
@@ -367,7 +358,7 @@ fun HomeScreen(
                                 }
                             }
                         }
-                    }
+                    )
                 }
                 if (userState.value.sessionId.isNullOrEmpty()) {
                     item {

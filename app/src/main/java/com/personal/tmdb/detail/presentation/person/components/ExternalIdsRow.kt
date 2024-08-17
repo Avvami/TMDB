@@ -36,12 +36,6 @@ fun ExternalIdsRow(
                     iconRes = R.drawable.icon_facebook
                 )
             }
-            externalIds.imdbId?.let { imdbId ->
-                ExternalId(
-                    link = imdbId,
-                    iconRes = R.drawable.icon_imdb
-                )
-            }
             externalIds.instagramId?.let { instagramId ->
                 ExternalId(
                     link = instagramId,
@@ -58,12 +52,6 @@ fun ExternalIdsRow(
                 ExternalId(
                     link = twitterId,
                     iconRes = R.drawable.icon_twitter
-                )
-            }
-            externalIds.wikidataId?.let { wikidataId ->
-                ExternalId(
-                    link = wikidataId,
-                    iconRes = R.drawable.icon_wikipedia
                 )
             }
             externalIds.youtubeId?.let { youtubeId ->

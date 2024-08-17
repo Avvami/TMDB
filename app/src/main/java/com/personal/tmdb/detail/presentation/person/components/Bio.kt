@@ -15,6 +15,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.personal.tmdb.R
 import com.personal.tmdb.detail.domain.models.PersonInfo
 import com.personal.tmdb.detail.presentation.person.PersonUiEvent
@@ -34,7 +35,8 @@ fun Bio(
             Text(
                 text = stringResource(id = R.string.bio),
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
+                fontSize = 20.sp
             )
             if (personInfo().biography.isNullOrEmpty()) {
                 Text(

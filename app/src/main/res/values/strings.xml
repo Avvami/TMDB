@@ -103,4 +103,5 @@
     <string name="season_episode">S%d:E%d</string>
     <string name="last_episode">Last Episode</string>
     <string name="next_episode">Next episode</string>
+    <string name="credits">Credits</string>
 </resources>

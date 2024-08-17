@@ -1,18 +1,14 @@
 package com.personal.tmdb.detail.presentation.detail
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
@@ -26,7 +22,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -35,18 +30,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.personal.tmdb.R
 import com.personal.tmdb.UserState
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.MediaPoster
+import com.personal.tmdb.core.presentation.components.MediaRowView
 import com.personal.tmdb.detail.presentation.detail.components.AllEpisodes
 import com.personal.tmdb.detail.presentation.detail.components.DetailScreenShimmer
 import com.personal.tmdb.detail.presentation.detail.components.Details
 import com.personal.tmdb.detail.presentation.detail.components.Trailer
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailScreen(
     navigateBack: () -> Unit,
@@ -148,93 +145,68 @@ fun DetailScreen(
                     if (!info.similar?.results.isNullOrEmpty()) {
                         info.similar?.results?.let { similar ->
                             item {
-                                Column(
-                                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    Text(
-                                        modifier = Modifier.padding(start = 16.dp),
-                                        text = stringResource(id = R.string.similar),
-                                        style = MaterialTheme.typography.titleLarge,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                    CompositionLocalProvider(
-                                        LocalOverscrollConfiguration provides null
-                                    ) {
-                                        LazyRow(
-                                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                        ) {
-                                            items(
-                                                count = similar.size,
-                                                key = { similar[it].id }
-                                            ) { index ->
-                                                val mediaInfo = similar[index]
-                                                MediaPoster(
-                                                    modifier = Modifier
-                                                        .height(150.dp)
-                                                        .aspectRatio(0.675f)
-                                                        .clip(
-                                                            RoundedCornerShape(
-                                                                preferencesState.value.corners.dp
-                                                            )
-                                                        ),
-                                                    onNavigateTo = onNavigateTo,
-                                                    mediaInfo = mediaInfo,
-                                                    mediaType = detailViewModel.detailState.mediaType,
-                                                    showTitle = preferencesState.value.showTitle,
-                                                    showVoteAverage = preferencesState.value.showVoteAverage,
-                                                    corners = preferencesState.value.corners
-                                                )
-                                            }
+                                MediaRowView(
+                                    titleRes = R.string.similar,
+                                    titleFontSize = 20.sp,
+                                    items = {
+                                        items(
+                                            count = similar.size,
+                                            key = { similar[it].id }
+                                        ) { index ->
+                                            val mediaInfo = similar[index]
+                                            MediaPoster(
+                                                modifier = Modifier
+                                                    .height(150.dp)
+                                                    .aspectRatio(0.675f)
+                                                    .clip(
+                                                        RoundedCornerShape(
+                                                            preferencesState.value.corners.dp
+                                                        )
+                                                    ),
+                                                onNavigateTo = onNavigateTo,
+                                                mediaInfo = mediaInfo,
+                                                mediaType = detailViewModel.detailState.mediaType,
+                                                showTitle = preferencesState.value.showTitle,
+                                                showVoteAverage = preferencesState.value.showVoteAverage,
+                                                corners = preferencesState.value.corners
+                                            )
                                         }
                                     }
-                                }
+                                )
                             }
                         }
                     }
                     if (!info.recommendations?.results.isNullOrEmpty()) {
                         info.recommendations?.results?.let { recommendations ->
                             item {
-                                Column(
-                                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                                ) {
-                                    Text(
-                                        modifier = Modifier.padding(start = 16.dp),
-                                        text = stringResource(id = R.string.recommendations),
-                                        style = MaterialTheme.typography.titleLarge,
-                                        fontWeight = FontWeight.Medium
-                                    )
-                                    CompositionLocalProvider(
-                                        LocalOverscrollConfiguration provides null
-                                    ) {
-                                        LazyRow(
-                                            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                                        ) {
-                                            items(
-                                                count = recommendations.size,
-                                                key = { recommendations[it].id }
-                                            ) { index ->
-                                                val mediaInfo = recommendations[index]
-                                                MediaPoster(
-                                                    modifier = Modifier
-                                                        .height(150.dp)
-                                                        .aspectRatio(0.675f)
-                                                        .clip(
-                                                            RoundedCornerShape(
-                                                                preferencesState.value.corners.dp
-                                                            )
-                                                        ),
-                                                    onNavigateTo = onNavigateTo,
-                                                    mediaInfo = mediaInfo,
-                                                    showTitle = preferencesState.value.showTitle,
-                                                    showVoteAverage = preferencesState.value.showVoteAverage,
-                                                    corners = preferencesState.value.corners
-                                                )
-                                            }
+                                MediaRowView(
+                                    titleRes = R.string.recommendations,
+                                    titleFontSize = 20.sp,
+                                    items = {
+                                        items(
+                                            count = recommendations.size,
+                                            key = { recommendations[it].id }
+                                        ) { index ->
+                                            val mediaInfo = recommendations[index]
+                                            MediaPoster(
+                                                modifier = Modifier
+                                                    .height(150.dp)
+                                                    .aspectRatio(0.675f)
+                                                    .clip(
+                                                        RoundedCornerShape(
+                                                            preferencesState.value.corners.dp
+                                                        )
+                                                    ),
+                                                onNavigateTo = onNavigateTo,
+                                                mediaInfo = mediaInfo,
+                                                mediaType = detailViewModel.detailState.mediaType,
+                                                showTitle = preferencesState.value.showTitle,
+                                                showVoteAverage = preferencesState.value.showVoteAverage,
+                                                corners = preferencesState.value.corners
+                                            )
                                         }
                                     }
-                                }
+                                )
                             }
                         }
                     }

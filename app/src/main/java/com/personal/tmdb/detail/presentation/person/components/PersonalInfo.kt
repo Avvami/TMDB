@@ -11,6 +11,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.personal.tmdb.R
 import com.personal.tmdb.core.util.formatDate
 import com.personal.tmdb.core.util.formatGender
@@ -30,7 +31,8 @@ fun PersonalInfo(
             Text(
                 text = stringResource(id = R.string.personal_info),
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
+                fontSize = 20.sp
             )
             personInfo().knownForDepartment?.let { knownFor ->
                 Column {

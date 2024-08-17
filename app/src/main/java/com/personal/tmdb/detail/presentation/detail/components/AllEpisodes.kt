@@ -32,6 +32,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.personal.tmdb.R
 import com.personal.tmdb.core.navigation.RootNavGraph
@@ -71,7 +72,8 @@ fun AllEpisodes(
             Text(
                 text = stringResource(id = R.string.all_episodes),
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Medium
+                fontWeight = FontWeight.Medium,
+                fontSize = 20.sp
             )
             Icon(
                 imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
@@ -129,100 +131,96 @@ fun EpisodeToAir(
             )
             Column(
                 modifier = Modifier.padding(vertical = 4.dp),
-                verticalArrangement = Arrangement.SpaceBetween
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Column(
-                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
+                    Text(
+                        text = stringResource(
+                            id = R.string.season_episode,
+                            episodeToAir.seasonNumber,
+                            episodeToAir.episodeNumber
+                        ),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    episodeToAir.name?.let { name ->
                         Text(
-                            text = stringResource(
-                                id = R.string.season_episode,
-                                episodeToAir.seasonNumber,
-                                episodeToAir.episodeNumber
-                            ),
-                            style = MaterialTheme.typography.titleMedium
+                            text = name,
+                            style = MaterialTheme.typography.titleMedium,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
                         )
-                        episodeToAir.name?.let { name ->
-                            Text(
-                                text = name,
-                                style = MaterialTheme.typography.titleMedium,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis
-                            )
-                        }
                     }
-                    with(episodeToAir) {
-                        buildList<@Composable FlowRowScope.() -> Unit> {
-                            voteAverage?.let { voteAverage ->
-                                if (voteAverage.toDouble() != 0.0) {
-                                    add {
-                                        Row(
-                                            modifier = Modifier
-                                                .clip(MaterialTheme.shapes.extraSmall)
-                                                .background(MaterialTheme.colorScheme.inverseSurface)
-                                                .padding(
-                                                    horizontal = 4.dp,
-                                                    vertical = 2.dp
-                                                )
-                                                .align(Alignment.CenterVertically),
-                                            horizontalArrangement = Arrangement.spacedBy(2.dp),
-                                            verticalAlignment = Alignment.CenterVertically
-                                        ) {
-                                            Text(
-                                                text = formatVoteAverage(voteAverage),
-                                                style = MaterialTheme.typography.labelMedium,
-                                                color = MaterialTheme.colorScheme.inverseOnSurface
+                }
+                with(episodeToAir) {
+                    buildList<@Composable FlowRowScope.() -> Unit> {
+                        voteAverage?.let { voteAverage ->
+                            if (voteAverage.toDouble() != 0.0) {
+                                add {
+                                    Row(
+                                        modifier = Modifier
+                                            .clip(MaterialTheme.shapes.extraSmall)
+                                            .background(MaterialTheme.colorScheme.inverseSurface)
+                                            .padding(
+                                                horizontal = 4.dp,
+                                                vertical = 2.dp
                                             )
-                                            Icon(
-                                                modifier = Modifier.size(14.dp),
-                                                painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
-                                                contentDescription = "Rating",
-                                                tint = MaterialTheme.colorScheme.inverseOnSurface
-                                            )
-                                        }
+                                            .align(Alignment.CenterVertically),
+                                        horizontalArrangement = Arrangement.spacedBy(2.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(
+                                            text = formatVoteAverage(voteAverage),
+                                            style = MaterialTheme.typography.labelMedium,
+                                            color = MaterialTheme.colorScheme.inverseOnSurface
+                                        )
+                                        Icon(
+                                            modifier = Modifier.size(14.dp),
+                                            painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
+                                            contentDescription = "Rating",
+                                            tint = MaterialTheme.colorScheme.inverseOnSurface
+                                        )
                                     }
                                 }
                             }
-                            airDate?.let { airDate ->
-                                add {
-                                    Text(
-                                        modifier = Modifier.align(Alignment.CenterVertically),
-                                        text = formatDate(airDate),
-                                        style = MaterialTheme.typography.bodySmall
-                                    )
-                                }
-                            }
-                            runtime?.let { runtime ->
-                                add {
-                                    val context = LocalContext.current
-                                    Text(
-                                        modifier = Modifier.align(Alignment.CenterVertically),
-                                        text = formatRuntime(runtime, context),
-                                        style = MaterialTheme.typography.bodySmall
-                                    )
-                                }
+                        }
+                        airDate?.let { airDate ->
+                            add {
+                                Text(
+                                    modifier = Modifier.align(Alignment.CenterVertically),
+                                    text = formatDate(airDate),
+                                    style = MaterialTheme.typography.bodySmall
+                                )
                             }
                         }
-                    }.takeIf { it.isNotEmpty() }?.let { components ->
-                        FlowRow(
-                            verticalArrangement = Arrangement.spacedBy(6.dp),
-                            horizontalArrangement = Arrangement.spacedBy(6.dp)
-                        ) {
-                            components.forEachIndexed { index, component ->
-                                component()
-                                if (index != components.lastIndex) {
-                                    Icon(
-                                        modifier = Modifier
-                                            .size(6.dp)
-                                            .align(Alignment.CenterVertically),
-                                        painter = painterResource(id = R.drawable.icon_fiber_manual_record_fill1_wght400),
-                                        contentDescription = null,
-                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                }
+                        runtime?.let { runtime ->
+                            add {
+                                val context = LocalContext.current
+                                Text(
+                                    modifier = Modifier.align(Alignment.CenterVertically),
+                                    text = formatRuntime(runtime, context),
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
+                        }
+                    }
+                }.takeIf { it.isNotEmpty() }?.let { components ->
+                    FlowRow(
+                        verticalArrangement = Arrangement.spacedBy(6.dp),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        components.forEachIndexed { index, component ->
+                            component()
+                            if (index != components.lastIndex) {
+                                Icon(
+                                    modifier = Modifier
+                                        .size(6.dp)
+                                        .align(Alignment.CenterVertically),
+                                    painter = painterResource(id = R.drawable.icon_fiber_manual_record_fill1_wght400),
+                                    contentDescription = null,
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
                             }
                         }
                     }
