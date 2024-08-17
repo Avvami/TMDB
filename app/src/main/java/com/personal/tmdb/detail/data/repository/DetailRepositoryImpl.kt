@@ -56,14 +56,14 @@ class DetailRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getSeasonDetail(
+    override suspend fun getSeasonDetails(
         seriesId: Int,
         seasonNumber: Int,
         language: String?
     ): Resource<SeasonInfo> {
         return try {
             Resource.Success(
-                data = tmdbApi.getSeasonDetail(seriesId, seasonNumber, language).toSeasonInfo()
+                data = tmdbApi.getSeasonDetails(seriesId, seasonNumber, language).toSeasonInfo()
             )
         } catch (e: Exception) {
             e.printStackTrace()

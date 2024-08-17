@@ -66,7 +66,7 @@ interface TmdbApi {
 
     @Headers("Authorization: Bearer ${BuildConfig.TMDB_API_KEY}")
     @GET("3/tv/{series_id}/season/{season_number}?")
-    suspend fun getSeasonDetail(
+    suspend fun getSeasonDetails(
         @Path("series_id") seriesId: Int,
         @Path("season_number") seasonNumber: Int,
         @Query("language") language: String?

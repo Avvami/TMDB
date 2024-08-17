@@ -41,6 +41,7 @@ import com.personal.tmdb.R
 import com.personal.tmdb.UserState
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.MediaPoster
+import com.personal.tmdb.detail.presentation.detail.components.AllEpisodes
 import com.personal.tmdb.detail.presentation.detail.components.DetailScreenShimmer
 import com.personal.tmdb.detail.presentation.detail.components.Details
 import com.personal.tmdb.detail.presentation.detail.components.Trailer
@@ -133,6 +134,16 @@ fun DetailScreen(
                     }
                     item {
                         HorizontalDivider(modifier = Modifier.padding(horizontal = 16.dp))
+                    }
+                    if (!info.seasons.isNullOrEmpty()) {
+                        item {
+                            AllEpisodes(
+                                onNavigateTo = onNavigateTo,
+                                info = info,
+                                seasons = info.seasons,
+                                preferencesState = preferencesState
+                            )
+                        }
                     }
                     if (!info.similar?.results.isNullOrEmpty()) {
                         info.similar?.results?.let { similar ->

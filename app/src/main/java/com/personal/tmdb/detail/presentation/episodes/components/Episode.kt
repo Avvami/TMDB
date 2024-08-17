@@ -1,4 +1,4 @@
-package com.personal.tmdb.detail.presentation.detail.components
+package com.personal.tmdb.detail.presentation.episodes.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.FlowRowScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -64,7 +65,7 @@ fun Episode(
                 model = C.TMDB_IMAGES_BASE_URL + C.STILL_W300 + episodeInfo().stillPath,
                 placeholder = painterResource(id = R.drawable.placeholder),
                 error = painterResource(id = R.drawable.placeholder),
-                contentDescription = "Poster",
+                contentDescription = "Still",
                 contentScale = ContentScale.Crop
             )
             Column(
@@ -74,7 +75,7 @@ fun Episode(
                     horizontalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
                     Text(
-                        text = episodeInfo().episodeNumber.toString(),
+                        text = "${episodeInfo().episodeNumber}.",
                         style = MaterialTheme.typography.titleMedium
                     )
                     episodeInfo().name?.let { name ->
@@ -86,61 +87,70 @@ fun Episode(
                         )
                     }
                 }
-                FlowRow(
-                    verticalArrangement = Arrangement.spacedBy(6.dp),
-                    horizontalArrangement = Arrangement.spacedBy(6.dp)
-                ) {
-                    episodeInfo().voteAverage?.let { voteAverage ->
-                        Row(
-                            modifier = Modifier
-                                .clip(MaterialTheme.shapes.extraSmall)
-                                .background(MaterialTheme.colorScheme.inverseSurface)
-                                .padding(horizontal = 4.dp, vertical = 2.dp)
-                                .align(Alignment.CenterVertically),
-                            horizontalArrangement = Arrangement.spacedBy(2.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = formatVoteAverage(voteAverage),
-                                style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.inverseOnSurface
-                            )
-                            Icon(
-                                modifier = Modifier.size(14.dp),
-                                painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
-                                contentDescription = "Rating",
-                                tint = MaterialTheme.colorScheme.inverseOnSurface
-                            )
+                with(episodeInfo()) {
+                    buildList<@Composable FlowRowScope.() -> Unit> {
+                        voteAverage?.let { voteAverage ->
+                            add {
+                                Row(
+                                    modifier = Modifier
+                                        .clip(MaterialTheme.shapes.extraSmall)
+                                        .background(MaterialTheme.colorScheme.inverseSurface)
+                                        .padding(horizontal = 4.dp, vertical = 2.dp)
+                                        .align(Alignment.CenterVertically),
+                                    horizontalArrangement = Arrangement.spacedBy(2.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Text(
+                                        text = formatVoteAverage(voteAverage),
+                                        style = MaterialTheme.typography.labelMedium,
+                                        color = MaterialTheme.colorScheme.inverseOnSurface
+                                    )
+                                    Icon(
+                                        modifier = Modifier.size(14.dp),
+                                        painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
+                                        contentDescription = "Rating",
+                                        tint = MaterialTheme.colorScheme.inverseOnSurface
+                                    )
+                                }
+                            }
                         }
-                    }
-                    episodeInfo().airDate?.let { airDate ->
-                        Icon(
-                            modifier = Modifier
-                                .size(6.dp)
-                                .align(Alignment.CenterVertically),
-                            painter = painterResource(id = R.drawable.icon_fiber_manual_record_fill1_wght400),
-                            contentDescription = null
-                        )
-                        Text(
-                            modifier = Modifier.align(Alignment.CenterVertically),
-                            text = formatDate(airDate),
-                            style = MaterialTheme.typography.bodySmall
-                        )
-                    }
-                    episodeInfo().runtime?.let { runtime ->
-                        val context = LocalContext.current
-                        Icon(
-                            modifier = Modifier
-                                .size(6.dp)
-                                .align(Alignment.CenterVertically),
-                            painter = painterResource(id = R.drawable.icon_fiber_manual_record_fill1_wght400),
-                            contentDescription = null
-                        )
-                        Text(
-                            modifier = Modifier.align(Alignment.CenterVertically),
-                            text = formatRuntime(runtime, context),
-                            style = MaterialTheme.typography.bodySmall
-                        )
+                        airDate?.let { airDate ->
+                            add {
+                                Text(
+                                    modifier = Modifier.align(Alignment.CenterVertically),
+                                    text = formatDate(airDate),
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
+                        }
+                        runtime?.let { runtime ->
+                            add {
+                                val context = LocalContext.current
+                                Text(
+                                    modifier = Modifier.align(Alignment.CenterVertically),
+                                    text = formatRuntime(runtime, context),
+                                    style = MaterialTheme.typography.bodySmall
+                                )
+                            }
+                        }
+                    }.takeIf { it.isNotEmpty() }?.let { components ->
+                        FlowRow(
+                            verticalArrangement = Arrangement.spacedBy(6.dp),
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            components.forEachIndexed { index, component ->
+                                component()
+                                if (index != components.lastIndex) {
+                                    Icon(
+                                        modifier = Modifier
+                                            .size(6.dp)
+                                            .align(Alignment.CenterVertically),
+                                        painter = painterResource(id = R.drawable.icon_fiber_manual_record_fill1_wght400),
+                                        contentDescription = null
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }

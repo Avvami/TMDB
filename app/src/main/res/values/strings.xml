@@ -99,4 +99,8 @@
     <string name="theme">Theme</string>
     <string name="corners">Corners</string>
     <string name="rate_now">Rate now</string>
+    <string name="all_episodes">All Episodes</string>
+    <string name="season_episode">S%d:E%d</string>
+    <string name="last_episode">Last Episode</string>
+    <string name="next_episode">Next episode</string>
 </resources>

@@ -20,4 +20,5 @@ object C {
     const val MEDIA_NAME = "contentName"
     const val PERSON_ID = "personId"
     const val PERSON_NAME = "personName"
+    const val SEASON_NUMBER = "seasonNumber"
 }

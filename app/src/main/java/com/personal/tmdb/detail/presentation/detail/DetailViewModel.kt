@@ -12,7 +12,6 @@ import com.personal.tmdb.core.util.Resource
 import com.personal.tmdb.core.util.convertMediaType
 import com.personal.tmdb.detail.domain.models.CollectionInfo
 import com.personal.tmdb.detail.domain.models.MediaDetailInfo
-import com.personal.tmdb.detail.domain.models.SeasonInfo
 import com.personal.tmdb.detail.domain.repository.DetailRepository
 import com.personal.tmdb.detail.presentation.collection.CollectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,9 +33,6 @@ class DetailViewModel @Inject constructor(
         private set
 
     var collectionState by mutableStateOf(CollectionState())
-        private set
-
-    var seasonState by mutableStateOf(SeasonState())
         private set
 
     var availableState by mutableStateOf(AvailableState())
@@ -126,42 +122,6 @@ class DetailViewModel @Inject constructor(
         }
     }
 
-    private fun getSeasonDetail(seriesId: Int, seasonNumber: Int, language: String? = null) {
-        /*TODO: Moving to separate screen*/
-        viewModelScope.launch {
-            seasonState = seasonState.copy(
-                isLoading = true,
-                error = null
-            )
-
-            var seasonInfo: SeasonInfo? = null
-            var error: String? = null
-
-            detailRepository.getSeasonDetail(seriesId, seasonNumber, language).let { result ->
-                when (result) {
-                    is Resource.Error -> {
-                        error = result.message
-                    }
-                    is Resource.Success -> {
-                        seasonInfo = result.data
-                    }
-                }
-            }
-
-            seasonState = seasonState.copy(
-                seasonInfo = seasonInfo,
-                isLoading = false,
-                error = error
-            )
-        }
-    }
-
-    var isSeasonDropdownExpanded by mutableStateOf(false)
-        private set
-
-    var isSeasonOverviewCollapsed by mutableStateOf(true)
-        private set
-
     var isOverviewCollapsed by mutableStateOf(true)
         private set
 
@@ -169,16 +129,6 @@ class DetailViewModel @Inject constructor(
         when (event) {
             DetailUiEvent.ChangeCollapsedOverview -> {
                 isOverviewCollapsed = !isOverviewCollapsed
-            }
-            DetailUiEvent.ChangeCollapsedSeasonOverview -> {
-                isSeasonOverviewCollapsed = !isSeasonOverviewCollapsed
-            }
-            DetailUiEvent.ChangeSeasonDropdownState -> {
-                isSeasonDropdownExpanded = !isSeasonDropdownExpanded
-            }
-            is DetailUiEvent.SetSelectedSeason -> {
-                isSeasonOverviewCollapsed = true
-                getSeasonDetail(event.seriesId, 1)
             }
             is DetailUiEvent.SetSelectedCountry -> {
                 availableState = availableState.copy(
