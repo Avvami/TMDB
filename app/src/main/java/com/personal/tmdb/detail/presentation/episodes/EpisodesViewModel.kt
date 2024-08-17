@@ -12,7 +12,6 @@ import com.personal.tmdb.core.util.MediaType
 import com.personal.tmdb.core.util.Resource
 import com.personal.tmdb.detail.domain.models.SeasonInfo
 import com.personal.tmdb.detail.domain.repository.DetailRepository
-import com.personal.tmdb.detail.presentation.detail.SeasonState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

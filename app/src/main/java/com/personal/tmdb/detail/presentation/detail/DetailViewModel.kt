@@ -86,6 +86,14 @@ class DetailViewModel @Inject constructor(
             mediaDetail?.belongsToCollection?.let { collection ->
                 getCollection(collectionId = collection.id)
             }
+            mediaDetail?.let { detail ->
+                if (detail.watchProviders != null) {
+                    _availableCountries.value = detail.watchProviders.keys
+                    availableState = availableState.copy(
+                        selectedCountry = "United States"
+                    )
+                }
+            }
 
             detailState = detailState.copy(
                 mediaDetail = mediaDetail,

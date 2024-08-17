@@ -138,7 +138,7 @@ fun LazyListScope.seasonInfo(
             item {
                 Text(
                     modifier = Modifier
-                        .padding(vertical = 8.dp)
+                        .padding(horizontal = 16.dp, vertical = 8.dp)
                         .fillMaxWidth(),
                     text = stringResource(id = R.string.no_episodes),
                     style = MaterialTheme.typography.bodyLarge,

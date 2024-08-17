@@ -39,7 +39,7 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.DialogWindowProvider
 import com.personal.tmdb.core.util.shimmerEffect
-import com.personal.tmdb.detail.presentation.detail.SeasonState
+import com.personal.tmdb.detail.presentation.episodes.SeasonState
 import com.personal.tmdb.detail.presentation.episodes.EpisodesUiEvent
 import com.personal.tmdb.ui.theme.backgroundLight
 import com.personal.tmdb.ui.theme.onBackgroundLight
@@ -56,6 +56,7 @@ fun LazyListScope.seasonSelect(
         item {
             Row(
                 modifier = Modifier
+                    .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.surfaceContainer)
                     .padding(horizontal = 16.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
@@ -94,6 +95,7 @@ fun LazyListScope.seasonSelect(
                     ) {
                         val season = seasons.find { it.seasonNumber == selectedSeasonNumber() }
                         Text(
+                            modifier = Modifier.weight(1f),
                             text = season?.name ?: season?.seasonNumber?.toString() ?: "",
                             style = MaterialTheme.typography.titleMedium
                         )

@@ -8,10 +8,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.FlowRowScope
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -107,135 +105,135 @@ fun EpisodeToAir(
     episodeToAir: EpisodeToAirInfo,
     @StringRes textRes: Int
 ) {
-    Row(
+    Column(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(preferencesState.value.corners.dp))
             .background(MaterialTheme.colorScheme.surfaceContainer)
             .clickable { /*TODO: Navigate to episode detail*/ }
             .padding(8.dp)
-            .height(IntrinsicSize.Min),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        AsyncImage(
-            modifier = Modifier
-                .height(80.dp)
-                .aspectRatio(1.625f)
-                .clip(RoundedCornerShape(preferencesState.value.corners.dp)),
-            model = C.TMDB_IMAGES_BASE_URL + C.STILL_W300 + episodeToAir.stillPath,
-            placeholder = painterResource(id = R.drawable.placeholder),
-            error = painterResource(id = R.drawable.placeholder),
-            contentDescription = "Still",
-            contentScale = ContentScale.Crop
-        )
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(vertical = 4.dp),
-            verticalArrangement = Arrangement.SpaceBetween
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
+            AsyncImage(
+                modifier = Modifier
+                    .height(80.dp)
+                    .aspectRatio(1.625f)
+                    .clip(RoundedCornerShape(preferencesState.value.corners.dp)),
+                model = C.TMDB_IMAGES_BASE_URL + C.STILL_W300 + episodeToAir.stillPath,
+                placeholder = painterResource(id = R.drawable.placeholder),
+                error = painterResource(id = R.drawable.placeholder),
+                contentDescription = "Still",
+                contentScale = ContentScale.Crop
+            )
             Column(
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                modifier = Modifier.padding(vertical = 4.dp),
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                Column(
+                    verticalArrangement = Arrangement.spacedBy(4.dp)
                 ) {
-                    Text(
-                        text = stringResource(
-                            id = R.string.season_episode,
-                            episodeToAir.seasonNumber,
-                            episodeToAir.episodeNumber
-                        ),
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    episodeToAir.name?.let { name ->
+                    Row(
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
                         Text(
-                            text = name,
-                            style = MaterialTheme.typography.titleMedium,
-                            maxLines = 1,
-                            overflow = TextOverflow.Ellipsis
+                            text = stringResource(
+                                id = R.string.season_episode,
+                                episodeToAir.seasonNumber,
+                                episodeToAir.episodeNumber
+                            ),
+                            style = MaterialTheme.typography.titleMedium
                         )
+                        episodeToAir.name?.let { name ->
+                            Text(
+                                text = name,
+                                style = MaterialTheme.typography.titleMedium,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                        }
                     }
-                }
-                with(episodeToAir) {
-                    buildList<@Composable FlowRowScope.() -> Unit> {
-                        voteAverage?.let { voteAverage ->
-                            if (voteAverage.toDouble() != 0.0) {
-                                add {
-                                    Row(
-                                        modifier = Modifier
-                                            .clip(MaterialTheme.shapes.extraSmall)
-                                            .background(MaterialTheme.colorScheme.inverseSurface)
-                                            .padding(
-                                                horizontal = 4.dp,
-                                                vertical = 2.dp
+                    with(episodeToAir) {
+                        buildList<@Composable FlowRowScope.() -> Unit> {
+                            voteAverage?.let { voteAverage ->
+                                if (voteAverage.toDouble() != 0.0) {
+                                    add {
+                                        Row(
+                                            modifier = Modifier
+                                                .clip(MaterialTheme.shapes.extraSmall)
+                                                .background(MaterialTheme.colorScheme.inverseSurface)
+                                                .padding(
+                                                    horizontal = 4.dp,
+                                                    vertical = 2.dp
+                                                )
+                                                .align(Alignment.CenterVertically),
+                                            horizontalArrangement = Arrangement.spacedBy(2.dp),
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Text(
+                                                text = formatVoteAverage(voteAverage),
+                                                style = MaterialTheme.typography.labelMedium,
+                                                color = MaterialTheme.colorScheme.inverseOnSurface
                                             )
-                                            .align(Alignment.CenterVertically),
-                                        horizontalArrangement = Arrangement.spacedBy(2.dp),
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        Text(
-                                            text = formatVoteAverage(voteAverage),
-                                            style = MaterialTheme.typography.labelMedium,
-                                            color = MaterialTheme.colorScheme.inverseOnSurface
-                                        )
-                                        Icon(
-                                            modifier = Modifier.size(14.dp),
-                                            painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
-                                            contentDescription = "Rating",
-                                            tint = MaterialTheme.colorScheme.inverseOnSurface
-                                        )
+                                            Icon(
+                                                modifier = Modifier.size(14.dp),
+                                                painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
+                                                contentDescription = "Rating",
+                                                tint = MaterialTheme.colorScheme.inverseOnSurface
+                                            )
+                                        }
                                     }
                                 }
                             }
-                        }
-                        airDate?.let { airDate ->
-                            add {
-                                Text(
-                                    modifier = Modifier.align(Alignment.CenterVertically),
-                                    text = formatDate(airDate),
-                                    style = MaterialTheme.typography.bodySmall
-                                )
+                            airDate?.let { airDate ->
+                                add {
+                                    Text(
+                                        modifier = Modifier.align(Alignment.CenterVertically),
+                                        text = formatDate(airDate),
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+                                }
+                            }
+                            runtime?.let { runtime ->
+                                add {
+                                    val context = LocalContext.current
+                                    Text(
+                                        modifier = Modifier.align(Alignment.CenterVertically),
+                                        text = formatRuntime(runtime, context),
+                                        style = MaterialTheme.typography.bodySmall
+                                    )
+                                }
                             }
                         }
-                        runtime?.let { runtime ->
-                            add {
-                                val context = LocalContext.current
-                                Text(
-                                    modifier = Modifier.align(Alignment.CenterVertically),
-                                    text = formatRuntime(runtime, context),
-                                    style = MaterialTheme.typography.bodySmall
-                                )
-                            }
-                        }
-                    }
-                }.takeIf { it.isNotEmpty() }?.let { components ->
-                    FlowRow(
-                        verticalArrangement = Arrangement.spacedBy(6.dp),
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
-                    ) {
-                        components.forEachIndexed { index, component ->
-                            component()
-                            if (index != components.lastIndex) {
-                                Icon(
-                                    modifier = Modifier
-                                        .size(6.dp)
-                                        .align(Alignment.CenterVertically),
-                                    painter = painterResource(id = R.drawable.icon_fiber_manual_record_fill1_wght400),
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
+                    }.takeIf { it.isNotEmpty() }?.let { components ->
+                        FlowRow(
+                            verticalArrangement = Arrangement.spacedBy(6.dp),
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            components.forEachIndexed { index, component ->
+                                component()
+                                if (index != components.lastIndex) {
+                                    Icon(
+                                        modifier = Modifier
+                                            .size(6.dp)
+                                            .align(Alignment.CenterVertically),
+                                        painter = painterResource(id = R.drawable.icon_fiber_manual_record_fill1_wght400),
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
                             }
                         }
                     }
                 }
             }
-            Text(
-                modifier = Modifier.align(Alignment.End),
-                text = stringResource(id = textRes),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
         }
+        Text(
+            modifier = Modifier.align(Alignment.End),
+            text = stringResource(id = textRes),
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
     }
 }

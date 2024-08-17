@@ -1,4 +1,4 @@
-package com.personal.tmdb.detail.presentation.detail
+package com.personal.tmdb.detail.presentation.episodes
 
 import com.personal.tmdb.detail.domain.models.MediaDetailInfo
 import com.personal.tmdb.detail.domain.models.SeasonInfo

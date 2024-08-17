@@ -107,12 +107,14 @@ fun CollectionScreen(
                                 .clip(MaterialTheme.shapes.small)
                                 .shimmerEffect(),
                             text = "Collection title",
+                            fontWeight = FontWeight.Medium,
                             color = Color.Transparent
                         )
                     } else {
                         collectionViewModel.collectionState.collectionInfo?.name?.let { name ->
                             Text(
                                 text = name,
+                                fontWeight = FontWeight.Medium,
                                 maxLines = 1,
                                 overflow = TextOverflow.Ellipsis
                             )

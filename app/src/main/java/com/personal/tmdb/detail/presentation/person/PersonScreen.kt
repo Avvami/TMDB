@@ -56,6 +56,7 @@ fun PersonScreen(
                     SelectionContainer {
                         Text(
                             text = personViewModel.personName,
+                            fontWeight = FontWeight.Medium,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
