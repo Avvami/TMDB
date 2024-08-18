@@ -21,4 +21,5 @@ object C {
     const val PERSON_ID = "personId"
     const val PERSON_NAME = "personName"
     const val SEASON_NUMBER = "seasonNumber"
+    const val EPISODE_NUMBER = "episodeNumber"
 }

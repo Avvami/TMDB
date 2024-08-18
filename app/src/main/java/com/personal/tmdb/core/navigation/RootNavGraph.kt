@@ -17,6 +17,7 @@ import com.personal.tmdb.core.util.C
 import com.personal.tmdb.detail.presentation.cast.CastScreen
 import com.personal.tmdb.detail.presentation.collection.CollectionScreen
 import com.personal.tmdb.detail.presentation.detail.DetailScreen
+import com.personal.tmdb.detail.presentation.episode.EpisodeDetailsScreen
 import com.personal.tmdb.detail.presentation.episodes.EpisodesScreen
 import com.personal.tmdb.detail.presentation.person.PersonScreen
 import com.personal.tmdb.home.presentation.home.HomeScreen
@@ -203,6 +204,25 @@ fun RootNavigationGraph(
                 userState = mainViewModel.userState.collectAsStateWithLifecycle()
             )
         }
+        animatedComposable(
+            route = RootNavGraph.EPISODE + "/{${C.MEDIA_ID}}/{${C.SEASON_NUMBER}}/{${C.EPISODE_NUMBER}}",
+            arguments = listOf(
+                navArgument(C.MEDIA_ID) { type = NavType.IntType; nullable = false},
+                navArgument(C.SEASON_NUMBER) { type = NavType.IntType; nullable = false},
+                navArgument(C.EPISODE_NUMBER) { type = NavType.IntType; nullable = false},
+            )
+        ) {
+            EpisodeDetailsScreen(
+                navigateBack = onNavigateBack,
+                onNavigateTo = { route ->
+                    navController.navigate(route = route) {
+                        launchSingleTop = true
+                    }
+                },
+                preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle(),
+                userState = mainViewModel.userState.collectAsStateWithLifecycle()
+            )
+        }
     }
 }
 
@@ -219,4 +239,5 @@ object RootNavGraph {
     const val PERSON = "person_screen"
     const val APPEARANCE = "appearance_screen"
     const val EPISODES = "episodes_screen"
+    const val EPISODE = "episode_screen"
 }

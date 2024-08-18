@@ -112,7 +112,7 @@ fun EpisodeToAir(
             .fillMaxWidth()
             .clip(RoundedCornerShape(preferencesState.value.corners.dp))
             .background(MaterialTheme.colorScheme.surfaceContainer)
-            .clickable { /*TODO: Navigate to episode detail*/ }
+            .clickable { onNavigateTo(RootNavGraph.EPISODE + "/${episodeToAir.showId}/${episodeToAir.seasonNumber}/${episodeToAir.episodeNumber}") }
             .padding(8.dp)
     ) {
         Row(

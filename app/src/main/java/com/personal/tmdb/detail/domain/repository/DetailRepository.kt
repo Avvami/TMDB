@@ -20,5 +20,5 @@ interface DetailRepository {
 
     suspend fun getPerson(personId: Int, language: String? = null, appendToResponse: String?): Resource<PersonInfo>
 
-    suspend fun getEpisodeDetails(seriesId: Int, seasonNumber: Int, episodeNumber: Int, language: String? = null, appendToResponse: String?, includeImageLanguage: String?): Resource<EpisodeDetailsInfo>
+    suspend fun getEpisodeDetails(seriesId: Int, seasonNumber: Int, episodeNumber: Int, language: String? = null, appendToResponse: String? = null, includeImageLanguage: String? = null): Resource<EpisodeDetailsInfo>
 }

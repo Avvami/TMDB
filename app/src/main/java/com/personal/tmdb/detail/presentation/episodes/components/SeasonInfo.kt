@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
+import com.personal.tmdb.core.navigation.RootNavGraph
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.util.formatEpisodesCount
 import com.personal.tmdb.core.util.formatVoteAverage
@@ -39,6 +40,7 @@ import com.personal.tmdb.detail.presentation.episodes.EpisodesUiEvent
 @OptIn(ExperimentalLayoutApi::class)
 fun LazyListScope.seasonInfo(
     onNavigateTo: (route: String) -> Unit,
+    seriesId: () -> Int,
     seasonInfo: () -> SeasonInfo,
     isOverviewCollapsed: () -> Boolean,
     preferencesState: State<PreferencesState>,
@@ -157,7 +159,7 @@ fun LazyListScope.seasonInfo(
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 8.dp)
                         .clip(MaterialTheme.shapes.extraSmall)
-                        .clickable { /*TODO: Navigate to episode detail*/ },
+                        .clickable { onNavigateTo(RootNavGraph.EPISODE + "/${seriesId()}/${seasonInfo().seasonNumber}/${episodeInfo.episodeNumber}") },
                     episodeInfo = { episodeInfo },
                     preferencesState = preferencesState
                 )

@@ -28,9 +28,12 @@ class EpisodesViewModel @Inject constructor(
     var selectedSeasonNumber by mutableIntStateOf(savedStateHandle[C.SEASON_NUMBER] ?: 0)
         private set
 
+    var mediaId by mutableIntStateOf(savedStateHandle[C.MEDIA_ID] ?: 0)
+        private set
+
     init {
         getMediaDetails(
-            mediaId = savedStateHandle[C.MEDIA_ID] ?: 0,
+            mediaId = mediaId,
             seasonNumber = selectedSeasonNumber
         )
     }

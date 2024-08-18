@@ -11,7 +11,7 @@ data class Cast(
     @Json(name = "character")
     val character: String?,
     @Json(name = "credit_id")
-    val creditId: String,
+    val creditId: String?,
     @Json(name = "department")
     val department: String?,
     @Json(name = "gender")

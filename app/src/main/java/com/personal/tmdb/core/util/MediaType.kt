@@ -5,6 +5,7 @@ enum class MediaType {
     TV,
     MOVIE,
     PERSON,
+    EPISODE,
     UNKNOWN
 }
 
@@ -14,6 +15,7 @@ fun convertMediaType(value: String?): MediaType {
         "tv" -> MediaType.TV
         "movie" -> MediaType.MOVIE
         "person" -> MediaType.PERSON
+        "episode" -> MediaType.EPISODE
         else -> MediaType.UNKNOWN
     }
 }

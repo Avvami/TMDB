@@ -96,6 +96,7 @@ fun EpisodesScreen(
                 episodesViewModel.seasonState.seasonInfo?.let { seasonInfo ->
                     seasonInfo(
                         onNavigateTo = onNavigateTo,
+                        seriesId = episodesViewModel::mediaId,
                         seasonInfo = { seasonInfo },
                         isOverviewCollapsed = episodesViewModel::isOverviewCollapsed,
                         preferencesState = preferencesState,
