@@ -4,11 +4,13 @@ import com.personal.tmdb.core.data.remote.TmdbApi
 import com.personal.tmdb.core.util.Resource
 import com.personal.tmdb.detail.data.mappers.toCollectionInfo
 import com.personal.tmdb.detail.data.mappers.toCreditsInfo
+import com.personal.tmdb.detail.data.mappers.toEpisodeDetailsInfo
 import com.personal.tmdb.detail.data.mappers.toMediaDetailInfo
 import com.personal.tmdb.detail.data.mappers.toPersonInfo
 import com.personal.tmdb.detail.data.mappers.toSeasonInfo
 import com.personal.tmdb.detail.domain.models.CollectionInfo
 import com.personal.tmdb.detail.domain.models.CreditsInfo
+import com.personal.tmdb.detail.domain.models.EpisodeDetailsInfo
 import com.personal.tmdb.detail.domain.models.MediaDetailInfo
 import com.personal.tmdb.detail.domain.models.PersonInfo
 import com.personal.tmdb.detail.domain.models.SeasonInfo
@@ -95,6 +97,31 @@ class DetailRepositoryImpl @Inject constructor(
         return try {
             Resource.Success(
                 data = tmdbApi.getPerson(personId, language, appendToResponse).toPersonInfo()
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(e.message ?: "Unknown")
+        }
+    }
+
+    override suspend fun getEpisodeDetails(
+        seriesId: Int,
+        seasonNumber: Int,
+        episodeNumber: Int,
+        language: String?,
+        appendToResponse: String?,
+        includeImageLanguage: String?
+    ): Resource<EpisodeDetailsInfo> {
+        return try {
+            Resource.Success(
+                data = tmdbApi.getEpisodeDetails(
+                    seriesId,
+                    seasonNumber,
+                    episodeNumber,
+                    language,
+                    appendToResponse,
+                    includeImageLanguage
+                ).toEpisodeDetailsInfo()
             )
         } catch (e: Exception) {
             e.printStackTrace()

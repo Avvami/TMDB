@@ -11,6 +11,7 @@ import com.personal.tmdb.auth.data.models.UserDto
 import com.personal.tmdb.core.data.models.MediaResponseDto
 import com.personal.tmdb.detail.data.models.CollectionDto
 import com.personal.tmdb.detail.data.models.Credits
+import com.personal.tmdb.detail.data.models.EpisodeDetailsDto
 import com.personal.tmdb.detail.data.models.MediaDetailDto
 import com.personal.tmdb.detail.data.models.PersonDto
 import com.personal.tmdb.detail.data.models.SeasonDto
@@ -112,4 +113,15 @@ interface TmdbApi {
     suspend fun getUserDetails(
         @Query("session_id") sessionId: String
     ): UserDto
+
+    @Headers("Authorization: Bearer ${BuildConfig.TMDB_API_KEY}")
+    @GET("3/tv/{series_id}/season/{season_number}/episode/{episode_number}?")
+    suspend fun getEpisodeDetails(
+        @Path("series_id") seriesId: Int,
+        @Path("season_number") seasonNumber: Int,
+        @Path("episode_number") episodeNumber: Int,
+        @Query("language") language: String?,
+        @Query("append_to_response") appendToResponse: String?,
+        @Query("include_image_language") includeImageLanguage: String?,
+    ): EpisodeDetailsDto
 }

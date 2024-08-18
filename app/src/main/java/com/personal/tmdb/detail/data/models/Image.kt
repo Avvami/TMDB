@@ -1,11 +1,10 @@
 package com.personal.tmdb.detail.data.models
 
-
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
-data class Profile(
+data class Image(
     @Json(name = "aspect_ratio")
     val aspectRatio: Double?,
     @Json(name = "file_path")

@@ -3,6 +3,7 @@ package com.personal.tmdb.detail.domain.repository
 import com.personal.tmdb.core.util.Resource
 import com.personal.tmdb.detail.domain.models.CollectionInfo
 import com.personal.tmdb.detail.domain.models.CreditsInfo
+import com.personal.tmdb.detail.domain.models.EpisodeDetailsInfo
 import com.personal.tmdb.detail.domain.models.MediaDetailInfo
 import com.personal.tmdb.detail.domain.models.PersonInfo
 import com.personal.tmdb.detail.domain.models.SeasonInfo
@@ -18,4 +19,6 @@ interface DetailRepository {
     suspend fun getCast(mediaType: String, mediaId: Int, method: String, language: String? = null): Resource<CreditsInfo>
 
     suspend fun getPerson(personId: Int, language: String? = null, appendToResponse: String?): Resource<PersonInfo>
+
+    suspend fun getEpisodeDetails(seriesId: Int, seasonNumber: Int, episodeNumber: Int, language: String? = null, appendToResponse: String?, includeImageLanguage: String?): Resource<EpisodeDetailsInfo>
 }
