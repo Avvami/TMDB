@@ -56,24 +56,18 @@ fun EpisodeDetails(
         Column(
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                Text(
-                    text = "${info().episodeNumber}.",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Medium
-                )
-                info().name?.let { name ->
+            with(info()) {
+                name?.let { name ->
                     Text(
-                        text = name,
+                        text = stringResource(
+                            id = R.string.episode_name,
+                            episodeNumber,
+                            name
+                        ),
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Medium
                     )
                 }
-            }
-            with(info()) {
                 buildList<@Composable FlowRowScope.() -> Unit> {
                     airDate?.let { airDate ->
                         add {

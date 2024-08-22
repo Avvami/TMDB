@@ -71,23 +71,19 @@ fun Episode(
             Column(
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Text(
-                        text = "${episodeInfo().episodeNumber}.",
-                        style = MaterialTheme.typography.titleMedium
-                    )
-                    episodeInfo().name?.let { name ->
+                with(episodeInfo()) {
+                    name?.let { name ->
                         Text(
-                            text = name,
+                            text = stringResource(
+                                id = R.string.episode_name,
+                                episodeNumber,
+                                name
+                            ),
                             style = MaterialTheme.typography.titleMedium,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
                     }
-                }
-                with(episodeInfo()) {
                     buildList<@Composable FlowRowScope.() -> Unit> {
                         voteAverage?.let { voteAverage ->
                             add {

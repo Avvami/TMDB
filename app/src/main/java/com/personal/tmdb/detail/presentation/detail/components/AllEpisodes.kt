@@ -133,27 +133,19 @@ fun EpisodeToAir(
                 modifier = Modifier.padding(vertical = 4.dp),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp)
-                ) {
-                    Text(
-                        text = stringResource(
-                            id = R.string.season_episode,
-                            episodeToAir.seasonNumber,
-                            episodeToAir.episodeNumber
-                        ),
-                        style = MaterialTheme.typography.titleMedium
-                    )
+                with(episodeToAir) {
                     episodeToAir.name?.let { name ->
                         Text(
-                            text = name,
+                            text = "${stringResource(
+                                id = R.string.season_episode,
+                                episodeToAir.seasonNumber,
+                                episodeToAir.episodeNumber
+                            )} $name",
                             style = MaterialTheme.typography.titleMedium,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
                     }
-                }
-                with(episodeToAir) {
                     buildList<@Composable FlowRowScope.() -> Unit> {
                         voteAverage?.let { voteAverage ->
                             if (voteAverage.toDouble() != 0.0) {
