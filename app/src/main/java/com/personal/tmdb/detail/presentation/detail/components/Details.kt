@@ -1,6 +1,7 @@
 package com.personal.tmdb.detail.presentation.detail.components
 
 import android.net.Uri
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -29,6 +30,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -302,17 +307,25 @@ fun Details(
                                             append(cast.joinToString(", ") { it.name })
                                         }
                                     }
+                                    var showMoreText by remember {
+                                        mutableStateOf(false)
+                                    }
                                     Text(
                                         modifier = Modifier.weight(1f, false),
                                         text = annotatedString,
                                         maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
+                                        overflow = TextOverflow.Ellipsis,
+                                        onTextLayout = { textLayoutResult ->
+                                            if (textLayoutResult.hasVisualOverflow) showMoreText = true
+                                        }
                                     )
-                                    Text(
-                                        text = stringResource(id = R.string.more),
-                                        style = MaterialTheme.typography.labelMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
+                                    AnimatedVisibility(visible = showMoreText) {
+                                        Text(
+                                            text = stringResource(id = R.string.more),
+                                            style = MaterialTheme.typography.labelMedium,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
                                 }
                             }
                         }
