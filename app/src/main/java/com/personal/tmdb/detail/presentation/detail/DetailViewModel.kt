@@ -133,6 +133,9 @@ class DetailViewModel @Inject constructor(
     var isOverviewCollapsed by mutableStateOf(true)
         private set
 
+    var showMore by mutableStateOf(false)
+        private set
+
     fun detailUiEvent(event: DetailUiEvent) {
         when (event) {
             DetailUiEvent.ChangeCollapsedOverview -> {
@@ -157,6 +160,9 @@ class DetailViewModel @Inject constructor(
                 availableState = availableState.copy(
                     isDialogShown = !availableState.isDialogShown
                 )
+            }
+            DetailUiEvent.ChangeShowMoreState -> {
+                showMore = true
             }
         }
     }

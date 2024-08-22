@@ -124,6 +124,7 @@ fun DetailScreen(
                             info = { info },
                             collectionState = detailViewModel::collectionState,
                             isOverviewCollapsed = detailViewModel::isOverviewCollapsed,
+                            showMore = detailViewModel::showMore,
                             preferencesState = preferencesState,
                             userState = userState,
                             detailUiEvent = detailViewModel::detailUiEvent

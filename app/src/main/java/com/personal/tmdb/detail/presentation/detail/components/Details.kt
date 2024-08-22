@@ -30,10 +30,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -76,6 +72,7 @@ fun Details(
     info: () -> MediaDetailInfo,
     collectionState: () -> CollectionState,
     isOverviewCollapsed: () -> Boolean,
+    showMore: () -> Boolean,
     preferencesState: State<PreferencesState>,
     userState: State<UserState>,
     detailUiEvent: (DetailUiEvent) -> Unit
@@ -307,19 +304,16 @@ fun Details(
                                             append(cast.joinToString(", ") { it.name })
                                         }
                                     }
-                                    var showMoreText by remember {
-                                        mutableStateOf(false)
-                                    }
                                     Text(
                                         modifier = Modifier.weight(1f, false),
                                         text = annotatedString,
                                         maxLines = 1,
                                         overflow = TextOverflow.Ellipsis,
                                         onTextLayout = { textLayoutResult ->
-                                            if (textLayoutResult.hasVisualOverflow) showMoreText = true
+                                            if (textLayoutResult.hasVisualOverflow) detailUiEvent(DetailUiEvent.ChangeShowMoreState)
                                         }
                                     )
-                                    AnimatedVisibility(visible = showMoreText) {
+                                    AnimatedVisibility(visible = showMore()) {
                                         Text(
                                             text = stringResource(id = R.string.more),
                                             style = MaterialTheme.typography.labelMedium,
@@ -372,13 +366,18 @@ fun Details(
                                         modifier = Modifier.weight(1f, false),
                                         text = annotatedString,
                                         maxLines = 1,
-                                        overflow = TextOverflow.Ellipsis
+                                        overflow = TextOverflow.Ellipsis,
+                                        onTextLayout = { textLayoutResult ->
+                                            if (textLayoutResult.hasVisualOverflow) detailUiEvent(DetailUiEvent.ChangeShowMoreState)
+                                        }
                                     )
-                                    Text(
-                                        text = stringResource(id = R.string.more),
-                                        style = MaterialTheme.typography.labelMedium,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
+                                    AnimatedVisibility(visible = showMore()) {
+                                        Text(
+                                            text = stringResource(id = R.string.more),
+                                            style = MaterialTheme.typography.labelMedium,
+                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                        )
+                                    }
                                 }
                             }
                         }
