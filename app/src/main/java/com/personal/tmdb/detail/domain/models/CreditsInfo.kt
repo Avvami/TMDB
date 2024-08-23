@@ -5,5 +5,6 @@ import com.personal.tmdb.detail.data.models.Crew
 
 data class CreditsInfo(
     val cast: List<Cast>?,
-    val crew: Map<String?, List<Crew>?>?
+    val crew: Map<String?, List<Crew>?>?,
+    val guestStars: List<Cast>?,
 )

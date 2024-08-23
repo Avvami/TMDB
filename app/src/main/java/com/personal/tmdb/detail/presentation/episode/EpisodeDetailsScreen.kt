@@ -1,5 +1,6 @@
 package com.personal.tmdb.detail.presentation.episode
 
+import android.net.Uri
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
@@ -212,6 +213,10 @@ fun EpisodeDetailsScreen(
                     if (!info.guestStars.isNullOrEmpty()) {
                         item {
                             MediaRowView(
+                                onNavigateTo = {
+                                    onNavigateTo(RootNavGraph.CAST + "/${Uri.encode(info.name ?: "") ?: ""}/tv/${episodeDetailsViewModel.seriesId}" +
+                                            "?${C.SEASON_NUMBER}=${episodeDetailsViewModel.seasonNumber}?${C.EPISODE_NUMBER}=${episodeDetailsViewModel.episodeNumber}")
+                                },
                                 titleRes = R.string.cast_and_crew,
                                 titleFontSize = 20.sp,
                                 items = {

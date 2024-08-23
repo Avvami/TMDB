@@ -44,6 +44,7 @@ fun MediaRowView(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .padding(horizontal = 16.dp)
                 .then(
                     if (onNavigateTo != null) {
                         Modifier
@@ -59,7 +60,6 @@ fun MediaRowView(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                modifier = Modifier.padding(horizontal = 16.dp),
                 text = stringResource(id = titleRes),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Medium,

@@ -30,7 +30,8 @@ fun CastInfoCard(
     profileId: Int,
     profilePath: String?,
     name: String,
-    department: String?,
+    character: String? = null,
+    department: String? = null,
     activity: String?
 ) {
     Row(
@@ -59,6 +60,12 @@ fun CastInfoCard(
                 text = name,
                 style = MaterialTheme.typography.titleMedium
             )
+            character?.let { character ->
+                Text(
+                    text = "as $character",
+                    style = MaterialTheme.typography.bodySmall
+                )
+            }
             department?.let { department ->
                 Text(
                     text = department,

@@ -89,6 +89,22 @@ class DetailRepositoryImpl @Inject constructor(
         }
     }
 
+    override suspend fun getEpisodeCast(
+        mediaId: Int,
+        seasonNumber: Int,
+        episodeNumber: Int,
+        language: String?
+    ): Resource<CreditsInfo> {
+        return try {
+            Resource.Success(
+                data = tmdbApi.getEpisodeCredits(mediaId, seasonNumber, episodeNumber, language).toCreditsInfo()
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(e.message ?: "Unknown")
+        }
+    }
+
     override suspend fun getPerson(
         personId: Int,
         language: String?,

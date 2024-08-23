@@ -18,6 +18,8 @@ interface DetailRepository {
 
     suspend fun getCast(mediaType: String, mediaId: Int, method: String, language: String? = null): Resource<CreditsInfo>
 
+    suspend fun getEpisodeCast(mediaId: Int, seasonNumber: Int, episodeNumber: Int, language: String? = null): Resource<CreditsInfo>
+
     suspend fun getPerson(personId: Int, language: String? = null, appendToResponse: String?): Resource<PersonInfo>
 
     suspend fun getEpisodeDetails(seriesId: Int, seasonNumber: Int, episodeNumber: Int, language: String? = null, appendToResponse: String? = null, includeImageLanguage: String? = null): Resource<EpisodeDetailsInfo>

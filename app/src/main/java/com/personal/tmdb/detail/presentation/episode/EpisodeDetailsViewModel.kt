@@ -29,12 +29,15 @@ class EpisodeDetailsViewModel@Inject constructor(
     var episodeNumber by mutableIntStateOf(savedStateHandle[C.EPISODE_NUMBER] ?: 0)
         private set
 
+    var seriesId by mutableIntStateOf(savedStateHandle[C.MEDIA_ID] ?: 0)
+        private set
+
     var episodeDetailsState by mutableStateOf(EpisodeDetailsState())
         private set
 
     init {
         getEpisodeDetails(
-            seriesId = savedStateHandle[C.MEDIA_ID] ?: 0,
+            seriesId = seriesId,
             seasonNumber = seasonNumber,
             episodeNumber = episodeNumber,
             appendToResponse = appendToResponse(MediaType.EPISODE.name.lowercase()),

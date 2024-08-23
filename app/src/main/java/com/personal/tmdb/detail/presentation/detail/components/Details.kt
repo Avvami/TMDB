@@ -278,7 +278,7 @@ fun Details(
                                 Row(
                                     modifier = Modifier
                                         .clip(RoundedCornerShape(2.dp))
-                                        .clickable { onNavigateTo(RootNavGraph.CAST + "/${info().name ?: ""}/${mediaType?.name?.lowercase() ?: ""}/${info().id}") },
+                                        .clickable { onNavigateTo(RootNavGraph.CAST + "/${Uri.encode(info().name ?: "") ?: ""}/${mediaType?.name?.lowercase() ?: ""}/${info().id}") },
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(2.dp)
                                 ) {
@@ -330,11 +330,7 @@ fun Details(
                                         .clip(RoundedCornerShape(2.dp))
                                         .clickable {
                                             onNavigateTo(
-                                                RootNavGraph.CAST + "/${
-                                                    Uri.encode(
-                                                        info().name ?: ""
-                                                    ) ?: ""
-                                                }/${mediaType?.name?.lowercase() ?: ""}/${info().id}"
+                                                RootNavGraph.CAST + "/${Uri.encode(info().name ?: "") ?: ""}/${mediaType?.name?.lowercase() ?: ""}/${info().id}"
                                             )
                                         },
                                     verticalAlignment = Alignment.CenterVertically,

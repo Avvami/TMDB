@@ -9,5 +9,7 @@ data class Credits(
     @Json(name = "cast")
     val cast: List<Cast>?,
     @Json(name = "crew")
-    val crew: List<Crew>?
+    val crew: List<Crew>?,
+    @Json(name = "guest_stars")
+    val guestStars: List<Cast>?,
 )

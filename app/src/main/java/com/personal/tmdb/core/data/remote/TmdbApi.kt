@@ -83,6 +83,15 @@ interface TmdbApi {
     ): Credits
 
     @Headers("Authorization: Bearer ${BuildConfig.TMDB_API_KEY}")
+    @GET("3/tv/{series_id}/season/{season_number}/episode/{episode_number}/credits?")
+    suspend fun getEpisodeCredits(
+        @Path("series_id") seriesId: Int,
+        @Path("season_number") seasonNumber: Int,
+        @Path("episode_number") episodeNumber: Int,
+        @Query("language") language: String?
+    ): Credits
+
+    @Headers("Authorization: Bearer ${BuildConfig.TMDB_API_KEY}")
     @GET("3/person/{person_id}?")
     suspend fun getPerson(
         @Path("person_id") personId: Int,

@@ -54,7 +54,8 @@ fun MediaDetailDto.toMediaDetailInfo(): MediaDetailInfo {
 fun Credits.toCreditsInfo(): CreditsInfo {
     return CreditsInfo(
         cast = cast,
-        crew = crew?.groupBy { it.department }
+        crew = crew?.groupBy { it.department },
+        guestStars = guestStars
     )
 }
 

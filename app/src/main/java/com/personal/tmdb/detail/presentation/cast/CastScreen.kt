@@ -111,7 +111,34 @@ fun CastScreen(
                                 profileId = cast.id,
                                 profilePath = cast.profilePath,
                                 name = cast.name,
-                                department = cast.character,
+                                character = cast.character,
+                                activity = cast.roles?.joinToString(", ") { "${it.character} (${formatEpisodesCount(it.episodeCount)})" }
+                            )
+                        }
+                    }
+                    if (!credits.guestStars.isNullOrEmpty()) {
+                        stickyHeader(
+                            contentType = "mainHeader"
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(MaterialTheme.colorScheme.surfaceContainer)
+                                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                            ) {
+                                Text(
+                                    text = stringResource(id = R.string.guest_stars),
+                                    style = MaterialTheme.typography.titleMedium
+                                )
+                            }
+                        }
+                        items(credits.guestStars) { cast ->
+                            CastInfoCard(
+                                onNavigateTo = onNavigateTo,
+                                profileId = cast.id,
+                                profilePath = cast.profilePath,
+                                name = cast.name,
+                                character = cast.character,
                                 activity = cast.roles?.joinToString(", ") { "${it.character} (${formatEpisodesCount(it.episodeCount)})" }
                             )
                         }

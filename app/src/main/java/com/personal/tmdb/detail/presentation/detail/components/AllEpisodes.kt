@@ -63,7 +63,7 @@ fun AllEpisodes(
                 .clickable {
                     onNavigateTo(RootNavGraph.EPISODES + "/${info.id}/${
                         info.nextEpisodeToAir?.seasonNumber
-                            ?: info.lastEpisodeToAir?.seasonNumber ?: seasons.find { it.seasonNumber == 1 } ?: seasons[0]
+                            ?: info.lastEpisodeToAir?.seasonNumber ?: seasons.find { it.seasonNumber == 1 }?.seasonNumber ?: seasons[seasons.lastIndex].seasonNumber
                     }")
                 },
             verticalAlignment = Alignment.CenterVertically,

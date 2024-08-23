@@ -107,4 +107,5 @@
     <string name="stills_pages">%d/%d</string>
     <string name="episode_name">%d. %s</string>
     <string name="cast_and_crew"><![CDATA[Cast & Crew]]></string>
+    <string name="guest_stars">Guest Stars</string>
 </resources>

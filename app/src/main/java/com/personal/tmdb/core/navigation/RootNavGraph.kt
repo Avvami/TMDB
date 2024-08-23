@@ -143,11 +143,14 @@ fun RootNavigationGraph(
             )
         }
         animatedComposable(
-            route = RootNavGraph.CAST + "/{${C.MEDIA_NAME}}/{${C.MEDIA_TYPE}}/{${C.MEDIA_ID}}",
+            route = RootNavGraph.CAST + "/{${C.MEDIA_NAME}}/{${C.MEDIA_TYPE}}/{${C.MEDIA_ID}}" +
+                    "?${C.SEASON_NUMBER}={${C.SEASON_NUMBER}}?${C.EPISODE_NUMBER}={${C.EPISODE_NUMBER}}",
             arguments = listOf(
                 navArgument(C.MEDIA_NAME) { type = NavType.StringType; nullable = false},
                 navArgument(C.MEDIA_TYPE) { type = NavType.StringType; nullable = false},
-                navArgument(C.MEDIA_ID) { type = NavType.IntType; nullable = false}
+                navArgument(C.MEDIA_ID) { type = NavType.IntType; nullable = false},
+                navArgument(C.SEASON_NUMBER) { type = NavType.StringType; nullable = true},
+                navArgument(C.EPISODE_NUMBER) { type = NavType.StringType; nullable = true},
             )
         ) {
             CastScreen(
