@@ -1,4 +1,4 @@
-package com.personal.tmdb.detail.presentation.detail.components
+package com.personal.tmdb.detail.presentation.episode.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -27,7 +27,7 @@ import com.personal.tmdb.R
 import com.personal.tmdb.core.util.shimmerEffect
 
 @Composable
-fun DetailScreenShimmer() {
+fun EpisodeDetailsShimmer() {
     Column(
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
@@ -141,15 +141,6 @@ fun DetailScreenShimmer() {
             }
             Text(
                 modifier = Modifier
-                    .clip(MaterialTheme.shapes.small)
-                    .shimmerEffect()
-                    .padding(10.dp),
-                text = "One last hunt to save us all.",
-                style = MaterialTheme.typography.bodyLarge,
-                color = Color.Transparent
-            )
-            Text(
-                modifier = Modifier
                     .fillMaxWidth()
                     .clip(MaterialTheme.shapes.small)
                     .shimmerEffect(),
@@ -157,30 +148,6 @@ fun DetailScreenShimmer() {
                 style = MaterialTheme.typography.bodyLarge,
                 minLines = 4
             )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(MaterialTheme.shapes.small)
-                    .shimmerEffect(),
-            ) {
-                Text(
-                    text = stringResource(id = R.string.starring),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = Color.Transparent
-                )
-            }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(MaterialTheme.shapes.small)
-                    .shimmerEffect(),
-            ) {
-                Text(
-                    text = stringResource(id = R.string.genres),
-                    style = MaterialTheme.typography.labelLarge,
-                    color = Color.Transparent
-                )
-            }
         }
     }
 }

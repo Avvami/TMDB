@@ -56,6 +56,7 @@ import com.personal.tmdb.core.presentation.components.MediaRowView
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.detail.data.models.Cast
 import com.personal.tmdb.detail.presentation.episode.components.EpisodeDetails
+import com.personal.tmdb.detail.presentation.episode.components.EpisodeDetailsShimmer
 import com.personal.tmdb.ui.theme.backgroundLight
 import com.personal.tmdb.ui.theme.onBackgroundLight
 
@@ -122,7 +123,9 @@ fun EpisodeDetailsScreen(
             contentPadding = PaddingValues(bottom = 16.dp)
         ) {
             if (episodeDetailsViewModel.episodeDetailsState.isLoading) {
-
+                item {
+                    EpisodeDetailsShimmer()
+                }
             } else {
                 episodeDetailsViewModel.episodeDetailsState.error?.let {
                     item {
@@ -278,6 +281,7 @@ fun GuestStar(
                 Text(
                     text = character,
                     style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
