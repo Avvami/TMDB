@@ -120,7 +120,7 @@ fun MediaCard(
                         .background(onBackgroundLight.copy(.5f))
                         .padding(horizontal = 4.dp)
                         .align(Alignment.TopStart),
-                    text = formatVoteAverage(8.5.toFloat()),
+                    text = formatVoteAverage(mediaInfo.voteAverage),
                     style = MaterialTheme.typography.labelMedium,
                     color = backgroundLight
                 )
@@ -280,7 +280,7 @@ fun MediaPoster(
                         .background(onBackgroundLight.copy(.5f))
                         .padding(horizontal = 4.dp)
                         .align(Alignment.TopStart),
-                    text = formatVoteAverage(8.5.toFloat()),
+                    text = formatVoteAverage(mediaInfo.voteAverage),
                     style = MaterialTheme.typography.labelMedium,
                     color = backgroundLight
                 )
