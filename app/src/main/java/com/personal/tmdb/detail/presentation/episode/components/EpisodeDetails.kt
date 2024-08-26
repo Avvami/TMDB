@@ -34,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
+import com.personal.tmdb.core.util.compactDecimalFormat
 import com.personal.tmdb.core.util.formatDate
 import com.personal.tmdb.core.util.formatRuntime
 import com.personal.tmdb.core.util.formatVoteAverage
@@ -170,7 +171,7 @@ fun EpisodeDetails(
                                     horizontalArrangement = Arrangement.spacedBy(2.dp)
                                 ) {
                                     Text(
-                                        text = voteCount.toString(),
+                                        text = compactDecimalFormat(voteCount.toLong()),
                                         style = MaterialTheme.typography.labelSmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )

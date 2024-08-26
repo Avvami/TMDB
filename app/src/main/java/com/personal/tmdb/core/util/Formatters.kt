@@ -12,6 +12,9 @@ import com.personal.tmdb.ui.theme.tmdbRatingOrange
 import com.personal.tmdb.ui.theme.tmdbRatingRed
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.NavigableMap
+import java.util.TreeMap
+
 
 fun formatRuntime(minutes: Int, context: Context): String {
     return when {
@@ -84,4 +87,24 @@ fun formatPersonActing(numberOfEpisodes: Int?, character: String?, job: String?)
             append("... $job")
         }
     }
+}
+
+private val suffixes: NavigableMap<Long, String> = TreeMap<Long, String>().apply {
+    put(1_000L, "K")
+    put(1_000_000L, "M")
+    put(1_000_000_000L, "B")
+    put(1_000_000_000_000L, "T")
+    put(1_000_000_000_000_000L, "P")
+    put(1_000_000_000_000_000_000L, "E")
+}
+
+fun compactDecimalFormat(value: Long): String {
+    if (value < 0) return "-" + compactDecimalFormat(-value)
+    if (value < 1000) return value.toString()
+
+    val (divideBy, suffix) = suffixes.floorEntry(value)?.toPair() ?: return value.toString()
+
+    val truncated = value / (divideBy / 10)
+    val hasDecimal = truncated < 100 && (truncated / 10.0) != (truncated / 10).toDouble()
+    return if (hasDecimal) (truncated / 10.0).toString() + suffix else (truncated / 10).toString() + suffix
 }

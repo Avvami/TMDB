@@ -51,6 +51,7 @@ import com.personal.tmdb.core.navigation.RootNavGraph
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.MediaType
+import com.personal.tmdb.core.util.compactDecimalFormat
 import com.personal.tmdb.core.util.formatDate
 import com.personal.tmdb.core.util.formatRuntime
 import com.personal.tmdb.core.util.formatTvShowRuntime
@@ -174,7 +175,7 @@ fun Details(
                                             horizontalArrangement = Arrangement.spacedBy(2.dp)
                                         ) {
                                             Text(
-                                                text = voteCount.toString(),
+                                                text = compactDecimalFormat(voteCount.toLong()),
                                                 style = MaterialTheme.typography.labelSmall,
                                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                                             )
