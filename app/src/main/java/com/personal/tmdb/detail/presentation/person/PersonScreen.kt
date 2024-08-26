@@ -39,6 +39,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.personal.tmdb.R
 import com.personal.tmdb.core.presentation.PreferencesState
+import com.personal.tmdb.core.presentation.components.CustomIconButton
 import com.personal.tmdb.core.presentation.components.MediaPoster
 import com.personal.tmdb.core.presentation.components.MediaRowView
 import com.personal.tmdb.detail.presentation.person.components.Bio
@@ -52,6 +53,7 @@ import com.personal.tmdb.detail.presentation.person.components.PersonalInfo
 fun PersonScreen(
     navigateBack: () -> Unit,
     onNavigateTo: (route: String) -> Unit,
+    navigateToHome: () -> Unit,
     preferencesState: State<PreferencesState>,
     personViewModel: PersonViewModel = hiltViewModel()
 ) {
@@ -69,8 +71,9 @@ fun PersonScreen(
                     }
                 },
                 navigationIcon = {
-                    IconButton(
-                        onClick = navigateBack
+                    CustomIconButton(
+                        onClick = navigateBack,
+                        onLongClick = navigateToHome
                     )  {
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.ArrowBack,

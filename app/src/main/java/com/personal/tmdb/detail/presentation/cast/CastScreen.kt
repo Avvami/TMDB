@@ -11,7 +11,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -25,6 +24,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.personal.tmdb.R
+import com.personal.tmdb.core.presentation.components.CustomIconButton
 import com.personal.tmdb.core.util.formatEpisodesCount
 import com.personal.tmdb.detail.presentation.cast.components.CastInfoCard
 import com.personal.tmdb.detail.presentation.cast.components.CastScreenShimmer
@@ -34,6 +34,7 @@ import com.personal.tmdb.detail.presentation.cast.components.CastScreenShimmer
 fun CastScreen(
     navigateBack: () -> Unit,
     onNavigateTo: (route: String) -> Unit,
+    navigateToHome: () -> Unit,
     castViewModel: CastViewModel = hiltViewModel()
 ) {
     Scaffold(
@@ -54,8 +55,9 @@ fun CastScreen(
                     actionIconContentColor = MaterialTheme.colorScheme.onBackground
                 ),
                 navigationIcon = {
-                    IconButton(
-                        onClick = navigateBack
+                    CustomIconButton(
+                        onClick = navigateBack,
+                        onLongClick = navigateToHome
                     )  {
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.ArrowBack,

@@ -52,6 +52,7 @@ import com.personal.tmdb.R
 import com.personal.tmdb.UserState
 import com.personal.tmdb.core.navigation.RootNavGraph
 import com.personal.tmdb.core.presentation.PreferencesState
+import com.personal.tmdb.core.presentation.components.CustomIconButton
 import com.personal.tmdb.core.presentation.components.MediaRowView
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.detail.data.models.Cast
@@ -65,6 +66,7 @@ import com.personal.tmdb.ui.theme.onBackgroundLight
 fun EpisodeDetailsScreen(
     navigateBack: () -> Unit,
     onNavigateTo: (route: String) -> Unit,
+    navigateToHome: () -> Unit,
     preferencesState: State<PreferencesState>,
     userState: State<UserState>,
     episodeDetailsViewModel: EpisodeDetailsViewModel = hiltViewModel()
@@ -83,8 +85,9 @@ fun EpisodeDetailsScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(
-                        onClick = navigateBack
+                    CustomIconButton(
+                        onClick = navigateBack,
+                        onLongClick = navigateToHome
                     )  {
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.ArrowBack,

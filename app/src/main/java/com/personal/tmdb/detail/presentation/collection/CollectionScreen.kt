@@ -27,7 +27,6 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SuggestionChip
@@ -63,6 +62,7 @@ import com.personal.tmdb.R
 import com.personal.tmdb.core.domain.models.DropdownItem
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.CustomDropdownMenu
+import com.personal.tmdb.core.presentation.components.CustomIconButton
 import com.personal.tmdb.core.presentation.components.MediaListView
 import com.personal.tmdb.core.util.ApplyStatusBarsTheme
 import com.personal.tmdb.core.util.C
@@ -81,6 +81,7 @@ import com.personal.tmdb.ui.theme.tmdbDarkBlue
 fun CollectionScreen(
     navigateBack: () -> Unit,
     onNavigateTo: (route: String) -> Unit,
+    navigateToHome: () -> Unit,
     preferencesState: State<PreferencesState>,
     collectionViewModel: CollectionViewModel = hiltViewModel()
 ) {
@@ -129,8 +130,9 @@ fun CollectionScreen(
                     actionIconContentColor = if (collectionViewModel.collectionState.collectionInfo != null) backgroundLight else MaterialTheme.colorScheme.onBackground
                 ),
                 navigationIcon = {
-                    IconButton(
-                        onClick = navigateBack
+                    CustomIconButton(
+                        onClick = navigateBack,
+                        onLongClick = navigateToHome
                     )  {
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.ArrowBack,

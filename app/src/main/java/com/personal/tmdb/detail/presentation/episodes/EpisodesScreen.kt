@@ -25,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.personal.tmdb.R
 import com.personal.tmdb.UserState
 import com.personal.tmdb.core.presentation.PreferencesState
+import com.personal.tmdb.core.presentation.components.CustomIconButton
 import com.personal.tmdb.detail.presentation.episodes.components.seasonInfo
 import com.personal.tmdb.detail.presentation.episodes.components.seasonInfoShimmer
 import com.personal.tmdb.detail.presentation.episodes.components.seasonSelect
@@ -34,6 +35,7 @@ import com.personal.tmdb.detail.presentation.episodes.components.seasonSelect
 fun EpisodesScreen(
     navigateBack: () -> Unit,
     onNavigateTo: (route: String) -> Unit,
+    navigateToHome: () -> Unit,
     preferencesState: State<PreferencesState>,
     userState: State<UserState>,
     episodesViewModel: EpisodesViewModel = hiltViewModel()
@@ -48,8 +50,9 @@ fun EpisodesScreen(
                     )
                 },
                 navigationIcon = {
-                    IconButton(
-                        onClick = navigateBack
+                    CustomIconButton(
+                        onClick = navigateBack,
+                        onLongClick = navigateToHome
                     )  {
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.ArrowBack,

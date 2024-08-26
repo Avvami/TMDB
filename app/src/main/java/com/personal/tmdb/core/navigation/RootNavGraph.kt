@@ -31,8 +31,12 @@ fun RootNavigationGraph(
     mainViewModel: MainViewModel
 ) {
     val onNavigateBack: () -> Unit = {
-        with(navController) {
-            this.navigateUp()
+        navController.navigateUp()
+    }
+    val navigateToHome: () -> Unit = {
+        navController.navigate(RootNavGraph.HOME) {
+            popUpTo(navController.graph.startDestinationId)
+            launchSingleTop = true
         }
     }
     NavHost(
@@ -105,6 +109,7 @@ fun RootNavigationGraph(
                 onNavigateTo = { route ->
                     navController.navigate(route = route)
                 },
+                navigateToHome = navigateToHome,
                 preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle(),
                 userState = mainViewModel.userState.collectAsStateWithLifecycle()
             )
@@ -139,6 +144,7 @@ fun RootNavigationGraph(
                         launchSingleTop = true
                     }
                 },
+                navigateToHome = navigateToHome,
                 preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle(),
             )
         }
@@ -159,7 +165,8 @@ fun RootNavigationGraph(
                     navController.navigate(route = route) {
                         launchSingleTop = true
                     }
-                }
+                },
+                navigateToHome = navigateToHome
             )
         }
         animatedComposable(
@@ -176,6 +183,7 @@ fun RootNavigationGraph(
                         launchSingleTop = true
                     }
                 },
+                navigateToHome = navigateToHome,
                 preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle()
             )
         }
@@ -203,6 +211,7 @@ fun RootNavigationGraph(
                         launchSingleTop = true
                     }
                 },
+                navigateToHome = navigateToHome,
                 preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle(),
                 userState = mainViewModel.userState.collectAsStateWithLifecycle()
             )
@@ -222,6 +231,7 @@ fun RootNavigationGraph(
                         launchSingleTop = true
                     }
                 },
+                navigateToHome = navigateToHome,
                 preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle(),
                 userState = mainViewModel.userState.collectAsStateWithLifecycle()
             )
