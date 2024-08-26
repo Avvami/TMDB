@@ -119,24 +119,6 @@ fun EpisodeDetailsShimmer() {
                             }
                         }
                     }
-                    Row(
-                        modifier = Modifier
-                            .clip(MaterialTheme.shapes.small)
-                            .shimmerEffect(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .sizeIn(minWidth = 32.dp, minHeight = 32.dp)
-                                .clip(MaterialTheme.shapes.small)
-                        )
-                        Text(
-                            text = stringResource(id = R.string.rate_now),
-                            style = MaterialTheme.typography.titleMedium,
-                            color = Color.Transparent
-                        )
-                    }
                 }
             }
             Text(
