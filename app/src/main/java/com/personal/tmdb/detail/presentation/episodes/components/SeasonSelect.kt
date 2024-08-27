@@ -132,7 +132,7 @@ fun LazyListScope.seasonSelect(
                                                 items(seasons) { season ->
                                                     Text(
                                                         modifier = Modifier
-                                                            .fillMaxWidth(.7f)
+                                                            .fillMaxWidth()
                                                             .clickable {
                                                                 episodesUiEvent(
                                                                     EpisodesUiEvent.SetSelectedSeason(

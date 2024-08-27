@@ -24,9 +24,11 @@ class CollectionViewModel @Inject constructor(
     var collectionState by mutableStateOf(CollectionState())
         private set
 
+    val collectionId: Int = savedStateHandle[C.COLLECTION_ID] ?: 0
+
     init {
         getCollection(
-            collectionId = savedStateHandle[C.COLLECTION_ID] ?: 0
+            collectionId = collectionId
         )
     }
 

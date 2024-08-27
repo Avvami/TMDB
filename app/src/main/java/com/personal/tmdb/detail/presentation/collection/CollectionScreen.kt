@@ -23,10 +23,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.rounded.ArrowDropDown
 import androidx.compose.material.icons.rounded.Clear
+import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SuggestionChip
@@ -67,9 +69,11 @@ import com.personal.tmdb.core.presentation.components.MediaListView
 import com.personal.tmdb.core.util.ApplyStatusBarsTheme
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.SortType
+import com.personal.tmdb.core.util.UiText
 import com.personal.tmdb.core.util.applyStatusBarsTheme
 import com.personal.tmdb.core.util.convertSortType
 import com.personal.tmdb.core.util.formatVoteAverage
+import com.personal.tmdb.core.util.shareText
 import com.personal.tmdb.core.util.shimmerEffect
 import com.personal.tmdb.detail.presentation.collection.components.CollectionScreenShimmer
 import com.personal.tmdb.ui.theme.backgroundLight
@@ -137,6 +141,23 @@ fun CollectionScreen(
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
                             contentDescription = "Go back"
+                        )
+                    }
+                },
+                actions = {
+                    IconButton(
+                        onClick = {
+                            context.shareText(
+                                UiText.StringResource(
+                                    resId = R.string.share_collection,
+                                    collectionViewModel.collectionId
+                                ).asString(context)
+                            )
+                        }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Share,
+                            contentDescription = "Share"
                         )
                     }
                 },

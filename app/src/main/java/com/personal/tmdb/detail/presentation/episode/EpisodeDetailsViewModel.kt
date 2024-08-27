@@ -1,7 +1,6 @@
 package com.personal.tmdb.detail.presentation.episode
 
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
@@ -23,14 +22,11 @@ class EpisodeDetailsViewModel@Inject constructor(
     private val detailRepository: DetailRepository
 ): ViewModel() {
 
-    var seasonNumber by mutableIntStateOf(savedStateHandle[C.SEASON_NUMBER] ?: 0)
-        private set
+    val seasonNumber: Int = savedStateHandle[C.SEASON_NUMBER] ?: 0
 
-    var episodeNumber by mutableIntStateOf(savedStateHandle[C.EPISODE_NUMBER] ?: 0)
-        private set
+    val episodeNumber: Int = savedStateHandle[C.EPISODE_NUMBER] ?: 0
 
-    var seriesId by mutableIntStateOf(savedStateHandle[C.MEDIA_ID] ?: 0)
-        private set
+    val seriesId: Int = savedStateHandle[C.MEDIA_ID] ?: 0
 
     var episodeDetailsState by mutableStateOf(EpisodeDetailsState())
         private set

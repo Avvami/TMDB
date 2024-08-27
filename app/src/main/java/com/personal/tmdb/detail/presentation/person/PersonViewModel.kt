@@ -25,18 +25,18 @@ class PersonViewModel @Inject constructor(
     var personState by mutableStateOf(PersonState())
         private set
 
-    var personName by mutableStateOf("")
-        private set
-
     var isBioCollapsed by mutableStateOf(true)
         private set
 
     var personCreditsState by mutableStateOf(PersonCreditsState())
         private set
 
+    val personName: String = savedStateHandle[C.PERSON_NAME] ?: ""
+
+    val personId: Int = savedStateHandle[C.PERSON_ID] ?: 0
+
     init {
-        personName = savedStateHandle[C.PERSON_NAME] ?: ""
-        getPerson(savedStateHandle[C.PERSON_ID] ?: 0)
+        getPerson(personId)
     }
 
     private fun getPerson(personId: Int, language: String? = null) {

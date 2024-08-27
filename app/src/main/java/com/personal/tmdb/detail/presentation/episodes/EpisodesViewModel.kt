@@ -28,8 +28,7 @@ class EpisodesViewModel @Inject constructor(
     var selectedSeasonNumber by mutableIntStateOf(savedStateHandle[C.SEASON_NUMBER] ?: 0)
         private set
 
-    var mediaId by mutableIntStateOf(savedStateHandle[C.MEDIA_ID] ?: 0)
-        private set
+    val mediaId: Int = savedStateHandle[C.MEDIA_ID] ?: 0
 
     init {
         getMediaDetails(

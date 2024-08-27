@@ -56,11 +56,15 @@ class DetailViewModel @Inject constructor(
         _availableCountries.value
     )
 
+    val mediaType: String = savedStateHandle[C.MEDIA_TYPE] ?: ""
+
+    val mediaId: Int = savedStateHandle[C.MEDIA_ID] ?: 0
+
     init {
         getMediaDetails(
-            mediaType = savedStateHandle[C.MEDIA_TYPE] ?: "",
-            mediaId = savedStateHandle[C.MEDIA_ID] ?: 0,
-            appendToResponse = appendToResponse(savedStateHandle[C.MEDIA_TYPE] ?: "")
+            mediaType = mediaType,
+            mediaId = mediaId,
+            appendToResponse = appendToResponse(mediaType)
         )
     }
 

@@ -1,7 +1,6 @@
 package com.personal.tmdb.detail.presentation.episode
 
 import android.net.Uri
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
@@ -23,6 +22,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontStyle
@@ -55,6 +56,8 @@ import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.CustomIconButton
 import com.personal.tmdb.core.presentation.components.MediaRowView
 import com.personal.tmdb.core.util.C
+import com.personal.tmdb.core.util.UiText
+import com.personal.tmdb.core.util.shareText
 import com.personal.tmdb.detail.data.models.Cast
 import com.personal.tmdb.detail.presentation.episode.components.EpisodeDetails
 import com.personal.tmdb.detail.presentation.episode.components.EpisodeDetailsShimmer
@@ -96,17 +99,23 @@ fun EpisodeDetailsScreen(
                     }
                 },
                 actions = {
-                    AnimatedVisibility(
-                        visible = !episodeDetailsViewModel.episodeDetailsState.episodeDetails?.translations?.translations.isNullOrEmpty()
-                    ) {
-                        IconButton(
-                            onClick = { /*TODO*/ }
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.icon_translate_fill0_wght400),
-                                contentDescription = "Translations"
+                    val context = LocalContext.current
+                    IconButton(
+                        onClick = {
+                            context.shareText(
+                                UiText.StringResource(
+                                    resId = R.string.share_episode,
+                                    episodeDetailsViewModel.seriesId,
+                                    episodeDetailsViewModel.seasonNumber,
+                                    episodeDetailsViewModel.episodeNumber
+                                ).asString(context)
                             )
                         }
+                    ) {
+                        Icon(
+                            imageVector = Icons.Rounded.Share,
+                            contentDescription = "Share"
+                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(

@@ -2,6 +2,7 @@ package com.personal.tmdb.core.di
 
 import android.content.ContentValues
 import android.content.Context
+import android.content.SharedPreferences
 import android.database.sqlite.SQLiteDatabase
 import androidx.room.Room
 import androidx.room.RoomDatabase
@@ -69,5 +70,5 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideSharedPreferenses(@ApplicationContext appContext: Context) = appContext.getSharedPreferences("localCache", Context.MODE_PRIVATE)
+    fun provideSharedPreferences(@ApplicationContext appContext: Context): SharedPreferences = appContext.getSharedPreferences("localCache", Context.MODE_PRIVATE)
 }

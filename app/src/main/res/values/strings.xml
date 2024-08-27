@@ -108,4 +108,12 @@
     <string name="episode_name">%d. %s</string>
     <string name="cast_and_crew"><![CDATA[Cast & Crew]]></string>
     <string name="guest_stars">Guest Stars</string>
+
+    <string name="share_media">https://www.themoviedb.org/%s/%d</string>
+    <string name="share_cast">https://www.themoviedb.org/%s/%d/cast</string>
+    <string name="share_collection">https://www.themoviedb.org/collection/%d</string>
+    <string name="share_season">https://www.themoviedb.org/tv/%d/season/%d</string>
+    <string name="share_episode">https://www.themoviedb.org/tv/%d/season/%d/episode/%d</string>
+    <string name="share_episode_cast">https://www.themoviedb.org/tv/%d/season/%d/episode/%d/cast</string>
+    <string name="share_person">https://www.themoviedb.org/person/%d</string>
 </resources>

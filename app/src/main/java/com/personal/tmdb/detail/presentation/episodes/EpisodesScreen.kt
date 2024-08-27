@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -17,7 +18,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -26,6 +27,8 @@ import com.personal.tmdb.R
 import com.personal.tmdb.UserState
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.CustomIconButton
+import com.personal.tmdb.core.util.UiText
+import com.personal.tmdb.core.util.shareText
 import com.personal.tmdb.detail.presentation.episodes.components.seasonInfo
 import com.personal.tmdb.detail.presentation.episodes.components.seasonInfoShimmer
 import com.personal.tmdb.detail.presentation.episodes.components.seasonSelect
@@ -61,12 +64,21 @@ fun EpisodesScreen(
                     }
                 },
                 actions = {
+                    val context = LocalContext.current
                     IconButton(
-                        onClick = { /*TODO*/ }
+                        onClick = {
+                            context.shareText(
+                                UiText.StringResource(
+                                    resId = R.string.share_season,
+                                    episodesViewModel.mediaId,
+                                    episodesViewModel.selectedSeasonNumber
+                                ).asString(context)
+                            )
+                        }
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.icon_translate_fill0_wght400),
-                            contentDescription = "Translations"
+                            imageVector = Icons.Rounded.Share,
+                            contentDescription = "Share"
                         )
                     }
                 },

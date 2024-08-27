@@ -24,21 +24,29 @@ class CastViewModel @Inject constructor(
     var castState by mutableStateOf(CastState())
         private set
 
-    var mediaName = Uri.decode(savedStateHandle[C.MEDIA_NAME] ?: "") ?: ""
+    val mediaName: String = Uri.decode(savedStateHandle[C.MEDIA_NAME] ?: "") ?: ""
+
+    val mediaType: String = savedStateHandle[C.MEDIA_TYPE] ?: ""
+
+    val mediaId: Int = savedStateHandle[C.MEDIA_ID] ?: 0
+
+    private val _seasonNumber: String? = savedStateHandle[C.SEASON_NUMBER]
+    val seasonNumber = _seasonNumber?.toIntOrNull()
+
+    private val _episodeNumber: String? = savedStateHandle[C.EPISODE_NUMBER]
+    val episodeNumber = _episodeNumber?.toIntOrNull()
 
     init {
-        val seasonNumber: String? = savedStateHandle[C.SEASON_NUMBER]
-        val episodeNumber: String? = savedStateHandle[C.EPISODE_NUMBER]
-        if (seasonNumber?.toIntOrNull() != null && episodeNumber?.toIntOrNull() != null) {
+        if (seasonNumber != null && episodeNumber != null) {
             getEpisodeCast(
-                mediaId = savedStateHandle[C.MEDIA_ID] ?: 0,
-                seasonNumber = seasonNumber.toInt(),
-                episodeNumber = episodeNumber.toInt()
+                mediaId = mediaId,
+                seasonNumber = seasonNumber,
+                episodeNumber = episodeNumber
             )
         } else {
             getCast(
-                mediaType = savedStateHandle[C.MEDIA_TYPE] ?: "",
-                mediaId = savedStateHandle[C.MEDIA_ID] ?: 0
+                mediaType = mediaType,
+                mediaId = mediaId
             )
         }
     }
