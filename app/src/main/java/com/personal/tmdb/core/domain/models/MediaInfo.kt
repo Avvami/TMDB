@@ -6,6 +6,7 @@ import java.time.LocalDate
 data class MediaInfo(
     val backdropPath: String?,
     val id: Int,
+    val knownFor: List<MediaInfo>? = null,
     val mediaType: MediaType?,
     val name: String?,
     val overview: String?,

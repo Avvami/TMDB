@@ -134,6 +134,17 @@ fun MediaCard(
                     color = MaterialTheme.colorScheme.onBackground
                 )
             }
+            mediaInfo.knownFor?.let { knownFor ->
+                if (knownFor.isNotEmpty()) {
+                    Text(
+                        text = knownFor.joinToString(", ") { it.name.toString() },
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
             mediaInfo.releaseDate?.let { releaseDate ->
                 Text(
                     text = formatDate(releaseDate),

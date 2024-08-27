@@ -25,6 +25,8 @@ data class Result(
     val id: Int,
     @Json(name = "first_air_date")
     val firstAirDate: String?,
+    @Json(name = "known_for")
+    val knownFor: List<Result>?,
     @Json(name = "media_type")
     val mediaType: String?,
     @Json(name = "name")
