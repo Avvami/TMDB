@@ -116,4 +116,10 @@
     <string name="share_episode">https://www.themoviedb.org/tv/%d/season/%d/episode/%d</string>
     <string name="share_episode_cast">https://www.themoviedb.org/tv/%d/season/%d/episode/%d/cast</string>
     <string name="share_person">https://www.themoviedb.org/person/%d</string>
+
+    <string name="facebook">https://www.facebook.com/%s</string>
+    <string name="instagram">https://www.instagram.com/%s</string>
+    <string name="tiktok">https://www.tiktok.com/@%s</string>
+    <string name="youtube">https://www.youtube.com/%s</string>
+    <string name="twitter_x">https://x.com/%s</string>
 </resources>
