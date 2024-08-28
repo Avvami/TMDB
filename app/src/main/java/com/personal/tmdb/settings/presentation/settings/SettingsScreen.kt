@@ -323,7 +323,15 @@ fun SettingsScreen(
             }
             item {
                 Column(
-                    modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainerLow)
+                    modifier = Modifier
+                        .then(
+                            if (userState.value.sessionId.isNullOrEmpty()) {
+                                Modifier.padding(top = innerPadding.calculateTopPadding())
+                            } else {
+                                Modifier
+                            }
+                        )
+                        .background(MaterialTheme.colorScheme.surfaceContainerLow)
                 ) {
                     Text(
                         modifier = Modifier.padding(start = 16.dp, top = 8.dp),

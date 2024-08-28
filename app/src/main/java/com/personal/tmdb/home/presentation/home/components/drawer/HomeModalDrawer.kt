@@ -128,7 +128,7 @@ fun HomeModalDrawer(
                             modifier = Modifier.matchParentSize(),
                             painter = painterResource(id = R.drawable.pipes_pink),
                             contentDescription = "Profile Background",
-                            contentScale = ContentScale.Crop,
+                            contentScale = ContentScale.Crop
                         )
                     }
                     Row(
@@ -139,7 +139,7 @@ fun HomeModalDrawer(
                                 indication = null
                             ) {
                                 closeDrawer()
-                                if (userState.value.sessionId != null) {
+                                if (!userState.value.sessionId.isNullOrEmpty()) {
                                     onNavigateTo(RootNavGraph.SETTINGS)
                                 } else {
                                     onNavigateTo(RootNavGraph.AUTH)
