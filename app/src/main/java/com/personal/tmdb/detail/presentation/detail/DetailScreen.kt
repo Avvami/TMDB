@@ -41,7 +41,7 @@ import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.CustomIconButton
 import com.personal.tmdb.core.presentation.components.MediaPoster
 import com.personal.tmdb.core.presentation.components.MediaRowView
-import com.personal.tmdb.core.util.UiText
+import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.shareText
 import com.personal.tmdb.detail.presentation.detail.components.AllEpisodes
 import com.personal.tmdb.detail.presentation.detail.components.DetailScreenShimmer
@@ -82,13 +82,7 @@ fun DetailScreen(
                     val context = LocalContext.current
                     IconButton(
                         onClick = {
-                            context.shareText(
-                                UiText.StringResource(
-                                    resId = R.string.share_media,
-                                    detailViewModel.mediaType,
-                                    detailViewModel.mediaId
-                                ).asString(context)
-                            )
+                            context.shareText(C.SHARE_MEDIA.format(detailViewModel.mediaType, detailViewModel.mediaId))
                         }
                     ) {
                         Icon(

@@ -47,7 +47,7 @@ import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.CustomIconButton
 import com.personal.tmdb.core.presentation.components.MediaPoster
 import com.personal.tmdb.core.presentation.components.MediaRowView
-import com.personal.tmdb.core.util.UiText
+import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.shareText
 import com.personal.tmdb.detail.presentation.person.components.Bio
 import com.personal.tmdb.detail.presentation.person.components.ExternalIdsRow
@@ -94,12 +94,7 @@ fun PersonScreen(
                     val context = LocalContext.current
                     IconButton(
                         onClick = {
-                            context.shareText(
-                                UiText.StringResource(
-                                    resId = R.string.share_person,
-                                    personViewModel.personId
-                                ).asString(context)
-                            )
+                            context.shareText(C.SHARE_PERSON.format(personViewModel.personId))
                         }
                     ) {
                         Icon(

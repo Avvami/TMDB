@@ -69,7 +69,6 @@ import com.personal.tmdb.core.presentation.components.MediaListView
 import com.personal.tmdb.core.util.ApplyStatusBarsTheme
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.SortType
-import com.personal.tmdb.core.util.UiText
 import com.personal.tmdb.core.util.applyStatusBarsTheme
 import com.personal.tmdb.core.util.convertSortType
 import com.personal.tmdb.core.util.formatVoteAverage
@@ -147,12 +146,7 @@ fun CollectionScreen(
                 actions = {
                     IconButton(
                         onClick = {
-                            context.shareText(
-                                UiText.StringResource(
-                                    resId = R.string.share_collection,
-                                    collectionViewModel.collectionId
-                                ).asString(context)
-                            )
+                            context.shareText(C.SHARE_COLLECTION.format(collectionViewModel.collectionId))
                         }
                     ) {
                         Icon(

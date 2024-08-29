@@ -56,7 +56,6 @@ import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.CustomIconButton
 import com.personal.tmdb.core.presentation.components.MediaRowView
 import com.personal.tmdb.core.util.C
-import com.personal.tmdb.core.util.UiText
 import com.personal.tmdb.core.util.shareText
 import com.personal.tmdb.detail.data.models.Cast
 import com.personal.tmdb.detail.presentation.episode.components.EpisodeDetails
@@ -103,12 +102,11 @@ fun EpisodeDetailsScreen(
                     IconButton(
                         onClick = {
                             context.shareText(
-                                UiText.StringResource(
-                                    resId = R.string.share_episode,
+                                C.SHARE_EPISODE.format(
                                     episodeDetailsViewModel.seriesId,
                                     episodeDetailsViewModel.seasonNumber,
                                     episodeDetailsViewModel.episodeNumber
-                                ).asString(context)
+                                )
                             )
                         }
                     ) {

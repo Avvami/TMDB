@@ -22,4 +22,18 @@ object C {
     const val PERSON_NAME = "personName"
     const val SEASON_NUMBER = "seasonNumber"
     const val EPISODE_NUMBER = "episodeNumber"
+
+    const val FACEBOOK = "https://www.facebook.com/%s"
+    const val INSTAGRAM = "https://www.instagram.com/%s"
+    const val TIKTOK = "https://www.tiktok.com/@%s"
+    const val YOUTUBE = "https://www.youtube.com/%s"
+    const val TWITTER_X = "https://x.com/%s"
+
+    const val SHARE_MEDIA = "https://www.themoviedb.org/%s/%d"
+    const val SHARE_CAST = "https://www.themoviedb.org/%s/%d/cast"
+    const val SHARE_COLLECTION = "https://www.themoviedb.org/collection/%d"
+    const val SHARE_SEASON = "https://www.themoviedb.org/tv/%d/season/%d"
+    const val SHARE_EPISODE = "https://www.themoviedb.org/tv/%d/season/%d/episode/%d"
+    const val SHARE_EPISODE_CAST = "https://www.themoviedb.org/tv/%d/season/%d/episode/%d/cast"
+    const val SHARE_PERSON = "https://www.themoviedb.org/person/%d"
 }

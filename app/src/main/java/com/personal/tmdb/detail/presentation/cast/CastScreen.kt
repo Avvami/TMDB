@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.personal.tmdb.R
 import com.personal.tmdb.core.presentation.components.CustomIconButton
-import com.personal.tmdb.core.util.UiText
+import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.formatEpisodesCount
 import com.personal.tmdb.core.util.shareText
 import com.personal.tmdb.detail.presentation.cast.components.CastInfoCard
@@ -76,20 +76,18 @@ fun CastScreen(
                         onClick = {
                             if (castViewModel.episodeNumber != null && castViewModel.seasonNumber != null) {
                                 context.shareText(
-                                    UiText.StringResource(
-                                        resId = R.string.share_episode_cast,
+                                    C.SHARE_EPISODE_CAST.format(
                                         castViewModel.mediaId,
                                         castViewModel.seasonNumber,
                                         castViewModel.episodeNumber
-                                    ).asString(context)
+                                    )
                                 )
                             } else {
                                 context.shareText(
-                                    UiText.StringResource(
-                                        resId = R.string.share_cast,
+                                    C.SHARE_CAST.format(
                                         castViewModel.mediaType,
                                         castViewModel.mediaId
-                                    ).asString(context)
+                                    )
                                 )
                             }
                         }

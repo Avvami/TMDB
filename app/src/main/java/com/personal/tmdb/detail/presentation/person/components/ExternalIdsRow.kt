@@ -14,11 +14,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.MainActivity
 import com.personal.tmdb.R
+import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.findActivity
 import com.personal.tmdb.detail.data.models.ExternalIds
 
@@ -38,32 +38,32 @@ fun ExternalIdsRow(
         ) {
             externalIds.facebookId?.let { facebookId ->
                 ExternalId(
-                    link = stringResource(id = R.string.facebook, facebookId),
+                    link = C.FACEBOOK.format(facebookId),
                     iconRes = R.drawable.icon_facebook
                 )
             }
             externalIds.instagramId?.let { instagramId ->
                 ExternalId(
-                    link = stringResource(id = R.string.instagram, instagramId),
+                    link = C.INSTAGRAM.format(instagramId),
                     iconRes = R.drawable.icon_instagram
                 )
             }
             externalIds.tiktokId?.let { tiktokId ->
                 ExternalId(
-                    link = stringResource(id = R.string.tiktok, tiktokId),
+                    link = C.TIKTOK.format(tiktokId),
                     iconRes = R.drawable.icon_tiktok
                 )
             }
             externalIds.twitterId?.let { twitterId ->
                 ExternalId(
-                    link = stringResource(id = R.string.twitter_x, twitterId),
+                    link = C.TWITTER_X.format(twitterId),
                     iconRes = R.drawable.icon_twitter_x,
                     iconSize = 18.dp
                 )
             }
             externalIds.youtubeId?.let { youtubeId ->
                 ExternalId(
-                    link = stringResource(id = R.string.youtube, youtubeId),
+                    link = C.YOUTUBE.format(youtubeId),
                     iconRes = R.drawable.icon_youtube
                 )
             }

@@ -27,7 +27,7 @@ import com.personal.tmdb.R
 import com.personal.tmdb.UserState
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.CustomIconButton
-import com.personal.tmdb.core.util.UiText
+import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.shareText
 import com.personal.tmdb.detail.presentation.episodes.components.seasonInfo
 import com.personal.tmdb.detail.presentation.episodes.components.seasonInfoShimmer
@@ -68,11 +68,10 @@ fun EpisodesScreen(
                     IconButton(
                         onClick = {
                             context.shareText(
-                                UiText.StringResource(
-                                    resId = R.string.share_season,
+                                C.SHARE_SEASON.format(
                                     episodesViewModel.mediaId,
                                     episodesViewModel.selectedSeasonNumber
-                                ).asString(context)
+                                )
                             )
                         }
                     ) {
