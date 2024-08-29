@@ -53,6 +53,7 @@ import com.personal.tmdb.detail.presentation.person.components.Bio
 import com.personal.tmdb.detail.presentation.person.components.ExternalIdsRow
 import com.personal.tmdb.detail.presentation.person.components.PersonKnownForMedia
 import com.personal.tmdb.detail.presentation.person.components.PersonPhotoCarousel
+import com.personal.tmdb.detail.presentation.person.components.PersonScreenShimmer
 import com.personal.tmdb.detail.presentation.person.components.PersonalInfo
 import com.personal.tmdb.detail.presentation.person.components.SortModalBottomSheet
 
@@ -122,150 +123,170 @@ fun PersonScreen(
                 .padding(innerPadding),
             contentPadding = PaddingValues(bottom = 8.dp)
         ) {
-            personViewModel.personState.personInfo?.let { personInfo ->
+            if (personViewModel.personState.isLoading) {
                 item {
-                    PersonPhotoCarousel(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 8.dp),
-                        personInfo = { personInfo },
+                    PersonScreenShimmer(
                         preferencesState = preferencesState
                     )
                 }
-                personInfo.externalIds?.let { externalIds ->
+            } else {
+                personViewModel.personState.error?.let { error ->
                     item {
-                        ExternalIdsRow(
+                        Text(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .horizontalScroll(rememberScrollState())
                                 .padding(horizontal = 16.dp, vertical = 8.dp),
-                            externalIds = externalIds
+                            text = error,
+                            style = MaterialTheme.typography.bodyLarge,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
-                item {
-                    PersonalInfo(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
-                        personInfo = { personInfo }
-                    )
-                }
-                item {
-                    Bio(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp, vertical = 8.dp),
-                        personInfo = { personInfo },
-                        isBioCollapsed = personViewModel::isBioCollapsed,
-                        personUiEvent = personViewModel::personUiEvent
-                    )
-                }
-                personInfo.combinedCreditsInfo?.let { combinedCredits ->
+                personViewModel.personState.personInfo?.let { personInfo ->
                     item {
-                        MediaRowView(
-                            modifier = Modifier.padding(vertical = 8.dp),
-                            titleRes = if ((combinedCredits.castMediaInfo?.size ?: 0) > 2) R.string.person_starring else R.string.known_for,
-                            items = {
-                                if ((combinedCredits.castMediaInfo?.size ?: 0) > 2) {
-                                    combinedCredits.castMediaInfo?.let { castMediaInfo ->
-                                        items(
-                                            count = castMediaInfo.size,
-                                            key = { castMediaInfo[it].id }
-                                        ) { index ->
-                                            val mediaInfo = castMediaInfo[index]
-                                            MediaPoster(
-                                                modifier = Modifier
-                                                    .height(150.dp)
-                                                    .aspectRatio(0.675f)
-                                                    .clip(RoundedCornerShape(preferencesState.value.corners.dp)),
-                                                onNavigateTo = onNavigateTo,
-                                                mediaInfo = mediaInfo,
-                                                showTitle = preferencesState.value.showTitle,
-                                                showVoteAverage = preferencesState.value.showVoteAverage,
-                                                corners = preferencesState.value.corners
-                                            )
+                        PersonPhotoCarousel(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp),
+                            personInfo = { personInfo },
+                            preferencesState = preferencesState
+                        )
+                    }
+                    personInfo.externalIds?.let { externalIds ->
+                        item {
+                            ExternalIdsRow(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .horizontalScroll(rememberScrollState())
+                                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                                externalIds = externalIds
+                            )
+                        }
+                    }
+                    item {
+                        PersonalInfo(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
+                            personInfo = { personInfo }
+                        )
+                    }
+                    item {
+                        Bio(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 8.dp),
+                            personInfo = { personInfo },
+                            isBioCollapsed = personViewModel::isBioCollapsed,
+                            personUiEvent = personViewModel::personUiEvent
+                        )
+                    }
+                    personInfo.combinedCreditsInfo?.let { combinedCredits ->
+                        item {
+                            MediaRowView(
+                                modifier = Modifier.padding(vertical = 8.dp),
+                                titleRes = if ((combinedCredits.castMediaInfo?.size ?: 0) > 2) R.string.person_starring else R.string.known_for,
+                                items = {
+                                    if ((combinedCredits.castMediaInfo?.size ?: 0) > 2) {
+                                        combinedCredits.castMediaInfo?.let { castMediaInfo ->
+                                            items(
+                                                count = castMediaInfo.size,
+                                                key = { castMediaInfo[it].id }
+                                            ) { index ->
+                                                val mediaInfo = castMediaInfo[index]
+                                                MediaPoster(
+                                                    modifier = Modifier
+                                                        .height(150.dp)
+                                                        .aspectRatio(0.675f)
+                                                        .clip(RoundedCornerShape(preferencesState.value.corners.dp)),
+                                                    onNavigateTo = onNavigateTo,
+                                                    mediaInfo = mediaInfo,
+                                                    showTitle = preferencesState.value.showTitle,
+                                                    showVoteAverage = preferencesState.value.showVoteAverage,
+                                                    corners = preferencesState.value.corners
+                                                )
+                                            }
                                         }
-                                    }
-                                } else {
-                                    combinedCredits.crewMediaInfo?.let { crewMediaInfo ->
-                                        items(
-                                            count = crewMediaInfo.size,
-                                            key = { crewMediaInfo[it].id }
-                                        ) { index ->
-                                            val mediaInfo = crewMediaInfo[index]
-                                            MediaPoster(
-                                                modifier = Modifier
-                                                    .height(150.dp)
-                                                    .aspectRatio(0.675f)
-                                                    .clip(RoundedCornerShape(preferencesState.value.corners.dp)),
-                                                onNavigateTo = onNavigateTo,
-                                                mediaInfo = mediaInfo,
-                                                showTitle = preferencesState.value.showTitle,
-                                                showVoteAverage = preferencesState.value.showVoteAverage,
-                                                corners = preferencesState.value.corners
-                                            )
+                                    } else {
+                                        combinedCredits.crewMediaInfo?.let { crewMediaInfo ->
+                                            items(
+                                                count = crewMediaInfo.size,
+                                                key = { crewMediaInfo[it].id }
+                                            ) { index ->
+                                                val mediaInfo = crewMediaInfo[index]
+                                                MediaPoster(
+                                                    modifier = Modifier
+                                                        .height(150.dp)
+                                                        .aspectRatio(0.675f)
+                                                        .clip(RoundedCornerShape(preferencesState.value.corners.dp)),
+                                                    onNavigateTo = onNavigateTo,
+                                                    mediaInfo = mediaInfo,
+                                                    showTitle = preferencesState.value.showTitle,
+                                                    showVoteAverage = preferencesState.value.showVoteAverage,
+                                                    corners = preferencesState.value.corners
+                                                )
+                                            }
                                         }
                                     }
                                 }
-                            }
-                        )
-                    }
-                }
-                personViewModel.personCreditsState.personCredits?.credits?.let {
-                    item {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(start = 16.dp, end = 4.dp, bottom = 4.dp)
-                            ,
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.credits),
-                                style = MaterialTheme.typography.titleLarge,
-                                fontWeight = FontWeight.Medium,
-                                fontSize = 20.sp
                             )
-                            IconButton(
-                                onClick = { personViewModel.personUiEvent(PersonUiEvent.ChangeBottomSheetState) }
+                        }
+                    }
+                    personViewModel.personCreditsState.personCredits?.credits?.let {
+                        item {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(start = 16.dp, end = 4.dp, bottom = 4.dp)
+                                ,
+                                horizontalArrangement = Arrangement.SpaceBetween,
+                                verticalAlignment = Alignment.CenterVertically
                             ) {
-                                Icon(painter = painterResource(id = R.drawable.icon_page_info_fill0_wght400), contentDescription = null)
+                                Text(
+                                    text = stringResource(id = R.string.credits),
+                                    style = MaterialTheme.typography.titleLarge,
+                                    fontWeight = FontWeight.Medium,
+                                    fontSize = 20.sp
+                                )
+                                IconButton(
+                                    onClick = { personViewModel.personUiEvent(PersonUiEvent.ChangeBottomSheetState) }
+                                ) {
+                                    Icon(painter = painterResource(id = R.drawable.icon_page_info_fill0_wght400), contentDescription = null)
+                                }
                             }
                         }
                     }
-                }
-                personViewModel.personCreditsState.filteredPersonCredits?.let { personCredits ->
-                    personCredits.forEach { (department, knownFor) ->
-                        if (knownFor?.values?.any { it.isNotEmpty() } == true) {
-                            stickyHeader {
-                                Text(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .background(MaterialTheme.colorScheme.surfaceContainer)
-                                        .padding(horizontal = 16.dp, vertical = 4.dp),
-                                    text = department ?: stringResource(id = R.string.acting),
-                                    style = MaterialTheme.typography.titleMedium,
-                                    fontWeight = FontWeight.Medium
-                                )
-                            }
-                        }
-                        knownFor?.values?.forEachIndexed { groupIndex, infos ->
-                            itemsIndexed(infos) { index, info ->
-                                Column(
-                                    modifier = Modifier
-                                        .padding(horizontal = 16.dp)
-                                        .animateItem()
-                                ) {
-                                    PersonKnownForMedia(
-                                        modifier = Modifier.animateItem(),
-                                        onNavigateTo = onNavigateTo,
-                                        info = { info },
-                                        preferencesState = preferencesState
+                    personViewModel.personCreditsState.filteredPersonCredits?.let { personCredits ->
+                        personCredits.forEach { (department, knownFor) ->
+                            if (knownFor?.values?.any { it.isNotEmpty() } == true) {
+                                stickyHeader {
+                                    Text(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .background(MaterialTheme.colorScheme.surfaceContainer)
+                                            .padding(horizontal = 16.dp, vertical = 4.dp),
+                                        text = department ?: stringResource(id = R.string.acting),
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Medium
                                     )
-                                    if (index == infos.lastIndex && knownFor.values.size - 1 != groupIndex) {
-                                        HorizontalDivider()
+                                }
+                            }
+                            knownFor?.values?.forEachIndexed { groupIndex, infos ->
+                                itemsIndexed(infos) { index, info ->
+                                    Column(
+                                        modifier = Modifier
+                                            .padding(horizontal = 16.dp)
+                                            .animateItem()
+                                    ) {
+                                        PersonKnownForMedia(
+                                            modifier = Modifier.animateItem(),
+                                            onNavigateTo = onNavigateTo,
+                                            info = { info },
+                                            preferencesState = preferencesState
+                                        )
+                                        if (index == infos.lastIndex && knownFor.values.size - 1 != groupIndex) {
+                                            HorizontalDivider()
+                                        }
                                     }
                                 }
                             }
