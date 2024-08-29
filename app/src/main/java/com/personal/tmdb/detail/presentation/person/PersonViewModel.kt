@@ -60,7 +60,7 @@ class PersonViewModel @Inject constructor(
             }
             personCreditsState = personCreditsState.copy(
                 personCredits = personInfo?.combinedCreditsInfo,
-                selectedDepartment = ""
+                filteredPersonCredits = personInfo?.combinedCreditsInfo?.credits
             )
 
             personState = personState.copy(
@@ -75,6 +75,39 @@ class PersonViewModel @Inject constructor(
         when (event) {
             PersonUiEvent.ChangeCollapsedBioState -> {
                 isBioCollapsed = !isBioCollapsed
+            }
+            PersonUiEvent.ChangeBottomSheetState -> {
+                personCreditsState = personCreditsState.copy(
+                    showBottomSheet = !personCreditsState.showBottomSheet
+                )
+            }
+            is PersonUiEvent.SortPersonCredits -> {
+                val selectedDepartment = when (event.department) {
+                    personCreditsState.selectedDepartment -> ""
+                    "" -> personCreditsState.selectedDepartment
+                    else -> event.department
+                }
+                val selectedMediaType = when (event.mediaType) {
+                    personCreditsState.selectedMediaType -> null
+                    null -> personCreditsState.selectedMediaType
+                    else -> event.mediaType
+                }
+                val filteredCredits = personCreditsState.personCredits?.credits?.let { credits ->
+                    credits.filterKeys {
+                        selectedDepartment == "" || it == selectedDepartment
+                    }.mapValues { (_, yearGroup) ->
+                        yearGroup?.mapValues { (_, credits) ->
+                            credits.filter {
+                                selectedMediaType == null || it.mediaType == selectedMediaType
+                            }
+                        }
+                    }
+                }
+                personCreditsState = personCreditsState.copy(
+                    filteredPersonCredits = filteredCredits,
+                    selectedDepartment = selectedDepartment,
+                    selectedMediaType = selectedMediaType
+                )
             }
         }
     }

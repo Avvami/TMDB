@@ -3,8 +3,10 @@ package com.personal.tmdb.detail.presentation.person
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -29,9 +31,11 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -50,6 +54,7 @@ import com.personal.tmdb.detail.presentation.person.components.ExternalIdsRow
 import com.personal.tmdb.detail.presentation.person.components.PersonKnownForMedia
 import com.personal.tmdb.detail.presentation.person.components.PersonPhotoCarousel
 import com.personal.tmdb.detail.presentation.person.components.PersonalInfo
+import com.personal.tmdb.detail.presentation.person.components.SortModalBottomSheet
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -207,34 +212,54 @@ fun PersonScreen(
                         )
                     }
                 }
-                item {
-                    Text(
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                        text = stringResource(id = R.string.credits),
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 20.sp
-                    )
-                }
-                personViewModel.personCreditsState.personCredits?.let { personCredits ->
-                    personCredits.credits?.forEach { (department, knownFor) ->
-                        stickyHeader {
+                personViewModel.personCreditsState.personCredits?.credits?.let {
+                    item {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(start = 16.dp, end = 4.dp, bottom = 4.dp)
+                            ,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
                             Text(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(MaterialTheme.colorScheme.surfaceContainer)
-                                    .padding(horizontal = 16.dp, vertical = 4.dp),
-                                text = department ?: stringResource(id = R.string.acting),
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Medium
+                                text = stringResource(id = R.string.credits),
+                                style = MaterialTheme.typography.titleLarge,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 20.sp
                             )
+                            IconButton(
+                                onClick = { personViewModel.personUiEvent(PersonUiEvent.ChangeBottomSheetState) }
+                            ) {
+                                Icon(painter = painterResource(id = R.drawable.icon_page_info_fill0_wght400), contentDescription = null)
+                            }
+                        }
+                    }
+                }
+                personViewModel.personCreditsState.filteredPersonCredits?.let { personCredits ->
+                    personCredits.forEach { (department, knownFor) ->
+                        if (knownFor?.values?.any { it.isNotEmpty() } == true) {
+                            stickyHeader {
+                                Text(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .background(MaterialTheme.colorScheme.surfaceContainer)
+                                        .padding(horizontal = 16.dp, vertical = 4.dp),
+                                    text = department ?: stringResource(id = R.string.acting),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Medium
+                                )
+                            }
                         }
                         knownFor?.values?.forEachIndexed { groupIndex, infos ->
                             itemsIndexed(infos) { index, info ->
                                 Column(
-                                    modifier = Modifier.padding(horizontal = 16.dp)
+                                    modifier = Modifier
+                                        .padding(horizontal = 16.dp)
+                                        .animateItem()
                                 ) {
                                     PersonKnownForMedia(
+                                        modifier = Modifier.animateItem(),
                                         onNavigateTo = onNavigateTo,
                                         info = { info },
                                         preferencesState = preferencesState
@@ -248,6 +273,12 @@ fun PersonScreen(
                     }
                 }
             }
+        }
+        if (personViewModel.personCreditsState.showBottomSheet) {
+            SortModalBottomSheet(
+                personCreditsState = personViewModel::personCreditsState,
+                personUiEvent = personViewModel::personUiEvent
+            )
         }
     }
 }

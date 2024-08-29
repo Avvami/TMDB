@@ -45,7 +45,7 @@
     <string name="includes">Includes %s</string>
     <string name="number_of_movies">Number of movies</string>
     <string name="average_rating">Average rating</string>
-    <string name="sort_by">Sort by</string>
+    <string name="sort_by">Sort By</string>
     <string name="rating">Rating</string>
     <string name="release_date">Release date</string>
     <string name="empty"/>
@@ -122,4 +122,7 @@
     <string name="tiktok">https://www.tiktok.com/@%s</string>
     <string name="youtube">https://www.youtube.com/%s</string>
     <string name="twitter_x">https://x.com/%s</string>
+    <string name="media_type">Media type</string>
+    <string name="department">Department</string>
+    <string name="clear">Clear</string>
 </resources>
