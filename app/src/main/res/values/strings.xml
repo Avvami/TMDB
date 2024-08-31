@@ -111,4 +111,6 @@
     <string name="media_type">Media type</string>
     <string name="department">Department</string>
     <string name="clear">Clear</string>
+    <string name="profiles">Profiles</string>
+    <string name="image_viewer_count">%d of %d</string>
 </resources>

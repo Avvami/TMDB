@@ -144,6 +144,7 @@ fun PersonScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 8.dp),
+                            onNavigateTo = onNavigateTo,
                             personInfo = { personInfo },
                             preferencesState = preferencesState
                         )

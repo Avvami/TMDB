@@ -78,7 +78,6 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.4")
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.0.4")
 
     // Coil

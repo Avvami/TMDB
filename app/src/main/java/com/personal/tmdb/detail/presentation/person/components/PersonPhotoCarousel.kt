@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.lerp
 import coil.compose.AsyncImage
 import com.personal.tmdb.R
+import com.personal.tmdb.core.navigation.RootNavGraph
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.detail.domain.models.PersonInfo
@@ -33,6 +34,7 @@ import kotlin.math.absoluteValue
 @Composable
 fun PersonPhotoCarousel(
     modifier: Modifier = Modifier,
+    onNavigateTo: (route: String) -> Unit,
     personInfo: () -> PersonInfo,
     preferencesState: State<PreferencesState>
 ) {
@@ -80,21 +82,19 @@ fun PersonPhotoCarousel(
                                             (horizontalPagerState.currentPage - page) + horizontalPagerState
                                                 .currentPageOffsetFraction
                                             ).absoluteValue
-
                                     lerp(
                                         start = .85f,
                                         stop = 1f,
-                                        fraction = 1f - pageOffset.absoluteValue.coerceIn(
-                                            0f,
-                                            1f
-                                        ),
+                                        fraction = 1f - pageOffset.absoluteValue.coerceIn(0f, 1f)
                                     ).also { scale ->
                                         scaleX = scale
                                         scaleY = scale
                                     }
                                 }
                                 .clip(RoundedCornerShape(preferencesState.value.corners.dp))
-                                .clickable { },
+                                .clickable {
+                                    onNavigateTo(RootNavGraph.IMAGE)
+                                },
                             model = C.TMDB_IMAGES_BASE_URL + C.POSTER_W300 + profiles[page % profiles.size]?.filePath,
                             placeholder = painterResource(id = R.drawable.placeholder),
                             error = painterResource(id = R.drawable.placeholder),

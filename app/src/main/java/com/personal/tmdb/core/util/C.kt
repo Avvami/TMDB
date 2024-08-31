@@ -6,6 +6,7 @@ object C {
     const val GRAVATAR_IMAGES_BASE_URL = "https://gravatar.com/avatar/"
     const val REDIRECT_URL = "tmdb://auth/approved"
     const val APPROVED = "approved"
+    const val ORIGINAL = "original"
     const val BACKDROP_W1280 = "w1280"
     const val POSTER_W300 = "w300"
     const val POSTER_W154 = "w154"
@@ -36,4 +37,5 @@ object C {
     const val SHARE_EPISODE = "https://www.themoviedb.org/tv/%d/season/%d/episode/%d"
     const val SHARE_EPISODE_CAST = "https://www.themoviedb.org/tv/%d/season/%d/episode/%d/cast"
     const val SHARE_PERSON = "https://www.themoviedb.org/person/%d"
+    const val SHARE_IMAGE = "https://image.tmdb.org/t/p/original%s"
 }

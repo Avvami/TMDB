@@ -13,6 +13,7 @@ import com.personal.tmdb.MainViewModel
 import com.personal.tmdb.UiEvent
 import com.personal.tmdb.auth.presentation.auth.AuthScreen
 import com.personal.tmdb.core.presentation.components.animatedComposable
+import com.personal.tmdb.core.presentation.image.ImageViewerScreen
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.detail.presentation.cast.CastScreen
 import com.personal.tmdb.detail.presentation.collection.CollectionScreen
@@ -236,6 +237,13 @@ fun RootNavigationGraph(
                 userState = mainViewModel.userState.collectAsStateWithLifecycle()
             )
         }
+        animatedComposable(
+            route = RootNavGraph.IMAGE
+        ) {
+            ImageViewerScreen(
+                navigateBack = onNavigateBack
+            )
+        }
     }
 }
 
@@ -253,4 +261,5 @@ object RootNavGraph {
     const val APPEARANCE = "appearance_screen"
     const val EPISODES = "episodes_screen"
     const val EPISODE = "episode_screen"
+    const val IMAGE = "image_viewer_screen"
 }
