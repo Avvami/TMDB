@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -185,10 +186,9 @@ fun PersonScreen(
                                     if ((combinedCredits.castMediaInfo?.size ?: 0) > 2) {
                                         combinedCredits.castMediaInfo?.let { castMediaInfo ->
                                             items(
-                                                count = castMediaInfo.size,
-                                                key = { castMediaInfo[it].id }
-                                            ) { index ->
-                                                val mediaInfo = castMediaInfo[index]
+                                                items = castMediaInfo,
+                                                key = { it.id }
+                                            ) { mediaInfo ->
                                                 MediaPoster(
                                                     modifier = Modifier
                                                         .height(150.dp)
@@ -205,10 +205,9 @@ fun PersonScreen(
                                     } else {
                                         combinedCredits.crewMediaInfo?.let { crewMediaInfo ->
                                             items(
-                                                count = crewMediaInfo.size,
-                                                key = { crewMediaInfo[it].id }
-                                            ) { index ->
-                                                val mediaInfo = crewMediaInfo[index]
+                                                items = crewMediaInfo,
+                                                key = { it.id }
+                                            ) { mediaInfo ->
                                                 MediaPoster(
                                                     modifier = Modifier
                                                         .height(150.dp)
@@ -232,8 +231,7 @@ fun PersonScreen(
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .padding(start = 16.dp, end = 4.dp, bottom = 4.dp)
-                                ,
+                                    .padding(start = 16.dp, end = 4.dp, bottom = 4.dp),
                                 horizontalArrangement = Arrangement.SpaceBetween,
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -267,7 +265,10 @@ fun PersonScreen(
                                 }
                             }
                             knownFor?.values?.forEachIndexed { groupIndex, infos ->
-                                itemsIndexed(infos) { index, info ->
+                                itemsIndexed(
+                                    items = infos,
+                                    key = { _, item -> item.uniqueId }
+                                ) { index, info ->
                                     Column(
                                         modifier = Modifier
                                             .padding(horizontal = 16.dp)
