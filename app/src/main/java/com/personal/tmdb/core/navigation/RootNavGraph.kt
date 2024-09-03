@@ -13,7 +13,7 @@ import com.personal.tmdb.MainViewModel
 import com.personal.tmdb.UiEvent
 import com.personal.tmdb.auth.presentation.auth.AuthScreen
 import com.personal.tmdb.core.presentation.components.animatedComposable
-import com.personal.tmdb.core.presentation.image.ImageViewerScreen
+import com.personal.tmdb.detail.presentation.image.ImageViewerScreen
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.detail.presentation.cast.CastScreen
 import com.personal.tmdb.detail.presentation.collection.CollectionScreen
@@ -101,7 +101,7 @@ fun RootNavigationGraph(
         animatedComposable(
             route = RootNavGraph.DETAIL + "/{${C.MEDIA_TYPE}}/{${C.MEDIA_ID}}",
             arguments = listOf(
-                navArgument(C.MEDIA_TYPE) { type = NavType.StringType; nullable = false},
+                navArgument(C.MEDIA_TYPE) { type = NavType.StringType; nullable = false },
                 navArgument(C.MEDIA_ID) { type = NavType.IntType; nullable = false }
             )
         ) {
@@ -118,8 +118,8 @@ fun RootNavigationGraph(
         animatedComposable(
             route = RootNavGraph.SEARCH + "/{${C.SEARCH_TYPE}}?${C.SEARCH_QUERY}={${C.SEARCH_QUERY}}",
             arguments = listOf(
-                navArgument(C.SEARCH_TYPE) { type = NavType.StringType; nullable = false},
-                navArgument(C.SEARCH_QUERY) { type = NavType.StringType; nullable = true; defaultValue = null}
+                navArgument(C.SEARCH_TYPE) { type = NavType.StringType; nullable = false },
+                navArgument(C.SEARCH_QUERY) { type = NavType.StringType; nullable = true; defaultValue = null }
             )
         ) {
             SearchScreen(
@@ -135,7 +135,7 @@ fun RootNavigationGraph(
         animatedComposable(
             route = RootNavGraph.COLLECTION + "/{${C.COLLECTION_ID}}",
             arguments = listOf(
-                navArgument(C.COLLECTION_ID) { type = NavType.IntType; nullable = false},
+                navArgument(C.COLLECTION_ID) { type = NavType.IntType; nullable = false }
             )
         ) {
             CollectionScreen(
@@ -153,11 +153,11 @@ fun RootNavigationGraph(
             route = RootNavGraph.CAST + "/{${C.MEDIA_NAME}}/{${C.MEDIA_TYPE}}/{${C.MEDIA_ID}}" +
                     "?${C.SEASON_NUMBER}={${C.SEASON_NUMBER}}?${C.EPISODE_NUMBER}={${C.EPISODE_NUMBER}}",
             arguments = listOf(
-                navArgument(C.MEDIA_NAME) { type = NavType.StringType; nullable = false},
-                navArgument(C.MEDIA_TYPE) { type = NavType.StringType; nullable = false},
-                navArgument(C.MEDIA_ID) { type = NavType.IntType; nullable = false},
-                navArgument(C.SEASON_NUMBER) { type = NavType.StringType; nullable = true},
-                navArgument(C.EPISODE_NUMBER) { type = NavType.StringType; nullable = true},
+                navArgument(C.MEDIA_NAME) { type = NavType.StringType; nullable = false },
+                navArgument(C.MEDIA_TYPE) { type = NavType.StringType; nullable = false },
+                navArgument(C.MEDIA_ID) { type = NavType.IntType; nullable = false },
+                navArgument(C.SEASON_NUMBER) { type = NavType.StringType; nullable = true },
+                navArgument(C.EPISODE_NUMBER) { type = NavType.StringType; nullable = true }
             )
         ) {
             CastScreen(
@@ -173,8 +173,8 @@ fun RootNavigationGraph(
         animatedComposable(
             route = RootNavGraph.PERSON + "/{${C.PERSON_NAME}}/{${C.PERSON_ID}}",
             arguments = listOf(
-                navArgument(C.PERSON_NAME) { type = NavType.StringType; nullable = false},
-                navArgument(C.PERSON_ID) { type = NavType.IntType; nullable = false}
+                navArgument(C.PERSON_NAME) { type = NavType.StringType; nullable = false },
+                navArgument(C.PERSON_ID) { type = NavType.IntType; nullable = false }
             )
         ) {
             PersonScreen(
@@ -201,8 +201,8 @@ fun RootNavigationGraph(
         animatedComposable(
             route = RootNavGraph.EPISODES + "/{${C.MEDIA_ID}}/{${C.SEASON_NUMBER}}",
             arguments = listOf(
-                navArgument(C.MEDIA_ID) { type = NavType.IntType; nullable = false},
-                navArgument(C.SEASON_NUMBER) { type = NavType.IntType; nullable = false}
+                navArgument(C.MEDIA_ID) { type = NavType.IntType; nullable = false },
+                navArgument(C.SEASON_NUMBER) { type = NavType.IntType; nullable = false }
             )
         ) {
             EpisodesScreen(
@@ -220,9 +220,9 @@ fun RootNavigationGraph(
         animatedComposable(
             route = RootNavGraph.EPISODE + "/{${C.MEDIA_ID}}/{${C.SEASON_NUMBER}}/{${C.EPISODE_NUMBER}}",
             arguments = listOf(
-                navArgument(C.MEDIA_ID) { type = NavType.IntType; nullable = false},
-                navArgument(C.SEASON_NUMBER) { type = NavType.IntType; nullable = false},
-                navArgument(C.EPISODE_NUMBER) { type = NavType.IntType; nullable = false},
+                navArgument(C.MEDIA_ID) { type = NavType.IntType; nullable = false },
+                navArgument(C.SEASON_NUMBER) { type = NavType.IntType; nullable = false },
+                navArgument(C.EPISODE_NUMBER) { type = NavType.IntType; nullable = false }
             )
         ) {
             EpisodeDetailsScreen(
@@ -238,7 +238,12 @@ fun RootNavigationGraph(
             )
         }
         animatedComposable(
-            route = RootNavGraph.IMAGE
+            route = RootNavGraph.IMAGE + "/{${C.IMAGE_TYPE}}/{${C.IMAGES_PATH}}?${C.IMAGE_INDEX}={${C.IMAGE_INDEX}}",
+            arguments = listOf(
+                navArgument(C.IMAGE_TYPE) { type = NavType.StringType; nullable = false },
+                navArgument(C.IMAGES_PATH) { type = NavType.StringType; nullable = false },
+                navArgument(C.IMAGE_INDEX) { type = NavType.StringType; nullable = true }
+            )
         ) {
             ImageViewerScreen(
                 navigateBack = onNavigateBack

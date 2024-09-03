@@ -23,6 +23,9 @@ object C {
     const val PERSON_NAME = "personName"
     const val SEASON_NUMBER = "seasonNumber"
     const val EPISODE_NUMBER = "episodeNumber"
+    const val IMAGES_PATH = "imagesPath"
+    const val IMAGE_INDEX = "imageIndex"
+    const val IMAGE_TYPE = "imageType"
 
     const val FACEBOOK = "https://www.facebook.com/%s"
     const val INSTAGRAM = "https://www.instagram.com/%s"
@@ -38,4 +41,8 @@ object C {
     const val SHARE_EPISODE_CAST = "https://www.themoviedb.org/tv/%d/season/%d/episode/%d/cast"
     const val SHARE_PERSON = "https://www.themoviedb.org/person/%d"
     const val SHARE_IMAGE = "https://image.tmdb.org/t/p/original%s"
+
+    const val PERSON_IMAGES = "person/%d/images"
+    const val TV_IMAGES = "tv/%d/images"
+    const val MOVIE_IMAGES = "movie/%d/images"
 }

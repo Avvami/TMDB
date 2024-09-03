@@ -1,5 +1,6 @@
 package com.personal.tmdb.detail.presentation.person.components
 
+import android.net.Uri
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.clickable
@@ -28,6 +29,7 @@ import com.personal.tmdb.core.navigation.RootNavGraph
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.detail.domain.models.PersonInfo
+import com.personal.tmdb.detail.domain.util.ImageType
 import kotlin.math.absoluteValue
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -93,7 +95,8 @@ fun PersonPhotoCarousel(
                                 }
                                 .clip(RoundedCornerShape(preferencesState.value.corners.dp))
                                 .clickable {
-                                    onNavigateTo(RootNavGraph.IMAGE)
+                                    onNavigateTo(RootNavGraph.IMAGE + "/${ImageType.PROFILES.name.lowercase()}/${Uri.encode(C.PERSON_IMAGES.format(personInfo().id))}" +
+                                            "?${C.IMAGE_INDEX}=${page % profiles.size}")
                                 },
                             model = C.TMDB_IMAGES_BASE_URL + C.POSTER_W300 + profiles[page % profiles.size]?.filePath,
                             placeholder = painterResource(id = R.drawable.placeholder),

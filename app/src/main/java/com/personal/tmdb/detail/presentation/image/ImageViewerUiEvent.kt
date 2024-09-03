@@ -1,4 +1,4 @@
-package com.personal.tmdb.core.presentation.image
+package com.personal.tmdb.detail.presentation.image
 
 sealed interface ImageViewerUiEvent {
     data object ChangeShowGridView: ImageViewerUiEvent

@@ -1,4 +1,4 @@
-package com.personal.tmdb.core.presentation.image
+package com.personal.tmdb.detail.presentation.image
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent

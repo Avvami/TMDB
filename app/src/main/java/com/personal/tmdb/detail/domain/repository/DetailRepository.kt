@@ -1,6 +1,7 @@
 package com.personal.tmdb.detail.domain.repository
 
 import com.personal.tmdb.core.util.Resource
+import com.personal.tmdb.detail.data.models.Images
 import com.personal.tmdb.detail.domain.models.CollectionInfo
 import com.personal.tmdb.detail.domain.models.CreditsInfo
 import com.personal.tmdb.detail.domain.models.EpisodeDetailsInfo
@@ -23,4 +24,6 @@ interface DetailRepository {
     suspend fun getPerson(personId: Int, language: String? = null, appendToResponse: String?): Resource<PersonInfo>
 
     suspend fun getEpisodeDetails(seriesId: Int, seasonNumber: Int, episodeNumber: Int, language: String? = null, appendToResponse: String? = null, includeImageLanguage: String? = null): Resource<EpisodeDetailsInfo>
+
+    suspend fun getImages(path: String, language: String? = null, includeImageLanguage: String? = null): Resource<Images>
 }

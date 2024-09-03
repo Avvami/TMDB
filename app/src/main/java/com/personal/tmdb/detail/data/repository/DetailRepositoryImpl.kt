@@ -8,6 +8,7 @@ import com.personal.tmdb.detail.data.mappers.toEpisodeDetailsInfo
 import com.personal.tmdb.detail.data.mappers.toMediaDetailInfo
 import com.personal.tmdb.detail.data.mappers.toPersonInfo
 import com.personal.tmdb.detail.data.mappers.toSeasonInfo
+import com.personal.tmdb.detail.data.models.Images
 import com.personal.tmdb.detail.domain.models.CollectionInfo
 import com.personal.tmdb.detail.domain.models.CreditsInfo
 import com.personal.tmdb.detail.domain.models.EpisodeDetailsInfo
@@ -138,6 +139,25 @@ class DetailRepositoryImpl @Inject constructor(
                     appendToResponse,
                     includeImageLanguage
                 ).toEpisodeDetailsInfo()
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(e.message ?: "Unknown")
+        }
+    }
+
+    override suspend fun getImages(
+        path: String,
+        language: String?,
+        includeImageLanguage: String?
+    ): Resource<Images> {
+        return try {
+            Resource.Success(
+                data = tmdbApi.getImages(
+                    path,
+                    language,
+                    includeImageLanguage
+                )
             )
         } catch (e: Exception) {
             e.printStackTrace()

@@ -12,6 +12,7 @@ import com.personal.tmdb.core.data.models.MediaResponseDto
 import com.personal.tmdb.detail.data.models.CollectionDto
 import com.personal.tmdb.detail.data.models.Credits
 import com.personal.tmdb.detail.data.models.EpisodeDetailsDto
+import com.personal.tmdb.detail.data.models.Images
 import com.personal.tmdb.detail.data.models.MediaDetailDto
 import com.personal.tmdb.detail.data.models.PersonDto
 import com.personal.tmdb.detail.data.models.SeasonDto
@@ -131,6 +132,14 @@ interface TmdbApi {
         @Path("episode_number") episodeNumber: Int,
         @Query("language") language: String?,
         @Query("append_to_response") appendToResponse: String?,
-        @Query("include_image_language") includeImageLanguage: String?,
+        @Query("include_image_language") includeImageLanguage: String?
     ): EpisodeDetailsDto
+
+    @Headers("Authorization: Bearer ${BuildConfig.TMDB_API_KEY}")
+    @GET("3/{path}?")
+    suspend fun getImages(
+        @Path("path") path: String,
+        @Query("language") language: String?,
+        @Query("include_image_language") includeImageLanguage: String?
+    ): Images
 }
