@@ -6,10 +6,12 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.spring
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
@@ -204,10 +206,16 @@ fun ImageViewerScreen(
                         .background(scrimLight.copy(.5f))
                         .statusBarsPadding(),
                     title = {
-                        Text(
-                            text = "Profiles",
-                            fontWeight = FontWeight.Medium
-                        )
+                        AnimatedVisibility(
+                            visible = !imageViewerViewModel.showGridView,
+                            enter = expandVertically() + fadeIn(),
+                            exit = shrinkVertically() + fadeOut()
+                        ) {
+                            Text(
+                                text = "Profiles",
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
                     },
                     navigationIcon = {
                         IconButton(
@@ -228,25 +236,33 @@ fun ImageViewerScreen(
                     },
                     actions = {
                         val context = LocalContext.current
-                        IconButton(
-                            onClick = {
-                                context.shareText(C.SHARE_IMAGE.format("/xxYawgFO1woBRveH7WL9D1BxB4W.jpg"))
+                        AnimatedVisibility(
+                            visible = !imageViewerViewModel.showGridView,
+                            enter = expandVertically() + fadeIn(),
+                            exit = shrinkVertically() + fadeOut()
+                        ) {
+                            Row {
+                                IconButton(
+                                    onClick = {
+                                        context.shareText(C.SHARE_IMAGE.format("/xxYawgFO1woBRveH7WL9D1BxB4W.jpg"))
+                                    }
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Rounded.Share,
+                                        contentDescription = "Share",
+                                        tint = backgroundLight
+                                    )
+                                }
+                                IconButton(
+                                    onClick = {/*TODO: Save to the gallery*/}
+                                ) {
+                                    Icon(
+                                        painter = painterResource(id = R.drawable.icon_download_fill1_wght400),
+                                        contentDescription = "Download",
+                                        tint = backgroundLight
+                                    )
+                                }
                             }
-                        ) {
-                            Icon(
-                                imageVector = Icons.Rounded.Share,
-                                contentDescription = "Share",
-                                tint = backgroundLight
-                            )
-                        }
-                        IconButton(
-                            onClick = {/*TODO: Save to the gallery*/}
-                        ) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.icon_download_fill1_wght400),
-                                contentDescription = "Download",
-                                tint = backgroundLight
-                            )
                         }
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
