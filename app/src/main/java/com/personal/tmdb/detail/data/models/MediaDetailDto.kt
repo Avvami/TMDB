@@ -31,6 +31,8 @@ data class MediaDetailDto(
     val homepage: String?,
     @Json(name = "id")
     val id: Int,
+    @Json(name = "images")
+    val images: Images?,
     @Json(name = "in_production")
     val inProduction: Boolean?,
     @Json(name = "languages")

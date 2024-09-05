@@ -64,11 +64,18 @@ class DetailViewModel @Inject constructor(
         getMediaDetails(
             mediaType = mediaType,
             mediaId = mediaId,
-            appendToResponse = appendToResponse(mediaType)
+            appendToResponse = appendToResponse(mediaType),
+            includeImageLanguage = "en,null"
         )
     }
 
-    private fun getMediaDetails(mediaType: String, mediaId: Int, language: String? = null, appendToResponse: String? = null) {
+    private fun getMediaDetails(
+        mediaType: String,
+        mediaId: Int,
+        language: String? = null,
+        appendToResponse: String? = null,
+        includeImageLanguage: String? = null
+    ) {
         viewModelScope.launch {
             detailState = detailState.copy(
                 isLoading = true
@@ -77,7 +84,7 @@ class DetailViewModel @Inject constructor(
             var mediaDetail: MediaDetailInfo? = null
             var error: String? = null
 
-            detailRepository.getMediaDetail(mediaType, mediaId, language, appendToResponse).let { result ->
+            detailRepository.getMediaDetail(mediaType, mediaId, language, appendToResponse, includeImageLanguage).let { result ->
                 when (result) {
                     is Resource.Error -> {
                         error = result.message

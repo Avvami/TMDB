@@ -29,6 +29,7 @@ fun MediaDetailDto.toMediaDetailInfo(): MediaDetailInfo {
         credits = credits,
         genres = genres,
         id = id,
+        images = images,
         lastEpisodeToAir = lastEpisodeToAir?.toEpisodeToAirInfo(),
         name = title ?: name,
         networks = networks,

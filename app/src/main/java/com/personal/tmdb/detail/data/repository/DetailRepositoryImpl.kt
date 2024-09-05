@@ -25,7 +25,8 @@ class DetailRepositoryImpl @Inject constructor(
         mediaType: String,
         mediaId: Int,
         language: String?,
-        appendToResponse: String?
+        appendToResponse: String?,
+        includeImageLanguage: String?
     ): Resource<MediaDetailInfo> {
         return try {
             Resource.Success(
@@ -33,7 +34,8 @@ class DetailRepositoryImpl @Inject constructor(
                     mediaType = mediaType,
                     mediaId = mediaId,
                     language = language,
-                    appendToResponse = appendToResponse
+                    appendToResponse = appendToResponse,
+                    includeImageLanguage = includeImageLanguage
                 ).toMediaDetailInfo()
             )
         } catch (e: Exception) {

@@ -11,7 +11,7 @@ import com.personal.tmdb.detail.domain.models.SeasonInfo
 
 interface DetailRepository {
 
-    suspend fun getMediaDetail(mediaType: String, mediaId: Int, language: String? = null, appendToResponse: String? = null): Resource<MediaDetailInfo>
+    suspend fun getMediaDetail(mediaType: String, mediaId: Int, language: String? = null, appendToResponse: String? = null, includeImageLanguage: String? = null): Resource<MediaDetailInfo>
 
     suspend fun getCollection(collectionId: Int, language: String? = null): Resource<CollectionInfo>
 
@@ -21,7 +21,7 @@ interface DetailRepository {
 
     suspend fun getEpisodeCast(mediaId: Int, seasonNumber: Int, episodeNumber: Int, language: String? = null): Resource<CreditsInfo>
 
-    suspend fun getPerson(personId: Int, language: String? = null, appendToResponse: String?): Resource<PersonInfo>
+    suspend fun getPerson(personId: Int, language: String? = null, appendToResponse: String? = null): Resource<PersonInfo>
 
     suspend fun getEpisodeDetails(seriesId: Int, seasonNumber: Int, episodeNumber: Int, language: String? = null, appendToResponse: String? = null, includeImageLanguage: String? = null): Resource<EpisodeDetailsInfo>
 

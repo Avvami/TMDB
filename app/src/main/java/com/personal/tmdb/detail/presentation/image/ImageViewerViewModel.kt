@@ -33,8 +33,7 @@ class ImageViewerViewModel @Inject constructor(
     var hideUi by mutableStateOf(false)
         private set
 
-    private val _initialPage: String = savedStateHandle[C.IMAGE_INDEX] ?: ""
-    val initialPage: Int = _initialPage.toIntOrNull() ?: 0
+    val initialPage: Int = savedStateHandle.get<String>(C.IMAGE_INDEX)?.toIntOrNull() ?: 0
 
     private val imageType: ImageType = convertImageType(savedStateHandle[C.IMAGE_TYPE])
 

@@ -30,11 +30,9 @@ class CastViewModel @Inject constructor(
 
     val mediaId: Int = savedStateHandle[C.MEDIA_ID] ?: 0
 
-    private val _seasonNumber: String? = savedStateHandle[C.SEASON_NUMBER]
-    val seasonNumber = _seasonNumber?.toIntOrNull()
+    val seasonNumber = savedStateHandle.get<String>(C.SEASON_NUMBER)?.toIntOrNull()
 
-    private val _episodeNumber: String? = savedStateHandle[C.EPISODE_NUMBER]
-    val episodeNumber = _episodeNumber?.toIntOrNull()
+    val episodeNumber = savedStateHandle.get<String>(C.EPISODE_NUMBER)?.toIntOrNull()
 
     init {
         if (seasonNumber != null && episodeNumber != null) {
