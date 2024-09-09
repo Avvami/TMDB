@@ -8,6 +8,7 @@ object C {
     const val APPROVED = "approved"
     const val ORIGINAL = "original"
     const val BACKDROP_W1280 = "w1280"
+    const val BACKDROP_W780 = "w780"
     const val POSTER_W300 = "w300"
     const val POSTER_W154 = "w154"
     const val STILL_W300 = "w300"
@@ -42,7 +43,5 @@ object C {
     const val SHARE_PERSON = "https://www.themoviedb.org/person/%d"
     const val SHARE_IMAGE = "https://image.tmdb.org/t/p/original%s"
 
-    const val PERSON_IMAGES = "person/%d/images"
-    const val TV_IMAGES = "tv/%d/images"
-    const val MOVIE_IMAGES = "movie/%d/images"
+    const val MEDIA_IMAGES = "%s/%d/images"
 }

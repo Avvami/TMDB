@@ -39,7 +39,10 @@ class ImageViewerViewModel @Inject constructor(
 
     init {
         val path: String = Uri.decode(savedStateHandle[C.IMAGES_PATH] ?: "")
-        getImages(path)
+        getImages(
+            path = path,
+            includeImageLanguage = "en,null"
+        )
     }
 
     private fun getImages(

@@ -28,6 +28,7 @@ import com.personal.tmdb.R
 import com.personal.tmdb.core.navigation.RootNavGraph
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.util.C
+import com.personal.tmdb.core.util.MediaType
 import com.personal.tmdb.detail.domain.models.PersonInfo
 import com.personal.tmdb.detail.domain.util.ImageType
 import kotlin.math.absoluteValue
@@ -95,7 +96,8 @@ fun PersonPhotoCarousel(
                                 }
                                 .clip(RoundedCornerShape(preferencesState.value.corners.dp))
                                 .clickable {
-                                    onNavigateTo(RootNavGraph.IMAGE + "/${ImageType.PROFILES.name.lowercase()}/${Uri.encode(C.PERSON_IMAGES.format(personInfo().id))}" +
+                                    onNavigateTo(RootNavGraph.IMAGE + "/${ImageType.PROFILES.name.lowercase()}" +
+                                            "/${Uri.encode(C.MEDIA_IMAGES.format(MediaType.PERSON.name.lowercase(), personInfo().id))}" +
                                             "?${C.IMAGE_INDEX}=${page % profiles.size}")
                                 },
                             model = C.TMDB_IMAGES_BASE_URL + C.POSTER_W300 + profiles[page % profiles.size]?.filePath,

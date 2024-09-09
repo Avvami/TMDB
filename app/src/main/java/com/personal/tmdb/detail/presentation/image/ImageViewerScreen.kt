@@ -180,9 +180,9 @@ fun ImageViewerScreen(
                                     ) {
                                         imageViewerViewModel.imageViewerUiEvent(ImageViewerUiEvent.ChangeHideUi)
                                         if (imageViewerViewModel.hideUi) {
-                                            windowInsetsController.hide(WindowInsetsCompat.Type.systemBars())
+                                            windowInsetsController.hide(WindowInsetsCompat.Type.statusBars())
                                         } else {
-                                            windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
+                                            windowInsetsController.show(WindowInsetsCompat.Type.statusBars())
                                         }
                                     },
                                 model = C.TMDB_IMAGES_BASE_URL + C.ORIGINAL + images[page]?.filePath,

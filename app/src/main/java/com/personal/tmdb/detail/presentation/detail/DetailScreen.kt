@@ -46,6 +46,7 @@ import com.personal.tmdb.core.util.shareText
 import com.personal.tmdb.detail.presentation.detail.components.AllEpisodes
 import com.personal.tmdb.detail.presentation.detail.components.DetailScreenShimmer
 import com.personal.tmdb.detail.presentation.detail.components.Details
+import com.personal.tmdb.detail.presentation.detail.components.Media
 import com.personal.tmdb.detail.presentation.detail.components.Trailer
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -163,8 +164,21 @@ fun DetailScreen(
                             )
                         }
                     }
-                    if (!info.similar?.results.isNullOrEmpty()) {
-                        info.similar?.results?.let { similar ->
+                    info.images?.let { images ->
+                        if (!images.posters.isNullOrEmpty() || !images.backdrops.isNullOrEmpty()) {
+                            item {
+                                Media(
+                                    onNavigateTo = onNavigateTo,
+                                    preferencesState = preferencesState,
+                                    images = images,
+                                    mediaId = detailViewModel.mediaId,
+                                    mediaType = detailViewModel.mediaType
+                                )
+                            }
+                        }
+                    }
+                    info.similar?.results?.let { similar ->
+                        if (similar.isNotEmpty()) {
                             item {
                                 MediaRowView(
                                     titleRes = R.string.similar,
@@ -197,8 +211,8 @@ fun DetailScreen(
                             }
                         }
                     }
-                    if (!info.recommendations?.results.isNullOrEmpty()) {
-                        info.recommendations?.results?.let { recommendations ->
+                    info.recommendations?.results?.let { recommendations ->
+                        if (recommendations.isNotEmpty()) {
                             item {
                                 MediaRowView(
                                     titleRes = R.string.recommendations,
