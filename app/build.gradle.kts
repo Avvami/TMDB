@@ -112,6 +112,9 @@ dependencies {
 
     // Chrome custom tabs
     implementation ("androidx.browser:browser:1.8.0")
+
+    // Zoomable (https://github.com/usuiat/Zoomable)
+    implementation("net.engawapg.lib:zoomable:1.6.2")
 }
 
 kapt {

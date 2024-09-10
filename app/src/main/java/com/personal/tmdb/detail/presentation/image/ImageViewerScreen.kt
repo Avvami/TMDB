@@ -29,6 +29,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -55,6 +56,7 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -85,6 +87,9 @@ import com.personal.tmdb.ui.theme.backgroundLight
 import com.personal.tmdb.ui.theme.scrimLight
 import com.personal.tmdb.ui.theme.surfaceVariantLight
 import kotlinx.coroutines.launch
+import net.engawapg.lib.zoomable.ScrollGesturePropagation
+import net.engawapg.lib.zoomable.rememberZoomState
+import net.engawapg.lib.zoomable.zoomable
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
@@ -116,7 +121,6 @@ fun ImageViewerScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(scrimLight)
-            .navigationBarsPadding()
     ) {
         imageViewerViewModel.imagesState.images?.let { images ->
             AnimatedContent(
@@ -129,7 +133,7 @@ fun ImageViewerScreen(
                 if (targetState) {
                     LazyVerticalGrid(
                         modifier = Modifier
-                            .statusBarsPadding()
+                            .safeDrawingPadding()
                             .padding(top = 64.dp),/*TODO: Update the hardcoded value when Material 1.3.0 release*/
                         state = lazyGridState,
                         columns = GridCells.Adaptive(80.dp),
@@ -209,8 +213,10 @@ fun ImageViewerScreen(
                             beyondViewportPageCount = 2,
                             pageSize = PageSize.Fill
                         ) { page ->
+                            val zoomState = rememberZoomState(maxScale = 4f)
                             AsyncImage(
                                 modifier = Modifier
+                                    .navigationBarsPadding()
                                     .fillMaxSize()
                                     .graphicsLayer {
                                         val endOffset = (
@@ -222,20 +228,31 @@ fun ImageViewerScreen(
                                         scaleX = scale
                                         scaleY = scale
                                     }
-                                    .clickable(
-                                        interactionSource = remember { MutableInteractionSource() },
-                                        indication = null
-                                    ) {
-                                        imageViewerViewModel.imageViewerUiEvent(ImageViewerUiEvent.ChangeHideUi)
-                                        if (imageViewerViewModel.hideUi) {
-                                            windowInsetsController.hide(WindowInsetsCompat.Type.statusBars())
-                                        } else {
-                                            windowInsetsController.show(WindowInsetsCompat.Type.statusBars())
+                                    .zoomable(
+                                        zoomState = zoomState,
+                                        enableOneFingerZoom = false,
+                                        scrollGesturePropagation = ScrollGesturePropagation.ContentEdge,
+                                        onTap = {
+                                            imageViewerViewModel.imageViewerUiEvent(ImageViewerUiEvent.ChangeHideUi)
+                                            if (imageViewerViewModel.hideUi) {
+                                                windowInsetsController.hide(WindowInsetsCompat.Type.statusBars())
+                                            } else {
+                                                windowInsetsController.show(WindowInsetsCompat.Type.statusBars())
+                                            }
                                         }
-                                    },
+                                    ),
                                 model = C.TMDB_IMAGES_BASE_URL + C.ORIGINAL + images[page]?.filePath,
+                                onSuccess = { state ->
+                                    zoomState.setContentSize(state.painter.intrinsicSize)
+                                },
                                 contentDescription = "Image"
                             )
+                            val isVisible = page == horizontalPagerState.settledPage
+                            LaunchedEffect(isVisible) {
+                                if (!isVisible) {
+                                    zoomState.reset()
+                                }
+                            }
                         }
                     }
                 }
