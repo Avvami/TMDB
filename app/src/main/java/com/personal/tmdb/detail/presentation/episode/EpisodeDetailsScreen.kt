@@ -52,12 +52,12 @@ import coil.compose.AsyncImage
 import com.personal.tmdb.R
 import com.personal.tmdb.UserState
 import com.personal.tmdb.core.navigation.RootNavGraph
-import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.CustomIconButton
 import com.personal.tmdb.core.presentation.components.MediaRowView
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.shareText
 import com.personal.tmdb.detail.data.models.Cast
+import com.personal.tmdb.detail.domain.util.ImageType
 import com.personal.tmdb.detail.presentation.episode.components.EpisodeDetails
 import com.personal.tmdb.detail.presentation.episode.components.EpisodeDetailsShimmer
 import com.personal.tmdb.ui.theme.backgroundLight
@@ -69,7 +69,6 @@ fun EpisodeDetailsScreen(
     navigateBack: () -> Unit,
     onNavigateTo: (route: String) -> Unit,
     navigateToHome: () -> Unit,
-    preferencesState: State<PreferencesState>,
     userState: State<UserState>,
     episodeDetailsViewModel: EpisodeDetailsViewModel = hiltViewModel()
 ) {
@@ -188,7 +187,16 @@ fun EpisodeDetailsScreen(
                                             beyondViewportPageCount = 1
                                         ) { page ->
                                             AsyncImage(
-                                                modifier = Modifier.fillMaxSize(),
+                                                modifier = Modifier
+                                                    .fillMaxSize()
+                                                    .clickable {
+                                                        onNavigateTo(RootNavGraph.IMAGE + "/${ImageType.STILLS.name.lowercase()}" +
+                                                                "/${Uri.encode(C.EPISODE_MEDIA_IMAGES.format(
+                                                                    episodeDetailsViewModel.seriesId,
+                                                                    episodeDetailsViewModel.seasonNumber,
+                                                                    episodeDetailsViewModel.episodeNumber
+                                                                ))}?${C.IMAGE_INDEX}=$page")
+                                                    },
                                                 model = C.TMDB_IMAGES_BASE_URL + C.BACKDROP_W1280 + stills[page]?.filePath,
                                                 contentDescription = "Backdrop",
                                                 placeholder = painterResource(id = R.drawable.placeholder),

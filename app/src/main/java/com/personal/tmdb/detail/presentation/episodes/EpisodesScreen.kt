@@ -24,7 +24,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.personal.tmdb.R
-import com.personal.tmdb.UserState
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.CustomIconButton
 import com.personal.tmdb.core.util.C
@@ -40,7 +39,6 @@ fun EpisodesScreen(
     onNavigateTo: (route: String) -> Unit,
     navigateToHome: () -> Unit,
     preferencesState: State<PreferencesState>,
-    userState: State<UserState>,
     episodesViewModel: EpisodesViewModel = hiltViewModel()
 ) {
     Scaffold(

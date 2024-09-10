@@ -40,6 +40,8 @@ fun RootNavigationGraph(
             launchSingleTop = true
         }
     }
+    val preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle()
+    val userState = mainViewModel.userState.collectAsStateWithLifecycle()
     NavHost(
         navController = navController,
         route = RootNavGraph.ROOT,
@@ -67,9 +69,9 @@ fun RootNavigationGraph(
                         launchSingleTop = true
                     }
                 },
-                preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle(),
+                preferencesState = preferencesState,
                 homeState = mainViewModel::homeState,
-                userState = mainViewModel.userState.collectAsStateWithLifecycle(),
+                userState = userState,
                 uiEvent = mainViewModel::uiEvent
             )
         }
@@ -78,8 +80,8 @@ fun RootNavigationGraph(
         ) {
             AuthScreen(
                 navigateBack = onNavigateBack,
-                preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle(),
-                userState = mainViewModel.userState.collectAsStateWithLifecycle(),
+                preferencesState = preferencesState,
+                userState = userState,
                 uiEvent = mainViewModel::uiEvent
             )
         }
@@ -93,8 +95,8 @@ fun RootNavigationGraph(
                         launchSingleTop = true
                     }
                 },
-                preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle(),
-                userState = mainViewModel.userState.collectAsStateWithLifecycle(),
+                preferencesState = preferencesState,
+                userState = userState,
                 uiEvent = mainViewModel::uiEvent
             )
         }
@@ -111,8 +113,8 @@ fun RootNavigationGraph(
                     navController.navigate(route = route)
                 },
                 navigateToHome = navigateToHome,
-                preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle(),
-                userState = mainViewModel.userState.collectAsStateWithLifecycle()
+                preferencesState = preferencesState,
+                userState = userState
             )
         }
         animatedComposable(
@@ -129,7 +131,7 @@ fun RootNavigationGraph(
                         launchSingleTop = true
                     }
                 },
-                preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle()
+                preferencesState = preferencesState
             )
         }
         animatedComposable(
@@ -146,7 +148,7 @@ fun RootNavigationGraph(
                     }
                 },
                 navigateToHome = navigateToHome,
-                preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle(),
+                preferencesState = preferencesState
             )
         }
         animatedComposable(
@@ -185,7 +187,7 @@ fun RootNavigationGraph(
                     }
                 },
                 navigateToHome = navigateToHome,
-                preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle()
+                preferencesState = preferencesState
             )
         }
         animatedComposable(
@@ -193,8 +195,7 @@ fun RootNavigationGraph(
         ) {
             AppearanceScreen(
                 navigateBack = onNavigateBack,
-                preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle(),
-                userState = mainViewModel.userState.collectAsStateWithLifecycle(),
+                preferencesState = preferencesState,
                 uiEvent = mainViewModel::uiEvent
             )
         }
@@ -213,8 +214,7 @@ fun RootNavigationGraph(
                     }
                 },
                 navigateToHome = navigateToHome,
-                preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle(),
-                userState = mainViewModel.userState.collectAsStateWithLifecycle()
+                preferencesState = preferencesState
             )
         }
         animatedComposable(
@@ -233,8 +233,7 @@ fun RootNavigationGraph(
                     }
                 },
                 navigateToHome = navigateToHome,
-                preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle(),
-                userState = mainViewModel.userState.collectAsStateWithLifecycle()
+                userState = userState
             )
         }
         animatedComposable(

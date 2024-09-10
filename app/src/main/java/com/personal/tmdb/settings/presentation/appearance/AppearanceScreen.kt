@@ -28,7 +28,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
 import com.personal.tmdb.UiEvent
-import com.personal.tmdb.UserState
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.MediaCardPreview
 import com.personal.tmdb.core.presentation.components.MediaPosterPreview
@@ -42,7 +41,6 @@ import com.personal.tmdb.settings.presentation.appearance.components.Theme
 fun AppearanceScreen(
     navigateBack: () -> Unit,
     preferencesState: State<PreferencesState>,
-    userState: State<UserState>,
     uiEvent: (UiEvent) -> Unit
 ) {
     Scaffold(

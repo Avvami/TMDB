@@ -45,4 +45,5 @@ object C {
     const val SHARE_IMAGE = "https://image.tmdb.org/t/p/original%s"
 
     const val MEDIA_IMAGES = "%s/%d/images"
+    const val EPISODE_MEDIA_IMAGES = "tv/%d/season/%d/episode/%d/images"
 }
