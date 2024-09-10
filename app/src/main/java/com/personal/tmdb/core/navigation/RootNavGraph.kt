@@ -245,7 +245,8 @@ fun RootNavigationGraph(
             )
         ) {
             ImageViewerScreen(
-                navigateBack = onNavigateBack
+                navigateBack = onNavigateBack,
+                preferencesState = preferencesState
             )
         }
     }

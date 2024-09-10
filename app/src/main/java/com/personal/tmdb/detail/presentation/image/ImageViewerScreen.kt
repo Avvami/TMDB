@@ -19,6 +19,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -55,7 +56,9 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -65,6 +68,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -76,7 +80,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.personal.tmdb.MainActivity
 import com.personal.tmdb.R
+import com.personal.tmdb.core.presentation.PreferencesState
+import com.personal.tmdb.core.util.ApplySystemBarsTheme
 import com.personal.tmdb.core.util.C
+import com.personal.tmdb.core.util.applySystemBarsTheme
 import com.personal.tmdb.core.util.findActivity
 import com.personal.tmdb.core.util.negativeHorizontalPadding
 import com.personal.tmdb.core.util.shareText
@@ -93,16 +100,26 @@ import net.engawapg.lib.zoomable.zoomable
 @Composable
 fun ImageViewerScreen(
     navigateBack: () -> Unit,
+    preferencesState: State<PreferencesState>,
     imageViewerViewModel: ImageViewerViewModel = hiltViewModel()
 ) {
+    ApplySystemBarsTheme(applyLightStatusBars = true)
     val horizontalPagerState = rememberPagerState(
         pageCount = { imageViewerViewModel.imagesState.images?.size ?: 0 },
         initialPage = imageViewerViewModel.initialPage
     )
     val lazyGridState = rememberLazyGridState()
     val scope = rememberCoroutineScope()
-    val activity = LocalContext.current.findActivity() as MainActivity
+    val view = LocalView.current
+    val context = LocalContext.current
+    val activity = context.findActivity() as MainActivity
+    val darkTheme = isSystemInDarkTheme()
     val windowInsetsController = WindowCompat.getInsetsController(activity.window, activity.window.decorView)
+    DisposableEffect(Unit) {
+        onDispose {
+            applySystemBarsTheme(view, context, preferencesState.value.darkTheme ?: darkTheme)
+        }
+    }
     BackHandler {
         if (imageViewerViewModel.showGridView) {
             imageViewerViewModel.imageViewerUiEvent(ImageViewerUiEvent.ChangeShowGridView)
@@ -306,7 +323,6 @@ fun ImageViewerScreen(
                         }
                     },
                     actions = {
-                        val context = LocalContext.current
                         AnimatedVisibility(
                             visible = !imageViewerViewModel.showGridView,
                             enter = expandVertically() + fadeIn(),

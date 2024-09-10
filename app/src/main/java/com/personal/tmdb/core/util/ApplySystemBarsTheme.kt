@@ -51,3 +51,14 @@ fun applyStatusBarsTheme(view: View, context: Context, applyLightStatusBars: Boo
         }
     }
 }
+
+fun applySystemBarsTheme(view: View, context: Context, applyLightStatusBars: Boolean) {
+    if (!view.isInEditMode) {
+        (context as? ComponentActivity)?.let { activity ->
+            WindowCompat.getInsetsController(activity.window, view).apply {
+                isAppearanceLightStatusBars = !applyLightStatusBars
+                isAppearanceLightNavigationBars = !applyLightStatusBars
+            }
+        }
+    }
+}

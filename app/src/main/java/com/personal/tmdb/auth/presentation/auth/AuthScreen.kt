@@ -65,7 +65,7 @@ import com.personal.tmdb.UiEvent
 import com.personal.tmdb.UserState
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.util.ApplySystemBarsTheme
-import com.personal.tmdb.core.util.applyStatusBarsTheme
+import com.personal.tmdb.core.util.applySystemBarsTheme
 import com.personal.tmdb.core.util.findActivity
 import com.personal.tmdb.ui.theme.backgroundLight
 import com.personal.tmdb.ui.theme.onBackgroundLight
@@ -92,7 +92,7 @@ fun AuthScreen(
     }
     DisposableEffect(key1 = Unit) {
         onDispose {
-            applyStatusBarsTheme(view, context, preferencesState.value.darkTheme ?: darkTheme)
+            applySystemBarsTheme(view, context, preferencesState.value.darkTheme ?: darkTheme)
         }
     }
     if (showLoadingDialog) {
