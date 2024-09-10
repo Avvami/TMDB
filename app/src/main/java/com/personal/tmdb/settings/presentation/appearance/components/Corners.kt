@@ -43,7 +43,6 @@ fun Corners(
                 modifier = Modifier.weight(1f),
                 value = preferencesState.value.corners.toFloat(),
                 onValueChange = { uiEvent(UiEvent.SetCorners(it.toInt())) },
-                steps = 24,
                 valueRange = 6f..24f
             )
             Text(

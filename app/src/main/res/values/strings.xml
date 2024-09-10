@@ -114,4 +114,6 @@
     <string name="profiles">Profiles</string>
     <string name="image_viewer_count">%d of %d</string>
     <string name="media">Media</string>
+    <string name="stills">Stills</string>
+    <string name="backdrops">Backdrops</string>
 </resources>

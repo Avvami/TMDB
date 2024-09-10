@@ -35,7 +35,8 @@ class ImageViewerViewModel @Inject constructor(
 
     val initialPage: Int = savedStateHandle.get<String>(C.IMAGE_INDEX)?.toIntOrNull() ?: 0
 
-    private val imageType: ImageType = convertImageType(savedStateHandle[C.IMAGE_TYPE])
+    var imageType: ImageType by mutableStateOf(convertImageType(savedStateHandle[C.IMAGE_TYPE]))
+        private set
 
     init {
         val path: String = Uri.decode(savedStateHandle[C.IMAGES_PATH] ?: "")
@@ -93,6 +94,16 @@ class ImageViewerViewModel @Inject constructor(
             }
             ImageViewerUiEvent.ChangeHideUi -> {
                 hideUi = !hideUi
+            }
+            is ImageViewerUiEvent.SetImageType -> {
+                imageType = event.type
+                imagesState = imagesState.copy(
+                    images = when(imageType) {
+                        ImageType.BACKDROPS -> imagesState.state?.backdrops
+                        ImageType.POSTERS -> imagesState.state?.posters
+                        else -> null
+                    }
+                )
             }
         }
     }

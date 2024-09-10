@@ -16,8 +16,11 @@ import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.offset
 
 @Composable
 fun Modifier.shimmerEffect(
@@ -47,3 +50,17 @@ fun Modifier.shimmerEffect(
 }
 
 /*TODO: Make fadeEdge modifier*/
+
+fun Modifier.negativeHorizontalPadding(
+    padding: Dp
+): Modifier = this.then(
+    Modifier.layout { measurable, constraints ->
+        val placeable = measurable.measure(constraints.offset(horizontal = -padding.roundToPx() * 2))
+        layout(
+            width = placeable.width + padding.roundToPx() * 2,
+            height = placeable.height
+        ) {
+            placeable.place(+padding.roundToPx(), 0)
+        }
+    }
+)

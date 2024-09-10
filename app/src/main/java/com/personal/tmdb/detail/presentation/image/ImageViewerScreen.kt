@@ -32,8 +32,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PageSize
 import androidx.compose.foundation.pager.rememberPagerState
@@ -42,11 +44,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
 import androidx.compose.material.icons.rounded.Share
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -65,6 +69,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -73,9 +78,12 @@ import com.personal.tmdb.MainActivity
 import com.personal.tmdb.R
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.findActivity
+import com.personal.tmdb.core.util.negativeHorizontalPadding
 import com.personal.tmdb.core.util.shareText
+import com.personal.tmdb.detail.domain.util.ImageType
 import com.personal.tmdb.ui.theme.backgroundLight
 import com.personal.tmdb.ui.theme.scrimLight
+import com.personal.tmdb.ui.theme.surfaceVariantLight
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
@@ -88,6 +96,7 @@ fun ImageViewerScreen(
         pageCount = { imageViewerViewModel.imagesState.images?.size ?: 0 },
         initialPage = imageViewerViewModel.initialPage
     )
+    val lazyGridState = rememberLazyGridState()
     val scope = rememberCoroutineScope()
     val activity = LocalContext.current.findActivity() as MainActivity
     val windowInsetsController = WindowCompat.getInsetsController(activity.window, activity.window.decorView)
@@ -122,13 +131,52 @@ fun ImageViewerScreen(
                         modifier = Modifier
                             .statusBarsPadding()
                             .padding(top = 64.dp),/*TODO: Update the hardcoded value when Material 1.3.0 release*/
+                        state = lazyGridState,
                         columns = GridCells.Adaptive(80.dp),
                         contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
                         horizontalArrangement = Arrangement.spacedBy(2.dp),
                         verticalArrangement = Arrangement.spacedBy(2.dp)
                     ) {
+                        if (!imageViewerViewModel.imagesState.state?.backdrops.isNullOrEmpty() && !imageViewerViewModel.imagesState.state?.posters.isNullOrEmpty()) {
+                            item(
+                                span = { GridItemSpan(maxLineSpan) }
+                            ) {
+                                Row(
+                                    modifier = Modifier
+                                        .negativeHorizontalPadding((-12).dp)
+                                        .padding(bottom = 4.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    TextButton(
+                                        onClick = { imageViewerViewModel.imageViewerUiEvent(ImageViewerUiEvent.SetImageType(ImageType.POSTERS)) },
+                                        colors = ButtonDefaults.textButtonColors(
+                                            contentColor = if (imageViewerViewModel.imageType == ImageType.POSTERS) backgroundLight else surfaceVariantLight
+                                        )
+                                    ) {
+                                        Text(
+                                            text = stringResource(id = R.string.posters),
+                                            fontWeight = if (imageViewerViewModel.imageType == ImageType.POSTERS) FontWeight.Medium else FontWeight.Normal,
+                                            fontSize = if (imageViewerViewModel.imageType == ImageType.POSTERS) 18.sp else 16.sp
+                                        )
+                                    }
+                                    TextButton(
+                                        onClick = { imageViewerViewModel.imageViewerUiEvent(ImageViewerUiEvent.SetImageType(ImageType.BACKDROPS)) },
+                                        colors = ButtonDefaults.textButtonColors(
+                                            contentColor = if (imageViewerViewModel.imageType == ImageType.BACKDROPS) backgroundLight else surfaceVariantLight
+                                        )
+                                    ) {
+                                        Text(
+                                            text = stringResource(id = R.string.backdrops),
+                                            fontWeight = if (imageViewerViewModel.imageType == ImageType.BACKDROPS) FontWeight.Medium else FontWeight.Normal,
+                                            fontSize = if (imageViewerViewModel.imageType == ImageType.BACKDROPS) 18.sp else 16.sp
+                                        )
+                                    }
+                                }
+                            }
+                        }
                         itemsIndexed(
-                            items = images
+                            items = images,
+                            key = { index, _ -> index }
                         ) { index, image ->
                             AsyncImage(
                                 modifier = Modifier
@@ -141,7 +189,7 @@ fun ImageViewerScreen(
                                             horizontalPagerState.scrollToPage(index)
                                         }
                                     },
-                                model = C.TMDB_IMAGES_BASE_URL + C.PROFILE_W185 + image?.filePath,
+                                model = C.TMDB_IMAGES_BASE_URL + C.POSTER_W300 + image?.filePath,
                                 contentDescription = "Image",
                                 placeholder = painterResource(id = R.drawable.placeholder),
                                 error = painterResource(id = R.drawable.placeholder),
@@ -212,7 +260,15 @@ fun ImageViewerScreen(
                             exit = shrinkVertically() + fadeOut()
                         ) {
                             Text(
-                                text = "Profiles",
+                                text = stringResource(
+                                    id = when(imageViewerViewModel.imageType) {
+                                        ImageType.PROFILES -> R.string.profiles
+                                        ImageType.STILLS -> R.string.stills
+                                        ImageType.BACKDROPS -> R.string.backdrops
+                                        ImageType.POSTERS -> R.string.posters
+                                        ImageType.UNKNOWN -> R.string.empty
+                                    }
+                                ),
                                 fontWeight = FontWeight.Medium
                             )
                         }
