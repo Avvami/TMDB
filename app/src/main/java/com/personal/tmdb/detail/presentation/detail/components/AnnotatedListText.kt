@@ -1,11 +1,14 @@
 package com.personal.tmdb.detail.presentation.detail.components
 
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import com.personal.tmdb.core.navigation.RootNavGraph
 
@@ -40,14 +43,22 @@ fun AnnotatedListText(
             }
         }
         items.forEachIndexed { index, item ->
-            val start = length
-            addStringAnnotation(
-                tag = annotationTag.name,
-                annotation = item.id.toString(),
-                start = start,
-                end = start + item.name.length
-            )
-            withStyle(style = itemsStyle) {
+            withLink(
+                LinkAnnotation.Clickable(
+                    tag = annotationTag.name,
+                    styles = TextLinkStyles(style = itemsStyle),
+                    linkInteractionListener = {
+                        when(annotationTag) {
+                            AnnotationTag.GENRE -> {
+                                /*TODO: Navigate to genre screen*/
+                            }
+                            AnnotationTag.CAST -> {
+                                onNavigateTo(RootNavGraph.PERSON + "/${item.name}/${item.id}")
+                            }
+                        }
+                    }
+                )
+            ) {
                 append(item.name)
             }
             if (index < items.size - 1) {
@@ -57,26 +68,9 @@ fun AnnotatedListText(
             }
         }
     }
-    ClickableText(
+    Text(
         modifier = modifier,
-        text = annotatedString,
-        onClick = { offset ->
-            annotatedString.getStringAnnotations(tag = annotationTag.name, start = offset, end = offset)
-                .firstOrNull()?.let { annotation ->
-                    val itemId = annotation.item.toIntOrNull()
-                    val item = items.find { it.id == itemId }
-                    if (item != null) {
-                        when (annotationTag) {
-                            AnnotationTag.GENRE -> {
-                                /*TODO: Navigate to genre screen*/
-                            }
-                            AnnotationTag.CAST -> {
-                                onNavigateTo(RootNavGraph.PERSON + "/${item.name}/${item.id}")
-                            }
-                        }
-                    }
-                }
-        }
+        text = annotatedString
     )
 }
 

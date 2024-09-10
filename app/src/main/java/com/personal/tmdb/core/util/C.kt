@@ -33,6 +33,7 @@ object C {
     const val TIKTOK = "https://www.tiktok.com/@%s"
     const val YOUTUBE = "https://www.youtube.com/%s"
     const val TWITTER_X = "https://x.com/%s"
+    const val JUSTWATCH_URL = "https://www.justwatch.com/"
 
     const val SHARE_MEDIA = "https://www.themoviedb.org/%s/%d"
     const val SHARE_CAST = "https://www.themoviedb.org/%s/%d/cast"

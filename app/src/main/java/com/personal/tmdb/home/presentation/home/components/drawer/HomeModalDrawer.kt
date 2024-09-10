@@ -9,7 +9,6 @@ import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -135,10 +134,9 @@ fun HomeModalDrawer(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable(
-                                interactionSource = remember { MutableInteractionSource() },
+                                interactionSource = null,
                                 indication = null
                             ) {
-                                closeDrawer()
                                 if (!userState.value.sessionId.isNullOrEmpty()) {
                                     onNavigateTo(RootNavGraph.SETTINGS)
                                 } else {
@@ -274,7 +272,7 @@ fun HomeModalDrawer(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-                                closeDrawer()
+                                /*TODO: Navigate to watchlist*/
                             }
                             .padding(16.dp),
                         verticalAlignment = Alignment.CenterVertically,
@@ -304,7 +302,7 @@ fun HomeModalDrawer(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-                                closeDrawer()
+                                /*TODO: Navigate to lists*/
                             }
                             .padding(16.dp),
                         verticalAlignment = Alignment.CenterVertically,
@@ -333,7 +331,6 @@ fun HomeModalDrawer(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clickable {
-                            closeDrawer()
                             onNavigateTo(RootNavGraph.SETTINGS)
                         }
                         .padding(16.dp),

@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
@@ -31,7 +30,6 @@ import com.personal.tmdb.R
 import com.personal.tmdb.UiEvent
 import com.personal.tmdb.core.presentation.PreferencesState
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Theme(
     preferencesState: State<PreferencesState>,

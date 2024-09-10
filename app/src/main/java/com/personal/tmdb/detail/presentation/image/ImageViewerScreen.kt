@@ -19,7 +19,6 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -57,7 +56,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -134,7 +132,7 @@ fun ImageViewerScreen(
                     LazyVerticalGrid(
                         modifier = Modifier
                             .safeDrawingPadding()
-                            .padding(top = 64.dp),/*TODO: Update the hardcoded value when Material 1.3.0 release*/
+                            .padding(top = TopAppBarDefaults.TopAppBarExpandedHeight),
                         state = lazyGridState,
                         columns = GridCells.Adaptive(80.dp),
                         contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
@@ -317,7 +315,7 @@ fun ImageViewerScreen(
                             Row {
                                 IconButton(
                                     onClick = {
-                                        context.shareText(C.SHARE_IMAGE.format("/xxYawgFO1woBRveH7WL9D1BxB4W.jpg"))
+                                        context.shareText(C.SHARE_IMAGE.format(imageViewerViewModel.imagesState.images?.get(horizontalPagerState.currentPage)?.filePath))
                                     }
                                 ) {
                                     Icon(
@@ -356,7 +354,7 @@ fun ImageViewerScreen(
                             .clip(CircleShape)
                             .background(scrimLight.copy(.5f))
                             .clickable(
-                                interactionSource = remember { MutableInteractionSource() },
+                                interactionSource = null,
                                 indication = null
                             ) {
                                 imageViewerViewModel.imageViewerUiEvent(ImageViewerUiEvent.ChangeShowGridView)
