@@ -44,6 +44,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.RadialGradientShader
 import androidx.compose.ui.graphics.Shader
 import androidx.compose.ui.graphics.ShaderBrush
@@ -62,6 +63,7 @@ import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.util.ApplyStatusBarsTheme
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.ui.theme.backgroundLight
+import com.personal.tmdb.ui.theme.outlineLight
 import com.personal.tmdb.ui.theme.outlineVariantLight
 import com.personal.tmdb.ui.theme.tmdbLightPurple
 import com.personal.tmdb.ui.theme.tmdbProfile
@@ -99,7 +101,8 @@ fun HomeModalDrawer(
                             override fun createShader(size: Size): Shader {
                                 val biggerDimension = maxOf(size.height, size.width)
                                 return RadialGradientShader(
-                                    colors = listOf(tmdbLightPurple.copy(alpha = .3f), tmdbLightPurple.copy(alpha = 0f)),
+                                    colors = if (userState.value.sessionId.isNullOrEmpty()) listOf(outlineLight.copy(alpha = .3f), outlineLight.copy(alpha = 0f)) else
+                                        listOf(tmdbLightPurple.copy(alpha = .3f), tmdbLightPurple.copy(alpha = 0f)),
                                     center = Offset(size.width, size.height),
                                     radius = biggerDimension
                                 )
@@ -114,6 +117,7 @@ fun HomeModalDrawer(
                             if (userState.value.sessionId.isNullOrEmpty()) {
                                 Modifier
                                     .background(MaterialTheme.colorScheme.surfaceContainer)
+                                    .background(radialGradient)
                             } else {
                                 Modifier
                                     .background(tmdbProfile)
@@ -127,7 +131,8 @@ fun HomeModalDrawer(
                             modifier = Modifier.matchParentSize(),
                             painter = painterResource(id = R.drawable.pipes_pink),
                             contentDescription = "Profile Background",
-                            contentScale = ContentScale.Crop
+                            contentScale = ContentScale.Crop,
+                            colorFilter = if (userState.value.sessionId.isNullOrEmpty()) ColorFilter.tint(MaterialTheme.colorScheme.outline) else null
                         )
                     }
                     Row(
@@ -171,7 +176,7 @@ fun HomeModalDrawer(
                                     AsyncImage(
                                         modifier = Modifier.fillMaxSize(),
                                         model = if (userState.value.userInfo?.tmdbAvatarPath == null)
-                                            C.GRAVATAR_IMAGES_BASE_URL + userState.value.userInfo?.gravatarAvatarPath + "?s=185"
+                                            C.GRAVATAR_IMAGES_BASE_URL.format(userState.value.userInfo?.gravatarAvatarPath)
                                         else
                                             C.TMDB_IMAGES_BASE_URL + C.PROFILE_W185 + userState.value.userInfo?.tmdbAvatarPath,
                                         placeholder = painterResource(id = R.drawable.placeholder),

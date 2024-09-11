@@ -181,7 +181,7 @@ fun SettingsScreen(
                                     AsyncImage(
                                         modifier = Modifier.fillMaxSize(),
                                         model = if (userState.value.userInfo?.tmdbAvatarPath == null)
-                                            C.GRAVATAR_IMAGES_BASE_URL + userState.value.userInfo?.gravatarAvatarPath + "?s=185"
+                                            C.GRAVATAR_IMAGES_BASE_URL.format(userState.value.userInfo?.gravatarAvatarPath)
                                         else
                                             C.TMDB_IMAGES_BASE_URL + C.PROFILE_W185 + userState.value.userInfo?.tmdbAvatarPath,
                                         placeholder = painterResource(id = R.drawable.placeholder),

@@ -130,7 +130,7 @@ fun AvailableDialog(
                                             .height(16.dp)
                                             .aspectRatio(4 / 3f)
                                             .clip(MaterialTheme.shapes.extraSmall),
-                                        model = "https://flagicons.lipis.dev/flags/4x3/${getCountryCode(availableState().selectedCountry)?.lowercase()}.svg",
+                                        model = C.FLAG_ICONS_URL.format(getCountryCode(availableState().selectedCountry)?.lowercase()),
                                         placeholder = painterResource(id = R.drawable.placeholder),
                                         error = painterResource(id = R.drawable.placeholder),
                                         contentDescription = "Flag",

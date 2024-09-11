@@ -3,7 +3,8 @@ package com.personal.tmdb.core.util
 object C {
     const val TMDB_BASE_URL = "https://api.themoviedb.org/"
     const val TMDB_IMAGES_BASE_URL = "https://image.tmdb.org/t/p/"
-    const val GRAVATAR_IMAGES_BASE_URL = "https://gravatar.com/avatar/"
+    const val GRAVATAR_IMAGES_BASE_URL = "https://gravatar.com/avatar/%s?s=185"
+    const val FLAG_ICONS_URL = "https://flagicons.lipis.dev/flags/4x3/%s.svg"
     const val REDIRECT_URL = "tmdb://auth/approved"
     const val APPROVED = "approved"
     const val ORIGINAL = "original"
