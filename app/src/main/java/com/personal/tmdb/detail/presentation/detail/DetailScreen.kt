@@ -47,6 +47,7 @@ import com.personal.tmdb.detail.presentation.detail.components.AllEpisodes
 import com.personal.tmdb.detail.presentation.detail.components.DetailScreenShimmer
 import com.personal.tmdb.detail.presentation.detail.components.Details
 import com.personal.tmdb.detail.presentation.detail.components.Media
+import com.personal.tmdb.detail.presentation.detail.components.Reviews
 import com.personal.tmdb.detail.presentation.detail.components.Trailer
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -162,6 +163,17 @@ fun DetailScreen(
                                 seasons = info.seasons,
                                 preferencesState = preferencesState
                             )
+                        }
+                    }
+                    info.reviews?.results?.let { reviews ->
+                        if (reviews.isNotEmpty()) {
+                            item {
+                                Reviews(
+                                    onNavigateTo = onNavigateTo,
+                                    reviews = reviews,
+                                    preferencesState = preferencesState
+                                )
+                            }
                         }
                     }
                     info.images?.let { images ->

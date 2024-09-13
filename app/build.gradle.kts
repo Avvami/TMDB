@@ -84,7 +84,7 @@ dependencies {
     implementation("io.coil-kt:coil-svg:2.5.0")
 
     // Navigation
-    implementation("androidx.navigation:navigation-compose:2.8.0")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
 
     // Lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.5")

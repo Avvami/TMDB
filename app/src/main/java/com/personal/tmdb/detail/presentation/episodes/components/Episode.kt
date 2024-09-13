@@ -142,7 +142,8 @@ fun Episode(
                                             .size(6.dp)
                                             .align(Alignment.CenterVertically),
                                         painter = painterResource(id = R.drawable.icon_fiber_manual_record_fill1_wght400),
-                                        contentDescription = null
+                                        contentDescription = null,
+                                        tint = MaterialTheme.colorScheme.onSurfaceVariant
                                     )
                                 }
                             }
