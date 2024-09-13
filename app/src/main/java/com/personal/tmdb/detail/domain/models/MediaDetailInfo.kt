@@ -35,6 +35,7 @@ data class MediaDetailInfo(
     val recommendations: MediaResponseInfo?,
     val releaseDate: LocalDate?,
     val releaseDates: ReleaseDates?,
+    val reviews: ReviewsResponseInfo?,
     val runtime: Int?,
     val seasons: List<Season>?,
     val similar: MediaResponseInfo?,

@@ -94,6 +94,7 @@ class DetailViewModel @Inject constructor(
                     }
                 }
             }
+            println(mediaDetail?.reviews.toString())
             mediaDetail?.belongsToCollection?.let { collection ->
                 getCollection(collectionId = collection.id)
             }

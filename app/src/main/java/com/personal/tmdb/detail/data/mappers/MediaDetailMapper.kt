@@ -42,6 +42,7 @@ fun MediaDetailDto.toMediaDetailInfo(): MediaDetailInfo {
         recommendations = recommendations?.toMediaResponseInfo(),
         releaseDate = releaseDate,
         releaseDates = releaseDates,
+        reviews = reviews?.toReviewsResponseInfo(),
         runtime = if (runtime == 0) null else runtime,
         seasons = seasons,
         similar = similar?.toMediaResponseInfo(),

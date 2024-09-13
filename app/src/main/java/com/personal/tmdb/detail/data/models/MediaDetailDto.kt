@@ -73,6 +73,8 @@ data class MediaDetailDto(
     val releaseDate: String?,
     @Json(name = "release_dates")
     val releaseDates: ReleaseDates?,
+    @Json(name = "reviews")
+    val reviews: Reviews?,
     @Json(name = "runtime")
     val runtime: Int?,
     @Json(name = "seasons")
