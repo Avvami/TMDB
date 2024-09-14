@@ -7,6 +7,7 @@ import com.personal.tmdb.detail.domain.models.CreditsInfo
 import com.personal.tmdb.detail.domain.models.EpisodeDetailsInfo
 import com.personal.tmdb.detail.domain.models.MediaDetailInfo
 import com.personal.tmdb.detail.domain.models.PersonInfo
+import com.personal.tmdb.detail.domain.models.ReviewsResponseInfo
 import com.personal.tmdb.detail.domain.models.SeasonInfo
 
 interface DetailRepository {
@@ -26,4 +27,6 @@ interface DetailRepository {
     suspend fun getEpisodeDetails(seriesId: Int, seasonNumber: Int, episodeNumber: Int, language: String? = null, appendToResponse: String? = null, includeImageLanguage: String? = null): Resource<EpisodeDetailsInfo>
 
     suspend fun getImages(path: String, language: String? = null, includeImageLanguage: String? = null): Resource<Images>
+
+    suspend fun getReviews(mediaType: String, mediaId: Int, page: Int, language: String?): Resource<ReviewsResponseInfo>
 }

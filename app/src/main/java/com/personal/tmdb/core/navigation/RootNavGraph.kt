@@ -21,6 +21,7 @@ import com.personal.tmdb.detail.presentation.detail.DetailScreen
 import com.personal.tmdb.detail.presentation.episode.EpisodeDetailsScreen
 import com.personal.tmdb.detail.presentation.episodes.EpisodesScreen
 import com.personal.tmdb.detail.presentation.person.PersonScreen
+import com.personal.tmdb.detail.presentation.reviews.ReviewsScreen
 import com.personal.tmdb.home.presentation.home.HomeScreen
 import com.personal.tmdb.search.presentation.search.SearchScreen
 import com.personal.tmdb.settings.presentation.appearance.AppearanceScreen
@@ -249,6 +250,19 @@ fun RootNavigationGraph(
                 preferencesState = preferencesState
             )
         }
+        animatedComposable(
+            route = RootNavGraph.REVIEWS + "/{${C.MEDIA_TYPE}}/{${C.MEDIA_ID}}",
+            arguments = listOf(
+                navArgument(C.MEDIA_TYPE) { type = NavType.StringType; nullable = false },
+                navArgument(C.MEDIA_ID) { type = NavType.IntType; nullable = false }
+            )
+        ) {
+            ReviewsScreen(
+                navigateBack = onNavigateBack,
+                navigateToHome = navigateToHome,
+                preferencesState = preferencesState
+            )
+        }
     }
 }
 
@@ -267,4 +281,5 @@ object RootNavGraph {
     const val EPISODES = "episodes_screen"
     const val EPISODE = "episode_screen"
     const val IMAGE = "image_viewer_screen"
+    const val REVIEWS = "reviews_screen"
 }

@@ -170,8 +170,10 @@ fun DetailScreen(
                             item {
                                 Reviews(
                                     onNavigateTo = onNavigateTo,
+                                    preferencesState = preferencesState,
                                     reviews = reviews,
-                                    preferencesState = preferencesState
+                                    mediaId = detailViewModel.mediaId,
+                                    mediaType = detailViewModel.mediaType
                                 )
                             }
                         }

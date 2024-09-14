@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.personal.tmdb.R
+import com.personal.tmdb.core.navigation.RootNavGraph
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.formatDate
@@ -44,8 +45,10 @@ import com.personal.tmdb.detail.domain.models.ReviewInfo
 @Composable
 fun Reviews(
     onNavigateTo: (route: String) -> Unit,
+    preferencesState: State<PreferencesState>,
     reviews: List<ReviewInfo>,
-    preferencesState: State<PreferencesState>
+    mediaId: Int,
+    mediaType: String
 ) {
     Column(
         modifier = Modifier.padding(horizontal = 16.dp),
@@ -58,7 +61,7 @@ fun Reviews(
                 .then(
                     if (reviews.size > 1) {
                         Modifier.clickable {
-                            /*TODO: Navigate to reviews screen*/
+                            onNavigateTo(RootNavGraph.REVIEWS + "/$mediaType/$mediaId")
                         }
                     } else {
                         Modifier

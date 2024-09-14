@@ -7,6 +7,7 @@ import com.personal.tmdb.detail.data.mappers.toCreditsInfo
 import com.personal.tmdb.detail.data.mappers.toEpisodeDetailsInfo
 import com.personal.tmdb.detail.data.mappers.toMediaDetailInfo
 import com.personal.tmdb.detail.data.mappers.toPersonInfo
+import com.personal.tmdb.detail.data.mappers.toReviewsResponseInfo
 import com.personal.tmdb.detail.data.mappers.toSeasonInfo
 import com.personal.tmdb.detail.data.models.Images
 import com.personal.tmdb.detail.domain.models.CollectionInfo
@@ -14,6 +15,7 @@ import com.personal.tmdb.detail.domain.models.CreditsInfo
 import com.personal.tmdb.detail.domain.models.EpisodeDetailsInfo
 import com.personal.tmdb.detail.domain.models.MediaDetailInfo
 import com.personal.tmdb.detail.domain.models.PersonInfo
+import com.personal.tmdb.detail.domain.models.ReviewsResponseInfo
 import com.personal.tmdb.detail.domain.models.SeasonInfo
 import com.personal.tmdb.detail.domain.repository.DetailRepository
 import javax.inject.Inject
@@ -160,6 +162,24 @@ class DetailRepositoryImpl @Inject constructor(
                     language,
                     includeImageLanguage
                 )
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(e.message ?: "Unknown")
+        }
+    }
+
+    override suspend fun getReviews(
+        mediaType: String,
+        mediaId: Int,
+        page: Int,
+        language: String?
+    ): Resource<ReviewsResponseInfo> {
+        return try {
+            Resource.Success(
+                data = tmdbApi.getReviews(
+                    mediaType, mediaId, page, language
+                ).toReviewsResponseInfo()
             )
         } catch (e: Exception) {
             e.printStackTrace()

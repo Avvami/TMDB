@@ -15,6 +15,7 @@ import com.personal.tmdb.detail.data.models.EpisodeDetailsDto
 import com.personal.tmdb.detail.data.models.Images
 import com.personal.tmdb.detail.data.models.MediaDetailDto
 import com.personal.tmdb.detail.data.models.PersonDto
+import com.personal.tmdb.detail.data.models.Reviews
 import com.personal.tmdb.detail.data.models.SeasonDto
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -143,4 +144,13 @@ interface TmdbApi {
         @Query("language") language: String?,
         @Query("include_image_language") includeImageLanguage: String?
     ): Images
+
+    @Headers("Authorization: Bearer ${BuildConfig.TMDB_API_KEY}")
+    @GET("/3/{media_type}/{media_id}/reviews?")
+    suspend fun getReviews(
+        @Path("media_type") mediaType: String,
+        @Path("media_id") mediaId: Int,
+        @Query("page") page: Int,
+        @Query("language") language: String?
+    ): Reviews
 }
