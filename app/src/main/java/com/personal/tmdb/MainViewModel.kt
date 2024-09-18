@@ -15,9 +15,6 @@ import com.personal.tmdb.core.domain.repository.LocalRepository
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.Resource
-import com.personal.tmdb.core.util.TimeWindow
-import com.personal.tmdb.home.domain.repository.HomeRepository
-import com.personal.tmdb.home.presentation.home.HomeState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,7 +30,6 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val localRepository: LocalRepository,
-    private val homeRepository: HomeRepository,
     private val authRepository: AuthRepository,
     private val localCache: LocalCache
 ): ViewModel() {
@@ -46,9 +42,6 @@ class MainViewModel @Inject constructor(
 
     private val _userState = MutableStateFlow(UserState())
     val userState: StateFlow<UserState> = _userState.asStateFlow()
-
-    var homeState by mutableStateOf(HomeState())
-        private set
 
     private var cornersJob: Job? = null
 
@@ -87,29 +80,6 @@ class MainViewModel @Inject constructor(
                     }
                     getUserDetails(preferencesEntity.sessionId)
                 }
-        }
-        getTrendingList(TimeWindow.DAY)
-    }
-
-    private fun getTrendingList(timeWindow: TimeWindow, language: String? = null) {
-        viewModelScope.launch {
-            var trending = homeState.trending
-
-            homeRepository.getTrendingList(timeWindow, language).let { result ->
-                when(result) {
-                    is Resource.Error -> {
-                        println(result.message)
-                    }
-                    is Resource.Success -> {
-                        trending = result.data
-                    }
-                }
-            }
-
-            homeState = homeState.copy(
-                trending = trending,
-                randomMedia = trending?.results?.randomOrNull()
-            )
         }
     }
 
@@ -228,7 +198,6 @@ class MainViewModel @Inject constructor(
             UiEvent.DropError -> {
                 _userState.update { it.copy(error = null) }
             }
-
             is UiEvent.SetUseCards -> {
                 viewModelScope.launch {
                     localRepository.setUseCards(event.userCards)

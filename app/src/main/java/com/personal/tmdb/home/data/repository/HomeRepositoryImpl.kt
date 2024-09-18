@@ -8,7 +8,6 @@ import com.personal.tmdb.core.util.TimeWindow
 import com.personal.tmdb.home.domain.repository.HomeRepository
 import javax.inject.Inject
 
-
 class HomeRepositoryImpl @Inject constructor(
     private val tmdbApi: TmdbApi
 ): HomeRepository {
@@ -16,6 +15,17 @@ class HomeRepositoryImpl @Inject constructor(
         return try {
             Resource.Success(
                 data = tmdbApi.getTrendingList(timeWindow.name.lowercase(), language).toMediaResponseInfo()
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(e.message ?: "Unknown")
+        }
+    }
+
+    override suspend fun getNowPlaying(language: String?): Resource<MediaResponseInfo> {
+        return try {
+            Resource.Success(
+                data = tmdbApi.getNowPlaying(language).toMediaResponseInfo()
             )
         } catch (e: Exception) {
             e.printStackTrace()

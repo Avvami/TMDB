@@ -187,8 +187,7 @@ fun MediaCardShimmer(
                 .shimmerEffect()
         ) {
             Text(
-                modifier = Modifier
-                    .align(Alignment.Center),
+                modifier = Modifier.align(Alignment.Center),
                 text = stringResource(id = R.string.tmdb),
                 style = MaterialTheme.typography.displaySmall,
                 color = MaterialTheme.colorScheme.surfaceContainerLow,
@@ -225,6 +224,174 @@ fun MediaCardShimmer(
                 style = MaterialTheme.typography.bodyMedium,
                 minLines = 4
             )
+        }
+    }
+}
+
+@Composable
+fun MediaBanner(
+    modifier: Modifier = Modifier,
+    onNavigateTo: (route: String) -> Unit,
+    mediaInfo: MediaInfo,
+    mediaType: MediaType? = null,
+    showVoteAverage: Boolean,
+    corners: Int
+) {
+    Box(
+        modifier = modifier
+            .clickable {
+                mediaType?.let { mediaType ->
+                    when (mediaType) {
+                        MediaType.TV, MediaType.MOVIE -> {
+                            onNavigateTo(RootNavGraph.DETAIL + "/${mediaType.name.lowercase()}/${mediaInfo.id}")
+                        }
+                        MediaType.PERSON -> {
+                            onNavigateTo(RootNavGraph.PERSON + "/${mediaInfo.name ?: ""}/${mediaInfo.id}")
+                        }
+                        else -> {
+                            /*TODO: Navigate to lost your way screen*/
+                        }
+                    }
+                }
+                mediaInfo.mediaType?.let { mediaType ->
+                    when (mediaType) {
+                        MediaType.TV, MediaType.MOVIE -> {
+                            onNavigateTo(RootNavGraph.DETAIL + "/${mediaType.name.lowercase()}/${mediaInfo.id}")
+                        }
+                        MediaType.PERSON -> {
+                            onNavigateTo(RootNavGraph.PERSON + "/${mediaInfo.name ?: ""}/${mediaInfo.id}")
+                        }
+                        else -> {
+                            /*TODO: Navigate to lost your way screen*/
+                        }
+                    }
+                }
+            }
+    ) {
+        AsyncImage(
+            modifier = Modifier.fillMaxSize(),
+            model = C.TMDB_IMAGES_BASE_URL + C.BACKDROP_W780 + mediaInfo.backdropPath,
+            contentDescription = "Backdrop",
+            placeholder = painterResource(id = R.drawable.placeholder),
+            error = painterResource(id = R.drawable.placeholder),
+            contentScale = ContentScale.Crop
+        )
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(onBackgroundLight.copy(.6f))
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .aspectRatio(0.675f)
+                    .clip(RoundedCornerShape(corners))
+            ) {
+                AsyncImage(
+                    modifier = Modifier.fillMaxSize(),
+                    model = C.TMDB_IMAGES_BASE_URL + C.POSTER_W300 + mediaInfo.posterPath,
+                    placeholder = painterResource(id = R.drawable.placeholder),
+                    error = painterResource(id = R.drawable.placeholder),
+                    contentDescription = "Poster",
+                    contentScale = ContentScale.Crop
+                )
+                if (showVoteAverage && mediaInfo.voteAverage != null) {
+                    Text(
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .clip(RoundedCornerShape((corners / 3).dp))
+                            .background(onBackgroundLight.copy(.5f))
+                            .padding(horizontal = 4.dp)
+                            .align(Alignment.TopStart),
+                        text = formatVoteAverage(mediaInfo.voteAverage),
+                        style = MaterialTheme.typography.labelMedium,
+                        color = backgroundLight
+                    )
+                }
+            }
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                mediaInfo.name?.let { name ->
+                    Text(
+                        text = name,
+                        style = MaterialTheme.typography.titleMedium,
+                        color = backgroundLight,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                mediaInfo.overview?.let { overview ->
+                    Text(
+                        text = overview,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = backgroundLight,
+                        maxLines = 3,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun MediaBannerShimmer(
+    modifier: Modifier = Modifier,
+    corners: Int
+) {
+    Box(
+        modifier = modifier
+    ) {
+        Row(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.surfaceContainerLow)
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .aspectRatio(0.675f)
+                    .clip(RoundedCornerShape(corners.dp))
+                    .shimmerEffect()
+            ) {
+                Text(
+                    modifier = Modifier.align(Alignment.Center),
+                    text = stringResource(id = R.string.tmdb),
+                    style = MaterialTheme.typography.headlineLarge,
+                    color = MaterialTheme.colorScheme.surfaceContainerLow,
+                    fontStyle = FontStyle.Italic,
+                    fontWeight = FontWeight.Black,
+                    textAlign = TextAlign.Center
+                )
+            }
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(MaterialTheme.shapes.small)
+                        .shimmerEffect(),
+                    text = "",
+                    style = MaterialTheme.typography.titleMedium
+                )
+                Text(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(MaterialTheme.shapes.small)
+                        .shimmerEffect(),
+                    text = "",
+                    style = MaterialTheme.typography.bodySmall,
+                    minLines = 3
+                )
+            }
         }
     }
 }

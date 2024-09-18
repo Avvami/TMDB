@@ -153,4 +153,10 @@ interface TmdbApi {
         @Query("page") page: Int,
         @Query("language") language: String?
     ): Reviews
+
+    @Headers("Authorization: Bearer ${BuildConfig.TMDB_API_KEY}")
+    @GET("3/movie/now_playing?")
+    suspend fun getNowPlaying(
+        @Query("language") language: String?
+    ): MediaResponseDto
 }

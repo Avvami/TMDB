@@ -71,7 +71,6 @@ fun RootNavigationGraph(
                     }
                 },
                 preferencesState = preferencesState,
-                homeState = mainViewModel::homeState,
                 userState = userState,
                 uiEvent = mainViewModel::uiEvent
             )

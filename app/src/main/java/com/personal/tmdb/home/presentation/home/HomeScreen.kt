@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -66,6 +67,8 @@ import com.personal.tmdb.UserState
 import com.personal.tmdb.core.navigation.RootNavGraph
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.GradientButton
+import com.personal.tmdb.core.presentation.components.MediaBanner
+import com.personal.tmdb.core.presentation.components.MediaBannerShimmer
 import com.personal.tmdb.core.presentation.components.MediaPoster
 import com.personal.tmdb.core.presentation.components.MediaPosterShimmer
 import com.personal.tmdb.core.presentation.components.MediaRowView
@@ -90,7 +93,6 @@ import kotlinx.coroutines.launch
 fun HomeScreen(
     onNavigateTo: (route: String) -> Unit,
     preferencesState: State<PreferencesState>,
-    homeState: () -> HomeState,
     userState: State<UserState>,
     uiEvent: (UiEvent) -> Unit,
     homeViewModel: HomeViewModel = hiltViewModel()
@@ -220,7 +222,7 @@ fun HomeScreen(
                             .fillMaxSize()
                             .padding(horizontal = 16.dp)
                             .then(
-                                if (!homeState().randomMedia?.backdropPath.isNullOrEmpty()) {
+                                if (!homeViewModel.homeState.randomMedia?.backdropPath.isNullOrEmpty()) {
                                     Modifier.shadow(
                                         elevation = 8.dp,
                                         shape = RoundedCornerShape(24.dp),
@@ -240,7 +242,7 @@ fun HomeScreen(
                     ) {
                         AsyncImage(
                             modifier = Modifier.fillMaxSize(),
-                            model = C.TMDB_IMAGES_BASE_URL + C.BACKDROP_W1280 + homeState().randomMedia?.backdropPath,
+                            model = C.TMDB_IMAGES_BASE_URL + C.BACKDROP_W1280 + homeViewModel.homeState.randomMedia?.backdropPath,
                             contentDescription = "Backdrop",
                             contentScale = ContentScale.Crop,
                             colorFilter = duotoneColorFilter(duotoneBlueLight, duotoneBlueDark)
@@ -328,7 +330,7 @@ fun HomeScreen(
                     MediaRowView(
                         titleRes = R.string.trending,
                         items = {
-                            if (homeState().trending == null) {
+                            if (homeViewModel.homeState.trending == null) {
                                 items(15) {
                                     MediaPosterShimmer(
                                         modifier = Modifier
@@ -340,12 +342,11 @@ fun HomeScreen(
                                     )
                                 }
                             } else {
-                                homeState().trending?.results?.let { trending ->
+                                homeViewModel.homeState.trending?.results?.let { trending ->
                                     items(
-                                        count = trending.size,
-                                        key = { trending[it].id }
-                                    ) { index ->
-                                        val mediaInfo = trending[index]
+                                        items = trending,
+                                        key = { it.id }
+                                    ) { mediaInfo ->
                                         MediaPoster(
                                             modifier = Modifier
                                                 .height(150.dp)
@@ -354,6 +355,44 @@ fun HomeScreen(
                                             onNavigateTo = onNavigateTo,
                                             mediaInfo = mediaInfo,
                                             showTitle = preferencesState.value.showTitle,
+                                            showVoteAverage = preferencesState.value.showVoteAverage,
+                                            corners = preferencesState.value.corners
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    )
+                }
+                item {
+                    MediaRowView(
+                        titleRes = R.string.now_playing,
+                        items = {
+                            if (homeViewModel.homeState.nowPlaying == null) {
+                                items(15) {
+                                    MediaBannerShimmer(
+                                        modifier = Modifier
+                                            .height(150.dp)
+                                            .aspectRatio(16 / 9f)
+                                            .clip(RoundedCornerShape(preferencesState.value.corners.dp))
+                                            .shimmerEffect(),
+                                        corners = preferencesState.value.corners
+                                    )
+                                }
+                            } else {
+                                homeViewModel.homeState.nowPlaying?.results?.let { nowPlaying ->
+                                    items(
+                                        items = nowPlaying,
+                                        key = { it.id }
+                                    ) { mediaInfo ->
+                                        MediaBanner(
+                                            modifier = Modifier
+                                                .height(150.dp)
+                                                .aspectRatio(16 / 9f)
+                                                .clip(RoundedCornerShape(preferencesState.value.corners.dp)),
+                                            onNavigateTo = onNavigateTo,
+                                            mediaInfo = mediaInfo,
+                                            mediaType = MediaType.MOVIE,
                                             showVoteAverage = preferencesState.value.showVoteAverage,
                                             corners = preferencesState.value.corners
                                         )
