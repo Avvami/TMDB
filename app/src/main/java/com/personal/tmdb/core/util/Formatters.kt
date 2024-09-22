@@ -31,8 +31,8 @@ fun formatRuntime(minutes: Int, context: Context): String {
 @Composable
 fun formatVoteAverageToColor(vote: Float): Color {
     return when (vote) {
-        in 0f .. 3.5f -> tmdbRatingRed
-        in 3.6f .. 6.9f -> tmdbRatingOrange
+        in 0f ..< 3.5f -> tmdbRatingRed
+        in 3.5f ..< 7f -> tmdbRatingOrange
         in 7f .. 10f -> tmdbRatingGreen
         else -> MaterialTheme.colorScheme.surfaceVariant
     }
