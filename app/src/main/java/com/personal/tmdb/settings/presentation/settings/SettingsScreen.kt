@@ -34,6 +34,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -57,8 +58,10 @@ import com.personal.tmdb.BuildConfig
 import com.personal.tmdb.R
 import com.personal.tmdb.UiEvent
 import com.personal.tmdb.UserState
+import com.personal.tmdb.core.domain.models.DropdownItem
 import com.personal.tmdb.core.navigation.RootNavGraph
 import com.personal.tmdb.core.presentation.PreferencesState
+import com.personal.tmdb.core.presentation.components.CustomDropdownMenu
 import com.personal.tmdb.core.util.ApplyStatusBarsTheme
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.applyStatusBarsTheme
@@ -76,6 +79,7 @@ fun SettingsScreen(
     userState: State<UserState>,
     uiEvent: (UiEvent) -> Unit
 ) {
+    var dropDownExpanded by remember { mutableStateOf(false) }
     Scaffold(
         topBar = {
             if (!userState.value.sessionId.isNullOrEmpty()) {
@@ -107,13 +111,37 @@ fun SettingsScreen(
                     }
                 },
                 actions = {
-                    IconButton(
-                        onClick = { /*TODO: Drop down*/ }
-                    )  {
-                        Icon(
-                            imageVector = Icons.Rounded.MoreVert,
-                            contentDescription = "More"
-                        )
+                    if (!userState.value.sessionId.isNullOrEmpty()) {
+                        IconButton(
+                            onClick = { dropDownExpanded = true }
+                        )  {
+                            Icon(
+                                imageVector = Icons.Rounded.MoreVert,
+                                contentDescription = "More"
+                            )
+                            CustomDropdownMenu(
+                                expanded = dropDownExpanded,
+                                onDismissRequest = { dropDownExpanded = false },
+                                dropDownItems = listOf(
+                                    DropdownItem(
+                                        selected = true,
+                                        iconRes = R.drawable.icon_format_paint_fill0_wght400,
+                                        textRes = R.string.change_cover_color,
+                                        onItemClick = {
+                                            dropDownExpanded = false
+                                        }
+                                    ),
+                                    DropdownItem(
+                                        selected = true,
+                                        iconRes = R.drawable.icon_logout_fill0_wght400,
+                                        textRes = R.string.logout,
+                                        onItemClick = {
+                                            dropDownExpanded = false
+                                        }
+                                    )
+                                )
+                            )
+                        }
                     }
                 }
             )

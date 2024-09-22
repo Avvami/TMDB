@@ -119,4 +119,6 @@
     <string name="reviews">Reviews</string>
     <string name="review">Review</string>
     <string name="now_playing">Now Playing</string>
+    <string name="logout">Logout</string>
+    <string name="change_cover_color">Change Cover Color</string>
 </resources>
