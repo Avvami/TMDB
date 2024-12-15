@@ -49,9 +49,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
-import coil.ImageLoader
-import coil.compose.AsyncImage
-import coil.decode.SvgDecoder
+import coil3.ImageLoader
+import coil3.compose.AsyncImage
+import coil3.svg.SvgDecoder
 import com.personal.tmdb.MainActivity
 import com.personal.tmdb.R
 import com.personal.tmdb.core.util.C
