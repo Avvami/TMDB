@@ -37,10 +37,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextOverflow
@@ -59,11 +64,12 @@ import com.personal.tmdb.core.presentation.components.MediaPoster
 import com.personal.tmdb.core.presentation.components.MediaPosterShimmer
 import com.personal.tmdb.core.presentation.components.MediaRowView
 import com.personal.tmdb.core.util.C
+import com.personal.tmdb.core.util.DynamicShadowColorFromImage
 import com.personal.tmdb.core.util.MediaType
-import com.personal.tmdb.core.util.duotoneColorFilter
+import com.personal.tmdb.core.util.MinContrastOfPrimaryVsSurface
+import com.personal.tmdb.core.util.contrastAgainst
+import com.personal.tmdb.core.util.rememberDominantColorState
 import com.personal.tmdb.core.util.shimmerEffect
-import com.personal.tmdb.ui.theme.duotoneBlueDark
-import com.personal.tmdb.ui.theme.duotoneBlueLight
 import com.personal.tmdb.ui.theme.surfaceLight
 import kotlinx.coroutines.launch
 
@@ -153,115 +159,130 @@ fun HomeScreen(
                 }
             }
             item {
-                Box(
-                    modifier = Modifier
-                        .height(450.dp)
-                        .fillMaxSize()
-                        .padding(horizontal = 16.dp)
-                        .then(
-                            if (!homeViewModel.homeState.randomMedia?.backdropPath.isNullOrEmpty()) {
-                                Modifier.shadow(
-                                    elevation = 32.dp,
-                                    shape = MaterialTheme.shapes.extraLarge,
-                                    ambientColor = duotoneBlueLight,
-                                    spotColor = duotoneBlueLight
+                val imageUrl = homeViewModel.homeState.randomMedia?.backdropPath ?: ""
+                val surfaceColor = MaterialTheme.colorScheme.surface
+                val dominantColorState = rememberDominantColorState { color ->
+                    color.contrastAgainst(surfaceColor) >= MinContrastOfPrimaryVsSurface
+                }
+                DynamicShadowColorFromImage(dominantColorState) {
+                    LaunchedEffect(imageUrl) {
+                        if (imageUrl.isNotEmpty()) {
+                            dominantColorState.updateColorsFromImageUrl(C.TMDB_IMAGES_BASE_URL + C.BACKDROP_W1280 + imageUrl)
+                        } else {
+                            dominantColorState.reset()
+                        }
+                    }
+                    Box(
+                        modifier = Modifier
+                            .height(450.dp)
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp)
+                            .shadow(
+                                elevation = 28.dp,
+                                shape = MaterialTheme.shapes.extraLarge,
+                                ambientColor = MaterialTheme.colorScheme.surfaceTint,
+                                spotColor = MaterialTheme.colorScheme.surfaceTint
+                            )
+                            .background(MaterialTheme.colorScheme.surfaceContainer)
+                            .border(
+                                width = 2.dp,
+                                color = surfaceLight.copy(alpha = .1f),
+                                shape = MaterialTheme.shapes.extraLarge
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        AsyncImage(
+                            modifier = Modifier.fillMaxSize(),
+                            model = C.TMDB_IMAGES_BASE_URL + C.BACKDROP_W1280 + homeViewModel.homeState.randomMedia?.backdropPath,
+                            contentDescription = "Backdrop",
+                            contentScale = ContentScale.Crop,
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.scrim.copy(.2f), BlendMode.Darken)
+                        )
+                        Column(
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                            verticalArrangement = Arrangement.spacedBy(40.dp, Alignment.CenterVertically),
+                        ) {
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(2.dp)
+                            ) {
+                                Text(
+                                    text = stringResource(id = R.string.welcome),
+                                    style = TextStyle(
+                                        fontSize = MaterialTheme.typography.displayMedium.fontSize,
+                                        lineHeight = MaterialTheme.typography.displayMedium.lineHeight,
+                                        letterSpacing = MaterialTheme.typography.displayMedium.letterSpacing,
+                                        shadow = Shadow(color = MaterialTheme.colorScheme.scrim.copy(alpha = .5f), offset = Offset(1f, 2f), blurRadius = 6f)
+                                    ),
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = surfaceLight
                                 )
-                            } else {
-                                Modifier.shadow(
-                                    elevation = 32.dp,
-                                    shape = MaterialTheme.shapes.extraLarge
+                                Text(
+                                    text = stringResource(id = R.string.explore_now),
+                                    style = TextStyle(
+                                        fontSize = MaterialTheme.typography.headlineSmall.fontSize,
+                                        lineHeight = MaterialTheme.typography.headlineSmall.lineHeight,
+                                        letterSpacing = MaterialTheme.typography.headlineSmall.letterSpacing,
+                                        shadow = Shadow(color = MaterialTheme.colorScheme.scrim.copy(alpha = .5f), offset = Offset(1f, 2f), blurRadius = 6f)
+                                    ),
+                                    fontWeight = FontWeight.Medium,
+                                    color = surfaceLight
                                 )
                             }
-                        )
-                        .background(MaterialTheme.colorScheme.surfaceContainer)
-                        .border(
-                            width = 2.dp,
-                            color = surfaceLight.copy(alpha = .1f),
-                            shape = MaterialTheme.shapes.extraLarge
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    AsyncImage(
-                        modifier = Modifier.fillMaxSize(),
-                        model = C.TMDB_IMAGES_BASE_URL + C.BACKDROP_W1280 + homeViewModel.homeState.randomMedia?.backdropPath,
-                        contentDescription = "Backdrop",
-                        contentScale = ContentScale.Crop,
-                        colorFilter = duotoneColorFilter(duotoneBlueLight, duotoneBlueDark)
-                    )
-                    Column(
-                        modifier = Modifier.padding(horizontal = 16.dp),
-                        verticalArrangement = Arrangement.spacedBy(40.dp, Alignment.CenterVertically),
-                    ) {
-                        Column(
-                            verticalArrangement = Arrangement.spacedBy(2.dp)
-                        ) {
-                            Text(
-                                text = stringResource(id = R.string.welcome),
-                                style = MaterialTheme.typography.displayMedium,
-                                fontWeight = FontWeight.SemiBold,
-                                color = surfaceLight
-                            )
-                            Text(
-                                text = stringResource(id = R.string.explore_now),
-                                style = MaterialTheme.typography.headlineSmall,
-                                fontWeight = FontWeight.Medium,
-                                color = surfaceLight
-                            )
-                        }
-                        OutlinedTextField(
-                            modifier = Modifier.fillMaxWidth(),
-                            value = homeViewModel.searchQuery,
-                            onValueChange = {
-                                homeViewModel.homeUiEvent(HomeUiEvent.OnSearchQueryChange(it))
-                            },
-                            placeholder = {
-                                Text(
-                                    text = stringResource(id = R.string.search_placeholder),
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis
-                                )
-                            },
-                            trailingIcon = {
-                                FilledIconButton(
-                                    onClick = {
+                            OutlinedTextField(
+                                modifier = Modifier.fillMaxWidth(),
+                                value = homeViewModel.searchQuery,
+                                onValueChange = {
+                                    homeViewModel.homeUiEvent(HomeUiEvent.OnSearchQueryChange(it))
+                                },
+                                placeholder = {
+                                    Text(
+                                        text = stringResource(id = R.string.search_placeholder),
+                                        maxLines = 1,
+                                        overflow = TextOverflow.Ellipsis
+                                    )
+                                },
+                                trailingIcon = {
+                                    FilledIconButton(
+                                        onClick = {
+                                            onNavigateTo(
+                                                RootNavGraph.SEARCH +
+                                                        "/${MediaType.MULTI.name.lowercase()}?${C.SEARCH_QUERY}=${homeViewModel.searchQuery}"
+                                            )
+                                        },
+                                        colors = IconButtonDefaults.iconButtonColors(
+                                            containerColor = MaterialTheme.colorScheme.primary,
+                                            contentColor = MaterialTheme.colorScheme.surface
+                                        )
+                                    ) {
+                                        Icon(
+                                            imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
+                                            contentDescription = "Search"
+                                        )
+                                    }
+                                },
+                                singleLine = true,
+                                shape = MaterialTheme.shapes.medium,
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    unfocusedContainerColor = surfaceLight.copy(alpha = .4f),
+                                    focusedTextColor = surfaceLight,
+                                    unfocusedTextColor = surfaceLight,
+                                    focusedPlaceholderColor = surfaceLight,
+                                    unfocusedPlaceholderColor = surfaceLight,
+                                    focusedBorderColor = surfaceLight,
+                                    unfocusedBorderColor = Color.Transparent,
+                                    cursorColor = surfaceLight
+                                ),
+                                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
+                                keyboardActions = KeyboardActions(
+                                    onSearch = {
                                         onNavigateTo(
                                             RootNavGraph.SEARCH +
                                                     "/${MediaType.MULTI.name.lowercase()}?${C.SEARCH_QUERY}=${homeViewModel.searchQuery}"
                                         )
-                                    },
-                                    colors = IconButtonDefaults.iconButtonColors(
-                                        containerColor = MaterialTheme.colorScheme.primary,
-                                        contentColor = MaterialTheme.colorScheme.surface
-                                    )
-                                ) {
-                                    Icon(
-                                        imageVector = Icons.AutoMirrored.Rounded.ArrowForward,
-                                        contentDescription = "Search"
-                                    )
-                                }
-                            },
-                            singleLine = true,
-                            shape = MaterialTheme.shapes.medium,
-                            colors = OutlinedTextFieldDefaults.colors(
-                                unfocusedContainerColor = surfaceLight.copy(alpha = .4f),
-                                focusedTextColor = surfaceLight,
-                                unfocusedTextColor = surfaceLight,
-                                focusedPlaceholderColor = surfaceLight,
-                                unfocusedPlaceholderColor = surfaceLight,
-                                focusedBorderColor = surfaceLight,
-                                unfocusedBorderColor = Color.Transparent,
-                                cursorColor = surfaceLight
-                            ),
-                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
-                            keyboardActions = KeyboardActions(
-                                onSearch = {
-                                    onNavigateTo(
-                                        RootNavGraph.SEARCH +
-                                                "/${MediaType.MULTI.name.lowercase()}?${C.SEARCH_QUERY}=${homeViewModel.searchQuery}"
-                                    )
-                                }
+                                    }
+                                )
                             )
-                        )
+                        }
                     }
                 }
             }
