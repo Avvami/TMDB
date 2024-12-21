@@ -2,7 +2,7 @@ package com.personal.tmdb.search.presentation.search.components
 
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
@@ -32,7 +32,7 @@ fun SearchPopularPeople(
                         modifier = Modifier
                             .height(150.dp)
                             .aspectRatio(0.675f)
-                            .clip(RoundedCornerShape(preferencesState.value.corners.dp))
+                            .clip(MaterialTheme.shapes.large)
                             .shimmerEffect(),
                         showTitle = true
                     )
@@ -48,7 +48,7 @@ fun SearchPopularPeople(
                             modifier = Modifier
                                 .height(150.dp)
                                 .aspectRatio(0.675f)
-                                .clip(RoundedCornerShape(preferencesState.value.corners.dp)),
+                                .clip(MaterialTheme.shapes.large),
                             onNavigateTo = onNavigateTo,
                             mediaInfo = mediaInfo,
                             mediaType = MediaType.PERSON,

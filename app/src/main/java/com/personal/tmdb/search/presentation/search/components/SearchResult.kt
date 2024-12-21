@@ -6,12 +6,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -21,7 +19,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -123,34 +120,53 @@ fun SearchResult(
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.icon_page_info_fill0_wght400),
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
                         FilterChip(
-                            modifier = Modifier.height(FilterChipDefaults.Height),
                             selected = mediaType == MediaType.MULTI,
                             onClick = { searchUiEvent(SearchUiEvent.SetSearchType(MediaType.MULTI.name.lowercase())) },
-                            label = { Text(text = stringResource(id = R.string.all)) }
+                            label = { Text(text = stringResource(id = R.string.all)) },
+                            colors = FilterChipDefaults.filterChipColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                                labelColor = MaterialTheme.colorScheme.surfaceVariant,
+                                selectedContainerColor = MaterialTheme.colorScheme.primary,
+                                selectedLabelColor = MaterialTheme.colorScheme.onPrimary
+                            ),
+                            border = null
                         )
                         FilterChip(
-                            modifier = Modifier.height(FilterChipDefaults.Height),
                             selected = mediaType == MediaType.TV,
                             onClick = { searchUiEvent(SearchUiEvent.SetSearchType(MediaType.TV.name.lowercase())) },
-                            label = { Text(text = stringResource(id = R.string.tv_shows)) }
+                            label = { Text(text = stringResource(id = R.string.tv_shows)) },
+                            colors = FilterChipDefaults.filterChipColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                                labelColor = MaterialTheme.colorScheme.surfaceVariant,
+                                selectedContainerColor = MaterialTheme.colorScheme.primary,
+                                selectedLabelColor = MaterialTheme.colorScheme.onPrimary
+                            ),
+                            border = null
                         )
                         FilterChip(
-                            modifier = Modifier.height(FilterChipDefaults.Height),
                             selected = mediaType == MediaType.MOVIE,
                             onClick = { searchUiEvent(SearchUiEvent.SetSearchType(MediaType.MOVIE.name.lowercase())) },
-                            label = { Text(text = stringResource(id = R.string.movies)) }
+                            label = { Text(text = stringResource(id = R.string.movies)) },
+                            colors = FilterChipDefaults.filterChipColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                                labelColor = MaterialTheme.colorScheme.surfaceVariant,
+                                selectedContainerColor = MaterialTheme.colorScheme.primary,
+                                selectedLabelColor = MaterialTheme.colorScheme.onPrimary
+                            ),
+                            border = null
                         )
                         FilterChip(
-                            modifier = Modifier.height(FilterChipDefaults.Height),
                             selected = mediaType == MediaType.PERSON,
                             onClick = { searchUiEvent(SearchUiEvent.SetSearchType(MediaType.PERSON.name.lowercase())) },
-                            label = { Text(text = stringResource(id = R.string.people)) }
+                            label = { Text(text = stringResource(id = R.string.people)) },
+                            colors = FilterChipDefaults.filterChipColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                                labelColor = MaterialTheme.colorScheme.surfaceVariant,
+                                selectedContainerColor = MaterialTheme.colorScheme.primary,
+                                selectedLabelColor = MaterialTheme.colorScheme.onPrimary
+                            ),
+                            border = null
                         )
                     }
                 }

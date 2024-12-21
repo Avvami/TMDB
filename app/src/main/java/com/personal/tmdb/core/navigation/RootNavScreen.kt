@@ -408,7 +408,7 @@ fun ChildNavGraph(
             )
         ) {
             SearchScreen(
-                navigateBack = onNavigateBack,
+                bottomPadding = bottomPadding,
                 onNavigateTo = { route ->
                     navController.navigate(route = route) {
                         launchSingleTop = true

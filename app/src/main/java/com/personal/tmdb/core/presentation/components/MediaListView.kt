@@ -1,15 +1,13 @@
 package com.personal.tmdb.core.presentation.components
 
-import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
@@ -32,108 +30,59 @@ fun MediaListView(
     emptyListContent: @Composable (() -> Unit)? = null,
     preferencesState: State<PreferencesState>
 ) {
-    AnimatedContent(
-        targetState = preferencesState.value.useCards,
-        label = ""
-    ) { targetState ->
-        if (targetState) {
-            LazyColumn(
-                modifier = modifier,
-                contentPadding = contentPadding,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+    LazyVerticalGrid(
+        modifier = modifier,
+        columns = GridCells.Adaptive(100.dp),
+        contentPadding = contentPadding,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        topItemContent?.let { content ->
+            item(
+                span = { GridItemSpan(maxLineSpan) }
             ) {
-                topItemContent?.let { content ->
-                    item {
-                        content()
-                    }
-                }
-                if (isLoading()) {
-                    items(count = 15) {
-                        MediaCardShimmer(
-                            corners = preferencesState.value.corners
-                        )
-                    }
-                } else {
-                    if (mediaList().isEmpty()) {
-                        emptyListContent?.let { content ->
-                            item {
-                                content()
-                            }
-                        }
-                    } else {
-                        items(
-                            count = mediaList().size,
-                            key = { mediaList()[it].id }
-                        ) { index ->
-                            val mediaInfo = mediaList()[index]
-                            MediaCard(
-                                modifier = Modifier.animateItem(),
-                                onNavigateTo = onNavigateTo,
-                                mediaInfo = mediaInfo,
-                                mediaType = mediaType,
-                                showVoteAverage = preferencesState.value.useCards,
-                                corners = preferencesState.value.corners
-                            )
-                        }
-                    }
-                }
+                content()
+            }
+        }
+        if (isLoading()) {
+            items(count = 15) {
+                MediaPosterShimmer(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(0.675f)
+                        .clip(MaterialTheme.shapes.large)
+                        .shimmerEffect(),
+                    showTitle = preferencesState.value.showTitle
+                )
             }
         } else {
-            LazyVerticalGrid(
-                modifier = modifier,
-                columns = GridCells.Adaptive(100.dp),
-                contentPadding = contentPadding,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                topItemContent?.let { content ->
+            if (mediaList().isEmpty()) {
+                emptyListContent?.let { content ->
                     item(
                         span = { GridItemSpan(maxLineSpan) }
                     ) {
                         content()
                     }
                 }
-                if (isLoading()) {
-                    items(count = 15) {
-                        MediaPosterShimmer(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .aspectRatio(0.675f)
-                                .clip(RoundedCornerShape(preferencesState.value.corners.dp))
-                                .shimmerEffect(),
-                            showTitle = preferencesState.value.showTitle
-                        )
-                    }
-                } else {
-                    if (mediaList().isEmpty()) {
-                        emptyListContent?.let { content ->
-                            item(
-                                span = { GridItemSpan(maxLineSpan) }
-                            ) {
-                                content()
-                            }
-                        }
-                    } else {
-                        items(
-                            count = mediaList().size,
-                            key = { mediaList()[it].id }
-                        ) { index ->
-                            val mediaInfo = mediaList()[index]
-                            MediaPoster(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .aspectRatio(0.675f)
-                                    .clip(RoundedCornerShape(preferencesState.value.corners.dp))
-                                    .animateItem(),
-                                onNavigateTo = onNavigateTo,
-                                mediaInfo = mediaInfo,
-                                mediaType = mediaType,
-                                showTitle = preferencesState.value.showTitle,
-                                showVoteAverage = preferencesState.value.showVoteAverage,
-                                corners = preferencesState.value.corners
-                            )
-                        }
-                    }
+            } else {
+                items(
+                    count = mediaList().size,
+                    key = { mediaList()[it].id }
+                ) { index ->
+                    val mediaInfo = mediaList()[index]
+                    MediaPoster(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .aspectRatio(0.675f)
+                            .clip(MaterialTheme.shapes.large)
+                            .animateItem(),
+                        onNavigateTo = onNavigateTo,
+                        mediaInfo = mediaInfo,
+                        mediaType = mediaType,
+                        showTitle = preferencesState.value.showTitle,
+                        showVoteAverage = preferencesState.value.showVoteAverage,
+                        corners = preferencesState.value.corners
+                    )
                 }
             }
         }
@@ -147,53 +96,29 @@ fun MediaListViewShimmer(
     topItemContent: @Composable (() -> Unit)? = null,
     preferencesState: State<PreferencesState>
 ) {
-    AnimatedContent(
-        targetState = preferencesState.value.useCards,
-        label = ""
-    ) { targetState ->
-        if (targetState) {
-            LazyColumn(
-                modifier = modifier,
-                contentPadding = contentPadding,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
+    LazyVerticalGrid(
+        modifier = modifier,
+        columns = GridCells.Adaptive(100.dp),
+        contentPadding = contentPadding,
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        topItemContent?.let { content ->
+            item(
+                span = { GridItemSpan(maxLineSpan) }
             ) {
-                topItemContent?.let { content ->
-                    item {
-                        content()
-                    }
-                }
-                items(count = 15) {
-                    MediaCardShimmer(
-                        corners = preferencesState.value.corners
-                    )
-                }
+                content()
             }
-        } else {
-            LazyVerticalGrid(
-                modifier = modifier,
-                columns = GridCells.Adaptive(100.dp),
-                contentPadding = contentPadding,
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                topItemContent?.let { content ->
-                    item(
-                        span = { GridItemSpan(maxLineSpan) }
-                    ) {
-                        content()
-                    }
-                }
-                items(count = 15) {
-                    MediaPosterShimmer(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .aspectRatio(0.675f)
-                            .clip(RoundedCornerShape(preferencesState.value.corners.dp))
-                            .shimmerEffect(),
-                        showTitle = preferencesState.value.showTitle
-                    )
-                }
-            }
+        }
+        items(count = 15) {
+            MediaPosterShimmer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(0.675f)
+                    .clip(MaterialTheme.shapes.large)
+                    .shimmerEffect(),
+                showTitle = preferencesState.value.showTitle
+            )
         }
     }
 }

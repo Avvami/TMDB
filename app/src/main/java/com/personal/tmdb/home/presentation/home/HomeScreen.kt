@@ -227,11 +227,6 @@ fun HomeScreen(
                                 contentScale = ContentScale.Crop,
                                 colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.scrim.copy(.2f), BlendMode.Darken)
                             )
-                            Box(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(radialGradient)
-                            )
                             AnimatedVisibility(
                                 modifier = Modifier
                                     .padding(16.dp)
