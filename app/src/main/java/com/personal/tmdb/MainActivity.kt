@@ -9,12 +9,10 @@ import androidx.activity.viewModels
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.Surface
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.compose.rememberNavController
-import com.personal.tmdb.core.navigation.RootNavigationGraph
+import com.personal.tmdb.core.navigation.RootNavigationScreen
 import com.personal.tmdb.ui.theme.TMDBTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -30,15 +28,16 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContent {
+            val preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle()
+            val userState = mainViewModel.userState.collectAsStateWithLifecycle()
             TMDBTheme(
-                darkTheme = mainViewModel.preferencesState.collectAsStateWithLifecycle().value.darkTheme ?: isSystemInDarkTheme()
+                darkTheme = preferencesState.value.darkTheme ?: isSystemInDarkTheme()
             ) {
-                Surface {
-                    RootNavigationGraph(
-                        navController = rememberNavController(),
-                        mainViewModel = mainViewModel
-                    )
-                }
+                RootNavigationScreen(
+                    mainViewModel = mainViewModel,
+                    preferencesState = preferencesState,
+                    userState = userState
+                )
             }
         }
     }

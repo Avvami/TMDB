@@ -121,4 +121,9 @@
     <string name="now_playing">Now Playing</string>
     <string name="logout">Logout</string>
     <string name="change_cover_color">Change Cover Color</string>
+    <string name="home">Home</string>
+    <string name="search">Search</string>
+    <string name="profile">Profile</string>
+    <string name="me">Me</string>
+    <string name="info">Info</string>
 </resources>
