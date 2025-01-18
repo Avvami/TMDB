@@ -17,8 +17,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -58,6 +56,8 @@ import com.personal.tmdb.UiEvent
 import com.personal.tmdb.UserState
 import com.personal.tmdb.auth.presentation.auth.AuthScreen
 import com.personal.tmdb.core.presentation.PreferencesState
+import com.personal.tmdb.core.presentation.components.CustomNavigationBar
+import com.personal.tmdb.core.presentation.components.CustomNavigationBarItem
 import com.personal.tmdb.core.presentation.components.animatedComposable
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.MediaType
@@ -208,10 +208,10 @@ fun RootNavigationScreen(
                 enter = slideInVertically(initialOffsetY = { it }) + fadeIn(),
                 exit = slideOutVertically(targetOffsetY = { it }) + fadeOut()
             ) {
-                NavigationBar {
+                CustomNavigationBar {
                     graphs.fastForEach { graph ->
                         val isSelected = graph.route == navBackStackEntry?.destination?.route
-                        NavigationBarItem(
+                        CustomNavigationBarItem(
                             selected = isSelected,
                             onClick = {
                                 if (isSelected) {
