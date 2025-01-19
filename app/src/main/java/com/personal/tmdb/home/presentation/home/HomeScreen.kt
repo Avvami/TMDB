@@ -76,11 +76,7 @@ import com.personal.tmdb.core.presentation.components.MediaPoster
 import com.personal.tmdb.core.presentation.components.MediaPosterShimmer
 import com.personal.tmdb.core.presentation.components.MediaRowView
 import com.personal.tmdb.core.util.C
-import com.personal.tmdb.core.util.DynamicShadowColorFromImage
 import com.personal.tmdb.core.util.MediaType
-import com.personal.tmdb.core.util.MinContrastOfPrimaryVsSurface
-import com.personal.tmdb.core.util.contrastAgainst
-import com.personal.tmdb.core.util.rememberDominantColorState
 import com.personal.tmdb.core.util.shimmerEffect
 import com.personal.tmdb.ui.theme.surfaceLight
 import com.personal.tmdb.ui.theme.surfaceTintLight
@@ -131,189 +127,179 @@ fun HomeScreen(
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             item {
-                Row(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .zIndex(1f),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                CompositionLocalProvider(
+                    LocalMinimumInteractiveComponentSize provides Dp.Unspecified
                 ) {
-                    SuggestionChip(
-                        onClick = { /*TODO*/ },
-                        label = {
-                            Text(text = stringResource(id = R.string.tv_shows))
-                        },
-                        colors = SuggestionChipDefaults.suggestionChipColors(
-                            containerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = .05f),
-                            labelColor = MaterialTheme.colorScheme.onSurface.copy(alpha = .6f)
-                        ),
-                        border = null
-                    )
-                    SuggestionChip(
-                        onClick = { /*TODO*/ },
-                        label = {
-                            Text(text = stringResource(id = R.string.movies))
-                        },
-                        colors = SuggestionChipDefaults.suggestionChipColors(
-                            containerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = .05f),
-                            labelColor = MaterialTheme.colorScheme.onSurface.copy(alpha = .6f)
-                        ),
-                        border = null
-                    )
-                    SuggestionChip(
-                        onClick = { /*TODO*/ },
-                        label = {
-                            Text(text = stringResource(id = R.string.people))
-                        },
-                        colors = SuggestionChipDefaults.suggestionChipColors(
-                            containerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = .05f),
-                            labelColor = MaterialTheme.colorScheme.onSurface.copy(alpha = .6f)
-                        ),
-                        border = null
-                    )
+                    Row(
+                        modifier = Modifier
+                            .padding(horizontal = 16.dp)
+                            .zIndex(1f),
+                        horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        SuggestionChip(
+                            onClick = { /*TODO*/ },
+                            label = {
+                                Text(text = stringResource(id = R.string.tv_shows))
+                            },
+                            colors = SuggestionChipDefaults.suggestionChipColors(
+                                containerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = .05f),
+                                labelColor = MaterialTheme.colorScheme.onSurface.copy(alpha = .6f)
+                            ),
+                            border = null
+                        )
+                        SuggestionChip(
+                            onClick = { /*TODO*/ },
+                            label = {
+                                Text(text = stringResource(id = R.string.movies))
+                            },
+                            colors = SuggestionChipDefaults.suggestionChipColors(
+                                containerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = .05f),
+                                labelColor = MaterialTheme.colorScheme.onSurface.copy(alpha = .6f)
+                            ),
+                            border = null
+                        )
+                        SuggestionChip(
+                            onClick = { /*TODO*/ },
+                            label = {
+                                Text(text = stringResource(id = R.string.people))
+                            },
+                            colors = SuggestionChipDefaults.suggestionChipColors(
+                                containerColor = MaterialTheme.colorScheme.onSurface.copy(alpha = .05f),
+                                labelColor = MaterialTheme.colorScheme.onSurface.copy(alpha = .6f)
+                            ),
+                            border = null
+                        )
+                    }
                 }
             }
             item {
                 with(homeViewModel.homeState) {
-                    val imageUrl = randomMedia?.backdropPath ?: ""
-                    val surfaceColor = MaterialTheme.colorScheme.surface
-                    val dominantColorState = rememberDominantColorState { color ->
-                        color.contrastAgainst(surfaceColor) >= MinContrastOfPrimaryVsSurface
-                    }
-                    DynamicShadowColorFromImage(dominantColorState) {
-                        LaunchedEffect(imageUrl) {
-                            if (imageUrl.isNotEmpty()) {
-                                dominantColorState.updateColorsFromImageUrl(C.TMDB_IMAGES_BASE_URL + C.BACKDROP_W1280 + imageUrl)
-                            } else {
-                                dominantColorState.reset()
-                            }
-                        }
-                        Box(
-                            modifier = Modifier
-                                .height(450.dp)
-                                .fillMaxSize()
-                                .padding(horizontal = 16.dp)
-                                .shadow(
-                                    elevation = 28.dp,
-                                    shape = MaterialTheme.shapes.extraLarge,
-                                    ambientColor = MaterialTheme.colorScheme.surfaceTint,
-                                    spotColor = MaterialTheme.colorScheme.surfaceTint
-                                )
-                                .background(MaterialTheme.colorScheme.surfaceContainer)
-                                .border(
-                                    width = 2.dp,
-                                    color = surfaceLight.copy(alpha = .1f),
-                                    shape = MaterialTheme.shapes.extraLarge
-                                ),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            val radialGradient by remember {
-                                mutableStateOf(
-                                    object : ShaderBrush() {
-                                        override fun createShader(size: Size): Shader {
-                                            val biggerDimension = maxOf(size.height / 2, size.width / 2)
-                                            return RadialGradientShader(
-                                                colors = listOf(surfaceTintLight.copy(alpha = .8f), surfaceTintLight.copy(alpha = 0f)),
-                                                center = Offset(0f, size.height),
-                                                radius = biggerDimension
-                                            )
-                                        }
-                                    }
-                                )
-                            }
-                            AsyncImage(
-                                modifier = Modifier.fillMaxSize(),
-                                model = C.TMDB_IMAGES_BASE_URL + C.BACKDROP_W1280 + imageUrl,
-                                contentDescription = "Backdrop",
-                                contentScale = ContentScale.Crop,
-                                colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.scrim.copy(.2f), BlendMode.Darken)
+                    Box(
+                        modifier = Modifier
+                            .height(450.dp)
+                            .fillMaxSize()
+                            .padding(horizontal = 16.dp)
+                            .shadow(
+                                elevation = 28.dp,
+                                shape = MaterialTheme.shapes.extraLarge,
+                                ambientColor = MaterialTheme.colorScheme.surfaceTint,
+                                spotColor = MaterialTheme.colorScheme.surfaceTint
                             )
-                            AnimatedVisibility(
-                                modifier = Modifier
-                                    .padding(16.dp)
-                                    .align(Alignment.BottomStart),
-                                visible = randomMedia != null,
-                                enter = fadeIn(),
-                                exit = fadeOut()
-                            ) {
-                                Column(
-                                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                                ) {
-                                    Column {
-                                        randomMedia?.name?.let { name ->
-                                            Text(
-                                                text = name,
-                                                style = TextStyle(
-                                                    fontSize = MaterialTheme.typography.displaySmall.fontSize,
-                                                    lineHeight = MaterialTheme.typography.displaySmall.lineHeight,
-                                                    letterSpacing = MaterialTheme.typography.displaySmall.letterSpacing,
-                                                    fontWeight = FontWeight.SemiBold,
-                                                    color = surfaceLight,
-                                                    shadow = Shadow(color = MaterialTheme.colorScheme.scrim.copy(alpha = .5f), offset = Offset(1f, 2f), blurRadius = 8f)
-                                                ),
-                                                maxLines = 2,
-                                                overflow = TextOverflow.Ellipsis
-                                            )
-                                        }
-                                        randomMedia?.overview?.let { overview ->
-                                            Text(
-                                                text = overview,
-                                                style = TextStyle(
-                                                    fontSize = MaterialTheme.typography.bodySmall.fontSize,
-                                                    lineHeight = MaterialTheme.typography.bodySmall.lineHeight,
-                                                    letterSpacing = MaterialTheme.typography.bodySmall.letterSpacing,
-                                                    color = surfaceLight.copy(alpha = .7f),
-                                                    shadow = Shadow(color = MaterialTheme.colorScheme.scrim.copy(alpha = .5f), offset = Offset(1f, 2f), blurRadius = 6f)
-                                                ),
-                                                maxLines = 2,
-                                                overflow = TextOverflow.Ellipsis
-                                            )
-                                        }
+                            .background(MaterialTheme.colorScheme.surface)
+                            .border(
+                                width = 2.dp,
+                                color = surfaceLight.copy(alpha = .1f),
+                                shape = MaterialTheme.shapes.extraLarge
+                            ),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        val radialGradient by remember {
+                            mutableStateOf(
+                                object : ShaderBrush() {
+                                    override fun createShader(size: Size): Shader {
+                                        val biggerDimension = maxOf(size.height / 2, size.width / 2)
+                                        return RadialGradientShader(
+                                            colors = listOf(surfaceTintLight.copy(alpha = .8f), surfaceTintLight.copy(alpha = 0f)),
+                                            center = Offset(0f, size.height),
+                                            radius = biggerDimension
+                                        )
                                     }
-                                    Row(
-                                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                                        verticalAlignment = Alignment.CenterVertically
+                                }
+                            )
+                        }
+                        AsyncImage(
+                            modifier = Modifier.fillMaxSize(),
+                            model = C.TMDB_IMAGES_BASE_URL + C.BACKDROP_W1280 + randomMedia?.backdropPath,
+                            contentDescription = "Backdrop",
+                            contentScale = ContentScale.Crop,
+                            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.scrim.copy(.2f), BlendMode.Darken)
+                        )
+                        AnimatedVisibility(
+                            modifier = Modifier
+                                .padding(16.dp)
+                                .align(Alignment.BottomStart),
+                            visible = randomMedia != null,
+                            enter = fadeIn(),
+                            exit = fadeOut()
+                        ) {
+                            Column(
+                                verticalArrangement = Arrangement.spacedBy(16.dp),
+                            ) {
+                                Column {
+                                    randomMedia?.name?.let { name ->
+                                        Text(
+                                            text = name,
+                                            style = TextStyle(
+                                                fontSize = MaterialTheme.typography.displaySmall.fontSize,
+                                                lineHeight = MaterialTheme.typography.displaySmall.lineHeight,
+                                                letterSpacing = MaterialTheme.typography.displaySmall.letterSpacing,
+                                                fontWeight = FontWeight.SemiBold,
+                                                color = surfaceLight,
+                                                shadow = Shadow(color = MaterialTheme.colorScheme.scrim.copy(alpha = .5f), offset = Offset(1f, 2f), blurRadius = 8f)
+                                            ),
+                                            maxLines = 2,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                    }
+                                    randomMedia?.overview?.let { overview ->
+                                        Text(
+                                            text = overview,
+                                            style = TextStyle(
+                                                fontSize = MaterialTheme.typography.bodySmall.fontSize,
+                                                lineHeight = MaterialTheme.typography.bodySmall.lineHeight,
+                                                letterSpacing = MaterialTheme.typography.bodySmall.letterSpacing,
+                                                color = surfaceLight.copy(alpha = .7f),
+                                                shadow = Shadow(color = MaterialTheme.colorScheme.scrim.copy(alpha = .5f), offset = Offset(1f, 2f), blurRadius = 6f)
+                                            ),
+                                            maxLines = 2,
+                                            overflow = TextOverflow.Ellipsis
+                                        )
+                                    }
+                                }
+                                Row(
+                                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    CompositionLocalProvider(
+                                        LocalMinimumInteractiveComponentSize provides Dp.Unspecified
                                     ) {
-                                        CompositionLocalProvider(
-                                            LocalMinimumInteractiveComponentSize provides Dp.Unspecified
-                                        ) {
-                                            Button(
-                                                onClick = {
-                                                    when (randomMedia?.mediaType) {
-                                                        MediaType.TV, MediaType.MOVIE -> {
-                                                            onNavigateTo(RootNavGraph.DETAIL + "/${randomMedia.mediaType.name.lowercase()}/${randomMedia.id}")
-                                                        }
-                                                        MediaType.PERSON -> {
-                                                            onNavigateTo(RootNavGraph.PERSON + "/${randomMedia.mediaType.name}/${randomMedia.id}")
-                                                        }
-                                                        else -> {
-                                                            /*TODO: Navigate to lost your way screen*/
-                                                        }
+                                        Button(
+                                            onClick = {
+                                                when (randomMedia?.mediaType) {
+                                                    MediaType.TV, MediaType.MOVIE -> {
+                                                        onNavigateTo(RootNavGraph.DETAIL + "/${randomMedia.mediaType.name.lowercase()}/${randomMedia.id}")
                                                     }
-                                                },
-                                                shape = MaterialTheme.shapes.small,
-                                                contentPadding = ButtonDefaults.ButtonWithIconContentPadding
-                                            ) {
-                                                Icon(
-                                                    modifier = Modifier.size(ButtonDefaults.IconSize),
-                                                    painter = painterResource(id = R.drawable.icon_info_fill0_wght400),
-                                                    contentDescription = "Info"
-                                                )
-                                                Spacer(modifier = Modifier.width(ButtonDefaults.IconSpacing))
-                                                Text(text = stringResource(id = R.string.info))
-                                            }
-                                            FilledIconButton(
-                                                onClick = { /*TODO*/ },
-                                                colors = IconButtonDefaults.filledIconButtonColors(
-                                                    containerColor = surfaceLight.copy(alpha = .1f),
-                                                    contentColor = surfaceLight
-                                                ),
-                                                shape = MaterialTheme.shapes.small
-                                            ) {
-                                                Icon(
-                                                    painter = painterResource(id = R.drawable.icon_bookmark_fill0_wght400),
-                                                    contentDescription = "Add to Watchlist"
-                                                )
-                                            }
+                                                    MediaType.PERSON -> {
+                                                        onNavigateTo(RootNavGraph.PERSON + "/${randomMedia.mediaType.name}/${randomMedia.id}")
+                                                    }
+                                                    else -> {
+                                                        /*TODO: Navigate to lost your way screen*/
+                                                    }
+                                                }
+                                            },
+                                            shape = MaterialTheme.shapes.small,
+                                            contentPadding = ButtonDefaults.ButtonWithIconContentPadding
+                                        ) {
+                                            Icon(
+                                                modifier = Modifier.size(ButtonDefaults.IconSize),
+                                                painter = painterResource(id = R.drawable.icon_info_fill0_wght400),
+                                                contentDescription = "Info"
+                                            )
+                                            Spacer(modifier = Modifier.width(ButtonDefaults.IconSpacing))
+                                            Text(text = stringResource(id = R.string.info))
+                                        }
+                                        FilledIconButton(
+                                            onClick = { /*TODO*/ },
+                                            colors = IconButtonDefaults.filledIconButtonColors(
+                                                containerColor = surfaceLight.copy(alpha = .1f),
+                                                contentColor = surfaceLight
+                                            ),
+                                            shape = MaterialTheme.shapes.small
+                                        ) {
+                                            Icon(
+                                                painter = painterResource(id = R.drawable.icon_bookmark_fill0_wght400),
+                                                contentDescription = "Add to Watchlist"
+                                            )
                                         }
                                     }
                                 }
@@ -328,14 +314,7 @@ fun HomeScreen(
                     items = {
                         if (homeViewModel.homeState.trending == null) {
                             items(15) {
-                                MediaPosterShimmer(
-                                    modifier = Modifier
-                                        .height(150.dp)
-                                        .aspectRatio(0.675f)
-                                        .clip(MaterialTheme.shapes.large)
-                                        .shimmerEffect(),
-                                    showTitle = preferencesState.value.showTitle
-                                )
+                                MediaPosterShimmer(showTitle = preferencesState.value.showTitle)
                             }
                         } else {
                             homeViewModel.homeState.trending?.results?.let { trending ->
@@ -344,15 +323,11 @@ fun HomeScreen(
                                     key = { it.id }
                                 ) { mediaInfo ->
                                     MediaPoster(
-                                        modifier = Modifier
-                                            .height(150.dp)
-                                            .aspectRatio(0.675f)
-                                            .clip(MaterialTheme.shapes.large),
                                         onNavigateTo = onNavigateTo,
                                         mediaInfo = mediaInfo,
+                                        mediaType = mediaInfo.mediaType,
                                         showTitle = preferencesState.value.showTitle,
                                         showVoteAverage = preferencesState.value.showVoteAverage,
-                                        corners = preferencesState.value.corners
                                     )
                                 }
                             }
@@ -383,7 +358,7 @@ fun HomeScreen(
                                 ) { mediaInfo ->
                                     MediaBanner(
                                         modifier = Modifier
-                                            .height(150.dp)
+                                            .height(180.dp)
                                             .aspectRatio(16 / 9f)
                                             .clip(MaterialTheme.shapes.large),
                                         onNavigateTo = onNavigateTo,

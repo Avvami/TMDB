@@ -8,10 +8,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.LocalContentColor
@@ -45,6 +47,7 @@ private const val ItemAnimationDurationMillis: Int = 100
 fun CustomNavigationBar(
     modifier: Modifier = Modifier,
     containerColor: Color = NavigationBarDefaults.containerColor,
+    windowInsets: WindowInsets = NavigationBarDefaults.windowInsets,
     content: @Composable RowScope.() -> Unit
 ) {
     Surface(
@@ -52,7 +55,9 @@ fun CustomNavigationBar(
         color = containerColor
     ) {
         Box(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .windowInsetsPadding(windowInsets),
             contentAlignment = Alignment.Center
         ) {
             Row(

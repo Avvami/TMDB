@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -225,20 +224,11 @@ fun DetailScreen(
                                             ) { index ->
                                                 val mediaInfo = similar[index]
                                                 MediaPoster(
-                                                    modifier = Modifier
-                                                        .height(150.dp)
-                                                        .aspectRatio(0.675f)
-                                                        .clip(
-                                                            RoundedCornerShape(
-                                                                preferencesState.value.corners.dp
-                                                            )
-                                                        ),
                                                     onNavigateTo = onNavigateTo,
                                                     mediaInfo = mediaInfo,
                                                     mediaType = detailViewModel.detailState.mediaType,
                                                     showTitle = preferencesState.value.showTitle,
                                                     showVoteAverage = preferencesState.value.showVoteAverage,
-                                                    corners = preferencesState.value.corners
                                                 )
                                             }
                                         }
@@ -259,20 +249,11 @@ fun DetailScreen(
                                             ) { index ->
                                                 val mediaInfo = recommendations[index]
                                                 MediaPoster(
-                                                    modifier = Modifier
-                                                        .height(150.dp)
-                                                        .aspectRatio(0.675f)
-                                                        .clip(
-                                                            RoundedCornerShape(
-                                                                preferencesState.value.corners.dp
-                                                            )
-                                                        ),
                                                     onNavigateTo = onNavigateTo,
                                                     mediaInfo = mediaInfo,
                                                     mediaType = detailViewModel.detailState.mediaType,
                                                     showTitle = preferencesState.value.showTitle,
                                                     showVoteAverage = preferencesState.value.showVoteAverage,
-                                                    corners = preferencesState.value.corners
                                                 )
                                             }
                                         }

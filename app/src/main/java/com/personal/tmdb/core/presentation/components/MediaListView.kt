@@ -2,21 +2,17 @@ package com.personal.tmdb.core.presentation.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.core.domain.models.MediaInfo
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.util.MediaType
-import com.personal.tmdb.core.util.shimmerEffect
 
 @Composable
 fun MediaListView(
@@ -47,11 +43,7 @@ fun MediaListView(
         if (isLoading()) {
             items(count = 15) {
                 MediaPosterShimmer(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .aspectRatio(0.675f)
-                        .clip(MaterialTheme.shapes.large)
-                        .shimmerEffect(),
+                    modifier = Modifier.fillMaxWidth(),
                     showTitle = preferencesState.value.showTitle
                 )
             }
@@ -73,15 +65,12 @@ fun MediaListView(
                     MediaPoster(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .aspectRatio(0.675f)
-                            .clip(MaterialTheme.shapes.large)
                             .animateItem(),
                         onNavigateTo = onNavigateTo,
                         mediaInfo = mediaInfo,
-                        mediaType = mediaType,
+                        mediaType = mediaInfo.mediaType ?: mediaType,
                         showTitle = preferencesState.value.showTitle,
-                        showVoteAverage = preferencesState.value.showVoteAverage,
-                        corners = preferencesState.value.corners
+                        showVoteAverage = preferencesState.value.showVoteAverage
                     )
                 }
             }
@@ -112,11 +101,7 @@ fun MediaListViewShimmer(
         }
         items(count = 15) {
             MediaPosterShimmer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(0.675f)
-                    .clip(MaterialTheme.shapes.large)
-                    .shimmerEffect(),
+                modifier = Modifier.fillMaxWidth(),
                 showTitle = preferencesState.value.showTitle
             )
         }

@@ -30,14 +30,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.personal.tmdb.R
@@ -50,6 +55,8 @@ import com.personal.tmdb.core.util.formatVoteAverage
 import com.personal.tmdb.core.util.shimmerEffect
 import com.personal.tmdb.ui.theme.backgroundLight
 import com.personal.tmdb.ui.theme.onBackgroundLight
+import com.personal.tmdb.ui.theme.onSurfaceLight
+import com.personal.tmdb.ui.theme.surfaceLight
 import java.time.LocalDate
 
 @Composable
@@ -400,11 +407,12 @@ fun MediaBannerShimmer(
 fun MediaPoster(
     modifier: Modifier = Modifier,
     onNavigateTo: (route: String) -> Unit,
+    shape: Shape = MaterialTheme.shapes.medium,
+    height: Dp = 170.dp,
     mediaInfo: MediaInfo,
-    mediaType: MediaType? = null,
+    mediaType: MediaType?,
     showTitle: Boolean,
-    showVoteAverage: Boolean,
-    corners: Int
+    showVoteAverage: Boolean
 ) {
     Column(
         modifier = Modifier.width(IntrinsicSize.Min),
@@ -413,21 +421,11 @@ fun MediaPoster(
     ) {
         Box(
             modifier = modifier
+                .height(height)
+                .aspectRatio(2 / 3f)
+                .clip(shape)
                 .clickable {
                     mediaType?.let { mediaType ->
-                        when (mediaType) {
-                            MediaType.TV, MediaType.MOVIE -> {
-                                onNavigateTo(RootNavGraph.DETAIL + "/${mediaType.name.lowercase()}/${mediaInfo.id}")
-                            }
-                            MediaType.PERSON -> {
-                                onNavigateTo(RootNavGraph.PERSON + "/${mediaInfo.name ?: ""}/${mediaInfo.id}")
-                            }
-                            else -> {
-                                /*TODO: Navigate to lost your way screen*/
-                            }
-                        }
-                    }
-                    mediaInfo.mediaType?.let { mediaType ->
                         when (mediaType) {
                             MediaType.TV, MediaType.MOVIE -> {
                                 onNavigateTo(RootNavGraph.DETAIL + "/${mediaType.name.lowercase()}/${mediaInfo.id}")
@@ -454,23 +452,46 @@ fun MediaPoster(
                 Text(
                     modifier = Modifier
                         .padding(8.dp)
-                        .clip(RoundedCornerShape((corners / 3).dp))
-                        .background(onBackgroundLight.copy(.5f))
+                        .clip(RoundedCornerShape(6.dp))
+                        .background(onSurfaceLight.copy(alpha = .5f))
                         .padding(horizontal = 4.dp)
                         .align(Alignment.TopStart),
                     text = formatVoteAverage(mediaInfo.voteAverage),
                     style = MaterialTheme.typography.labelMedium,
-                    color = backgroundLight
+                    color = surfaceLight
                 )
             }
+            if (!showTitle && mediaType?.equals(MediaType.PERSON) == true) {
+                mediaInfo.name?.let { name ->
+                    Text(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(onSurfaceLight.copy(alpha = .5f))
+                            .padding(4.dp)
+                            .align(Alignment.BottomCenter),
+                        text = name,
+                        style = TextStyle(
+                            fontSize = MaterialTheme.typography.labelSmall.fontSize,
+                            fontWeight = MaterialTheme.typography.labelSmall.fontWeight,
+                            lineHeight = MaterialTheme.typography.labelSmall.lineHeight,
+                            letterSpacing = MaterialTheme.typography.labelSmall.letterSpacing,
+                            color = surfaceLight,
+                            shadow = Shadow(color = MaterialTheme.colorScheme.scrim.copy(alpha = .5f), offset = Offset(1f, 1f), blurRadius = 2f)
+                        ),
+                        textAlign = TextAlign.Center,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
         }
-        if (showTitle || mediaType?.equals(MediaType.PERSON) == true || mediaInfo.mediaType?.equals(MediaType.PERSON) == true) {
+        if (showTitle) {
             mediaInfo.name?.let { name ->
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     text = name,
                     style = MaterialTheme.typography.labelLarge,
-                    color = MaterialTheme.colorScheme.onBackground,
+                    color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center,
                     minLines = 2,
                     maxLines = 2,
@@ -484,6 +505,8 @@ fun MediaPoster(
 @Composable
 fun MediaPosterShimmer(
     modifier: Modifier = Modifier,
+    shape: Shape = MaterialTheme.shapes.medium,
+    height: Dp = 170.dp,
     showTitle: Boolean
 ) {
     Column(
@@ -493,18 +516,11 @@ fun MediaPosterShimmer(
     ) {
         Box(
             modifier = modifier
-        ) {
-            Text(
-                modifier = Modifier
-                    .align(Alignment.Center),
-                text = stringResource(id = R.string.tmdb),
-                style = MaterialTheme.typography.displaySmall,
-                color = MaterialTheme.colorScheme.surfaceContainerLow,
-                fontStyle = FontStyle.Italic,
-                fontWeight = FontWeight.Black,
-                textAlign = TextAlign.Center
-            )
-        }
+                .height(height)
+                .aspectRatio(2 / 3f)
+                .clip(shape)
+                .shimmerEffect()
+        )
         if (showTitle) {
             Text(
                 modifier = Modifier.fillMaxWidth(),

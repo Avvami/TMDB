@@ -253,14 +253,7 @@ fun PersonScreenShimmer(
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(5) {
-                MediaPosterShimmer(
-                    modifier = Modifier
-                        .height(150.dp)
-                        .aspectRatio(0.675f)
-                        .clip(RoundedCornerShape(preferencesState.value.corners.dp))
-                        .shimmerEffect(),
-                    showTitle = preferencesState.value.showTitle
-                )
+                MediaPosterShimmer(showTitle = preferencesState.value.showTitle)
             }
         }
     }
