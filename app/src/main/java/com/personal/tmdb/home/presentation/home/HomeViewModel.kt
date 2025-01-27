@@ -18,15 +18,13 @@ class HomeViewModel @Inject constructor(
     private val homeRepository: HomeRepository
 ): ViewModel() {
 
-    var searchQuery by mutableStateOf("")
-        private set
-
     val snackbarHostState by mutableStateOf(SnackbarHostState())
 
     var homeState by mutableStateOf(HomeState())
         private set
 
     init {
+        homeState = homeState.copy(loading = true)
         getTrendingList(TimeWindow.DAY)
         getNowPlaying()
     }
@@ -47,6 +45,7 @@ class HomeViewModel @Inject constructor(
             }
 
             homeState = homeState.copy(
+                loading = false,
                 trending = trending,
                 randomMedia = trending?.results?.randomOrNull()
             )
@@ -74,11 +73,5 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun homeUiEvent(event: HomeUiEvent) {
-        when (event) {
-            is HomeUiEvent.OnSearchQueryChange -> {
-                searchQuery = event.query
-            }
-        }
-    }
+    fun homeUiEvent(event: HomeUiEvent) {}
 }
