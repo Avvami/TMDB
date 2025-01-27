@@ -6,6 +6,8 @@ plugins {
     id("kotlin-kapt")
     id("com.google.devtools.ksp")
     id("com.google.dagger.hilt.android")
+    id("org.jetbrains.kotlin.plugin.serialization")
+    id("org.jetbrains.kotlin.plugin.compose")
 }
 
 val apiKey: String = gradleLocalProperties(rootDir, providers).getProperty("TMDB_API_KEY")
@@ -119,6 +121,8 @@ dependencies {
 
     // Blur (https://chrisbanes.github.io/haze)
     implementation("dev.chrisbanes.haze:haze:0.9.0-beta01")
+
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
 }
 
 kapt {

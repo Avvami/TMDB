@@ -12,7 +12,7 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.core.content.ContextCompat
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.personal.tmdb.core.navigation.RootNavigationScreen
+import com.personal.tmdb.core.navigation.RootNavHost
 import com.personal.tmdb.ui.theme.TMDBTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -33,10 +33,10 @@ class MainActivity : ComponentActivity() {
             TMDBTheme(
                 darkTheme = preferencesState.value.darkTheme ?: isSystemInDarkTheme()
             ) {
-                RootNavigationScreen(
-                    mainViewModel = mainViewModel,
+                RootNavHost(
                     preferencesState = preferencesState,
-                    userState = userState
+                    userState = userState,
+                    uiEvent = mainViewModel::uiEvent
                 )
             }
         }

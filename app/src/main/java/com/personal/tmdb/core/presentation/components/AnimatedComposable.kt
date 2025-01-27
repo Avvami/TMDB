@@ -36,3 +36,23 @@ fun NavGraphBuilder.animatedComposable(
     },
     content = content
 )
+
+inline fun <reified T: Any> NavGraphBuilder.animatedComposable(
+    deepLinks: List<NavDeepLink> = emptyList(),
+    noinline content: @Composable AnimatedVisibilityScope.(NavBackStackEntry) -> Unit
+) = composable<T>(
+    deepLinks = deepLinks,
+    enterTransition = {
+        materialSharedAxisXIn(initialOffsetX = { (it * initialOffset).toInt() })
+    },
+    exitTransition = {
+        materialSharedAxisXOut(targetOffsetX = { -(it * initialOffset).toInt() })
+    },
+    popEnterTransition = {
+        materialSharedAxisXIn(initialOffsetX = { -(it * initialOffset).toInt() })
+    },
+    popExitTransition = {
+        materialSharedAxisXOut(targetOffsetX = { (it * initialOffset).toInt() })
+    },
+    content = content
+)
