@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Clear
 import androidx.compose.material.icons.rounded.Search
@@ -41,6 +43,7 @@ import com.personal.tmdb.search.presentation.search.components.SearchTrending
 @Composable
 fun SearchScreen(
     bottomPadding: Dp,
+    lazyGridState: LazyGridState = rememberLazyGridState(),
     onNavigateTo: (route: String) -> Unit,
     preferencesState: State<PreferencesState>,
     searchViewModel: SearchViewModel = hiltViewModel()
@@ -146,6 +149,7 @@ fun SearchScreen(
                     }
                 } else {
                     SearchResult(
+                        lazyGridState = lazyGridState,
                         searchState = searchViewModel::searchState,
                         mediaType = convertMediaType(searchViewModel.searchType),
                         onNavigateTo = onNavigateTo,

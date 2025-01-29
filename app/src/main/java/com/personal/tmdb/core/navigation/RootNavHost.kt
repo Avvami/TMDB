@@ -1,5 +1,9 @@
 package com.personal.tmdb.core.navigation
 
+import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -7,6 +11,7 @@ import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.unit.Dp
 import androidx.navigation.NavHostController
@@ -36,6 +41,7 @@ import com.personal.tmdb.home.presentation.home.HomeScreen
 import com.personal.tmdb.search.presentation.search.SearchScreen
 import com.personal.tmdb.settings.presentation.appearance.AppearanceScreen
 import com.personal.tmdb.settings.presentation.settings.SettingsScreen
+import kotlinx.coroutines.launch
 
 @Composable
 fun RootNavHost(
@@ -43,6 +49,7 @@ fun RootNavHost(
     userState: State<UserState>,
     uiEvent: (UiEvent) -> Unit
 ) {
+    val scope = rememberCoroutineScope()
     val rootNavController = rememberNavController()
     var navBarItemReselect: (() -> Unit)? by remember { mutableStateOf(null) }
 
@@ -61,15 +68,22 @@ fun RootNavHost(
         ) {
             val bottomBarPadding = innerPadding.calculateBottomPadding()
             composable<Route.Home> {
+                val lazyListState = rememberLazyListState()
                 val homeNavController = rememberNavController()
                 navBarItemReselect = {
-                    homeNavController.popBackStack(
+                    val popped = homeNavController.popBackStack(
                         destinationId = homeNavController.graph.startDestinationId,
                         inclusive = false
                     )
+                    if (!popped && lazyListState.canScrollBackward) {
+                        scope.launch {
+                            lazyListState.animateScrollToItem(0)
+                        }
+                    }
                 }
                 ChildNavHost(
                     navController = homeNavController,
+                    scrollState = lazyListState,
                     startDestination = Route.Home,
                     bottomBarPadding = bottomBarPadding,
                     preferencesState = preferencesState,
@@ -78,15 +92,22 @@ fun RootNavHost(
                 )
             }
             composable<Route.Search> {
+                val lazyGridState = rememberLazyGridState()
                 val searchNavController = rememberNavController()
                 navBarItemReselect = {
-                    searchNavController.popBackStack(
+                    val popped = searchNavController.popBackStack(
                         destinationId = searchNavController.graph.startDestinationId,
                         inclusive = false
                     )
+                    if (!popped && lazyGridState.canScrollBackward) {
+                        scope.launch {
+                            lazyGridState.animateScrollToItem(0)
+                        }
+                    }
                 }
                 ChildNavHost(
                     navController = searchNavController,
+                    scrollState = lazyGridState,
                     startDestination = Route.Search,
                     bottomBarPadding = bottomBarPadding,
                     preferencesState = preferencesState,
@@ -95,15 +116,22 @@ fun RootNavHost(
                 )
             }
             composable<Route.Profile> {
+                val lazyListState = rememberLazyListState()
                 val profileNavController = rememberNavController()
                 navBarItemReselect = {
-                    profileNavController.popBackStack(
+                    val popped = profileNavController.popBackStack(
                         destinationId = profileNavController.graph.startDestinationId,
                         inclusive = false
                     )
+                    if (!popped && lazyListState.canScrollBackward) {
+                        scope.launch {
+                            lazyListState.animateScrollToItem(0)
+                        }
+                    }
                 }
                 ChildNavHost(
                     navController = profileNavController,
+                    scrollState = lazyListState,
                     startDestination = Route.Profile(null),
                     bottomBarPadding = bottomBarPadding,
                     preferencesState = preferencesState,
@@ -118,6 +146,7 @@ fun RootNavHost(
 @Composable
 fun ChildNavHost(
     navController: NavHostController,
+    scrollState: Any,
     startDestination: Any,
     bottomBarPadding: Dp,
     preferencesState: State<PreferencesState>,
@@ -139,6 +168,7 @@ fun ChildNavHost(
         animatedComposable<Route.Home> {
             HomeScreen(
                 bottomPadding = bottomBarPadding,
+                lazyListState = scrollState as LazyListState,
                 onNavigateTo = {},
                 preferencesState = preferencesState,
                 userState = userState,
@@ -148,6 +178,7 @@ fun ChildNavHost(
         animatedComposable<Route.Search> {
             SearchScreen(
                 bottomPadding = bottomBarPadding,
+                lazyGridState = scrollState as LazyGridState,
                 onNavigateTo = {},
                 preferencesState = preferencesState
             )
@@ -346,17 +377,9 @@ fun ChildNavHost(
 }
 
 object RootNavGraph {
-    const val HOME_GRAPH = "home_graph"
-    const val SEARCH_GRAPH = "search_graph"
-    const val WATCHLIST_GRAPH = "watchlist_graph"
-    const val PROFILE_GRAPH = "profile_graph"
-
-    const val PROFILE = "profile_screen"
-    const val HOME = "home_screen"
     const val AUTH = "auth_screen"
     const val SETTINGS = "settings_screen"
     const val DETAIL = "detail_screen"
-    const val SEARCH = "search_screen"
     const val COLLECTION = "collection_screen"
     const val CAST = "cast_screen"
     const val PERSON = "person_screen"
@@ -365,6 +388,4 @@ object RootNavGraph {
     const val EPISODE = "episode_screen"
     const val IMAGE = "image_viewer_screen"
     const val REVIEWS = "reviews_screen"
-    const val WATCHLIST = "watchlist_screen"
-    const val FAVORITE = "favorite_screen"
 }

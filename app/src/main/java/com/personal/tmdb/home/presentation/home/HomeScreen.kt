@@ -15,7 +15,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -56,6 +58,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun HomeScreen(
     bottomPadding: Dp,
+    lazyListState: LazyListState = rememberLazyListState(),
     onNavigateTo: (route: String) -> Unit,
     preferencesState: State<PreferencesState>,
     userState: State<UserState>,
@@ -95,7 +98,8 @@ fun HomeScreen(
         LazyColumn(
             modifier = Modifier.padding(bottom = bottomPadding),
             contentPadding = PaddingValues(top = innerPadding.calculateTopPadding() + 16.dp, bottom = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(16.dp),
+            state = lazyListState
         ) {
             item {
                 CompositionLocalProvider(

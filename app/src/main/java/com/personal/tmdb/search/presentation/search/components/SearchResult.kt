@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
@@ -35,6 +36,7 @@ import com.personal.tmdb.search.presentation.search.SearchUiEvent
 
 @Composable
 fun SearchResult(
+    lazyGridState: LazyGridState,
     searchState: () -> MediaState,
     mediaType: MediaType,
     onNavigateTo: (route: String) -> Unit,
