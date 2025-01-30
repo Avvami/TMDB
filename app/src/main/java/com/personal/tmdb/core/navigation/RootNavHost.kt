@@ -38,10 +38,11 @@ import com.personal.tmdb.detail.presentation.image.ImageViewerScreen
 import com.personal.tmdb.detail.presentation.person.PersonScreen
 import com.personal.tmdb.detail.presentation.reviews.ReviewsScreen
 import com.personal.tmdb.home.presentation.home.HomeScreen
-import com.personal.tmdb.search.presentation.search.SearchScreen
+import com.personal.tmdb.search.presentation.search.SearchScreenRoot
 import com.personal.tmdb.settings.presentation.appearance.AppearanceScreen
 import com.personal.tmdb.settings.presentation.settings.SettingsScreen
 import kotlinx.coroutines.launch
+import kotlin.reflect.KClass
 
 @Composable
 fun RootNavHost(
@@ -64,7 +65,7 @@ fun RootNavHost(
     ) { innerPadding ->
         NavHost(
             navController = rootNavController,
-            startDestination = Route.Home
+            startDestination = Route.Home::class
         ) {
             val bottomBarPadding = innerPadding.calculateBottomPadding()
             composable<Route.Home> {
@@ -84,7 +85,7 @@ fun RootNavHost(
                 ChildNavHost(
                     navController = homeNavController,
                     scrollState = lazyListState,
-                    startDestination = Route.Home,
+                    startDestination = Route.Home::class,
                     bottomBarPadding = bottomBarPadding,
                     preferencesState = preferencesState,
                     userState = userState,
@@ -108,7 +109,7 @@ fun RootNavHost(
                 ChildNavHost(
                     navController = searchNavController,
                     scrollState = lazyGridState,
-                    startDestination = Route.Search,
+                    startDestination = Route.Search::class,
                     bottomBarPadding = bottomBarPadding,
                     preferencesState = preferencesState,
                     userState = userState,
@@ -132,7 +133,7 @@ fun RootNavHost(
                 ChildNavHost(
                     navController = profileNavController,
                     scrollState = lazyListState,
-                    startDestination = Route.Profile(null),
+                    startDestination = Route.Profile::class,
                     bottomBarPadding = bottomBarPadding,
                     preferencesState = preferencesState,
                     userState = userState,
@@ -147,7 +148,7 @@ fun RootNavHost(
 fun ChildNavHost(
     navController: NavHostController,
     scrollState: Any,
-    startDestination: Any,
+    startDestination: KClass<*>,
     bottomBarPadding: Dp,
     preferencesState: State<PreferencesState>,
     userState: State<UserState>,
@@ -176,7 +177,7 @@ fun ChildNavHost(
             )
         }
         animatedComposable<Route.Search> {
-            SearchScreen(
+            SearchScreenRoot(
                 bottomPadding = bottomBarPadding,
                 lazyGridState = scrollState as LazyGridState,
                 onNavigateTo = {},
@@ -196,11 +197,6 @@ fun ChildNavHost(
                     uiEvent(UiEvent.SignInUser)
                 }
             }
-            SearchScreen(
-                bottomPadding = bottomBarPadding,
-                onNavigateTo = {},
-                preferencesState = preferencesState
-            )
         }
 
         animatedComposable(

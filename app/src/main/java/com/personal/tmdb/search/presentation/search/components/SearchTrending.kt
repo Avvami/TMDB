@@ -20,21 +20,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import com.personal.tmdb.R
-import com.personal.tmdb.core.navigation.RootNavGraph
+import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.presentation.MediaState
 import com.personal.tmdb.core.util.MediaType
 import com.personal.tmdb.core.util.shimmerEffect
 
 @Composable
 fun SearchTrending(
-    onNavigateTo: (route: String) -> Unit,
+    modifier: Modifier = Modifier,
+    onNavigateTo: (route: Route) -> Unit,
     trendingState: () -> MediaState
 ) {
     if (trendingState().isLoading) {
-        SearchTrendingShimmer()
+        SearchTrendingShimmer(modifier)
     } else {
         trendingState().mediaResponseInfo?.results?.take(10)?.let { mediaInfoList ->
             Column(
+                modifier = modifier,
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Row(
@@ -63,7 +65,10 @@ fun SearchTrending(
                                         mediaInfo.mediaType?.let { mediaType ->
                                             when(mediaType) {
                                                 MediaType.TV, MediaType.MOVIE -> {
-                                                    onNavigateTo(RootNavGraph.DETAIL + "/${mediaType.name.lowercase()}/${mediaInfo.id}")
+//                                                    onNavigateTo()
+                                                }
+                                                MediaType.PERSON -> {
+//                                                    onNavigateTo()
                                                 }
                                                 else -> {
                                                     /*TODO: Navigate to lost your way screen*/
@@ -84,8 +89,11 @@ fun SearchTrending(
 }
 
 @Composable
-fun SearchTrendingShimmer() {
+fun SearchTrendingShimmer(
+    modifier: Modifier = Modifier
+) {
     Column(
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Row(
@@ -110,7 +118,7 @@ fun SearchTrendingShimmer() {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 12.dp)
-                        .clip(MaterialTheme.shapes.small)
+                        .clip(MaterialTheme.shapes.extraSmall)
                         .shimmerEffect(),
                     text = "",
                     style = MaterialTheme.typography.bodyLarge
