@@ -144,7 +144,7 @@ fun buildNavigationItems(userState: State<UserState>): List<NavigationItem> {
                 selectedIcon = {
                     ProfileIcon(isSelected = true, userState = userState)
                 },
-                route = Route.Profile()
+                route = Route.Profile(null)
             )
         )
     }

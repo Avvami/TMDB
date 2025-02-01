@@ -7,5 +7,5 @@ data class NavigationItem(
     @StringRes val label: Int,
     val unselectedIcon: @Composable () -> Unit,
     val selectedIcon: @Composable () -> Unit,
-    val route: Any
+    val route: Route
 )

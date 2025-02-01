@@ -5,8 +5,6 @@ sealed interface UiEvent {
     data object CreateRequestToken: UiEvent
     data object DropRequestToken: UiEvent
     data object SignInUser: UiEvent
-    data object DropSnackDone: UiEvent
-    data object DropError: UiEvent
     data class SetUseCards(val userCards: Boolean): UiEvent
     data class SetShowTitle(val showTitle: Boolean): UiEvent
     data class SetShowVoteAverage(val showVoteAverage: Boolean): UiEvent

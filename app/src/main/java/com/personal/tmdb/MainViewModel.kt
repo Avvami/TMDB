@@ -12,6 +12,9 @@ import com.personal.tmdb.auth.domain.models.UserInfo
 import com.personal.tmdb.auth.domain.repository.AuthRepository
 import com.personal.tmdb.core.domain.repository.LocalCache
 import com.personal.tmdb.core.domain.repository.LocalRepository
+import com.personal.tmdb.core.domain.util.SnackbarController
+import com.personal.tmdb.core.domain.util.SnackbarEvent
+import com.personal.tmdb.core.domain.util.UiText
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.Resource
@@ -133,15 +136,29 @@ class MainViewModel @Inject constructor(
                                                 accountId = result.data.accountId
                                             )
                                             localCache.clearRequestToken()
-                                            _userState.update { it.copy(showSnackDone = true) }
+                                            SnackbarController.sendEvent(
+                                                event = SnackbarEvent(
+                                                    message = UiText.StringResource(R.string.signed_in_successfully)
+                                                )
+                                            )
                                         } else {
-                                            _userState.update { it.copy(error = "Error obtaining session ID") }
+                                            SnackbarController.sendEvent(
+                                                event = SnackbarEvent(
+                                                    message = UiText.DynamicString("Error obtaining session ID")
+                                                )
+                                            )
                                         }
                                     }
                                 }
                             }
                         } else {
-                            _userState.update { it.copy(error = result.data?.statusMessage) }
+                            result.data?.statusMessage?.let {
+                                SnackbarController.sendEvent(
+                                    event = SnackbarEvent(
+                                        message = UiText.DynamicString(it)
+                                    )
+                                )
+                            }
                         }
                     }
                 }
@@ -191,12 +208,6 @@ class MainViewModel @Inject constructor(
             }
             UiEvent.SignInUser -> {
                 signInUser()
-            }
-            UiEvent.DropSnackDone -> {
-                _userState.update { it.copy(showSnackDone = false) }
-            }
-            UiEvent.DropError -> {
-                _userState.update { it.copy(error = null) }
             }
             is UiEvent.SetUseCards -> {
                 viewModelScope.launch {

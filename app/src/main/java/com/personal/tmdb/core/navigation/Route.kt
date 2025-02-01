@@ -11,5 +11,5 @@ sealed interface Route {
     data object Search: Route
 
     @Serializable
-    data class Profile(val approved: Boolean? = null): Route
+    data class Profile(val approved: Boolean?): Route
 }

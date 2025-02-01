@@ -6,7 +6,6 @@ data class UserState(
     val isLoading: Boolean = false,
     val userInfo: UserInfo? = null,
     val error: String? = null,
-    val showSnackDone: Boolean = false,
     val requestToken: String? = null,
     val accessToken: String? = null,
     val sessionId: String? = null,
