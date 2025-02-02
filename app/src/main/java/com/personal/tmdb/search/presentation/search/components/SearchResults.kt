@@ -48,11 +48,7 @@ fun SearchResults(
             ) {
                 if (searchState().isLoading && searchState().mediaResponseInfo == null) {
                     SearchFilterChipsShimmer(
-                        modifier = Modifier
-                            .negativeHorizontalPadding((-16).dp)
-                            .padding(bottom = 8.dp)
-                            .horizontalScroll(rememberScrollState())
-                            .padding(horizontal = 16.dp)
+                        modifier = Modifier.padding(bottom = 8.dp)
                     )
                 } else {
                     SearchFilterChips(
@@ -110,7 +106,7 @@ fun SearchResults(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .animateItem(),
-                                onNavigateTo = {},
+                                onNavigateTo = onNavigateTo,
                                 height = Dp.Unspecified,
                                 mediaInfo = mediaInfo,
                                 mediaType = mediaInfo.mediaType ?: mediaType(),

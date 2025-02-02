@@ -1,12 +1,10 @@
 package com.personal.tmdb.search.presentation.search.components
 
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
 import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.presentation.MediaState
@@ -26,12 +24,8 @@ fun SearchPopularPeople(
     MediaCarousel(
         modifier = modifier,
         titleContent = {
-            Text(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                text = stringResource(id = R.string.popular_people)
-            )
+            Text(text = stringResource(id = R.string.popular_people))
         },
-        titleRes = R.string.popular_people,
         items = {
             if (popularState().isLoading) {
                 items(15) {
@@ -45,7 +39,7 @@ fun SearchPopularPeople(
                     ) { index ->
                         val mediaInfo = popular[index]
                         MediaPoster(
-                            onNavigateTo = {},
+                            onNavigateTo = onNavigateTo,
                             mediaInfo = mediaInfo,
                             mediaType = MediaType.PERSON,
                             showTitle = preferencesState.value.showTitle,

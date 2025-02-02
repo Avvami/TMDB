@@ -1,5 +1,7 @@
 package com.personal.tmdb.home.presentation.home.components
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -8,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -26,18 +29,54 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
+import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.util.C
+import com.personal.tmdb.core.util.MediaType
 import com.personal.tmdb.core.util.shimmerEffect
 import com.personal.tmdb.home.presentation.home.HomeState
+import com.personal.tmdb.home.presentation.home.HomeUiEvent
 import com.personal.tmdb.ui.theme.surfaceLight
 
 @Composable
-fun Banner(
+fun HomeBanner(
     modifier: Modifier = Modifier,
-    homeState: () -> HomeState
+    homeState: () -> HomeState,
+    homeUiEvent: (HomeUiEvent) -> Unit
 ) {
     Box(
-        modifier = modifier,
+        modifier = modifier
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) {
+                homeState().randomMedia?.let { randomMedia ->
+                    when (randomMedia.mediaType) {
+                        MediaType.TV, MediaType.MOVIE -> {
+                            homeUiEvent(
+                                HomeUiEvent.OnNavigateTo(
+                                    Route.Detail(
+                                        mediaType = randomMedia.mediaType.name.lowercase(),
+                                        mediaId = randomMedia.id
+                                    )
+                                )
+                            )
+                        }
+                        MediaType.PERSON -> {
+                            homeUiEvent(
+                                HomeUiEvent.OnNavigateTo(
+                                    Route.Person(
+                                        personName = randomMedia.mediaType.name,
+                                        personId = randomMedia.id
+                                    )
+                                )
+                            )
+                        }
+                        else -> {
+                            /*TODO: Navigate to lost your way screen*/
+                        }
+                    }
+                }
+            },
         contentAlignment = Alignment.Center
     ) {
         AsyncImage(

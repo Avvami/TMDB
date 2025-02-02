@@ -1,22 +1,13 @@
 package com.personal.tmdb.core.presentation.components
 
-import androidx.compose.animation.AnimatedVisibilityScope
-import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionScope
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.scaleIn
-import androidx.compose.animation.scaleOut
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -36,10 +27,7 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
@@ -47,227 +35,53 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.personal.tmdb.R
 import com.personal.tmdb.core.domain.models.MediaInfo
-import com.personal.tmdb.core.navigation.RootNavGraph
+import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.MediaType
-import com.personal.tmdb.core.util.formatDate
 import com.personal.tmdb.core.util.formatVoteAverage
 import com.personal.tmdb.core.util.shimmerEffect
-import com.personal.tmdb.ui.theme.backgroundLight
-import com.personal.tmdb.ui.theme.onBackgroundLight
 import com.personal.tmdb.ui.theme.onSurfaceLight
 import com.personal.tmdb.ui.theme.surfaceLight
-import java.time.LocalDate
-
-@Composable
-fun MediaCard(
-    modifier: Modifier = Modifier,
-    onNavigateTo: (route: String) -> Unit,
-    mediaInfo: MediaInfo,
-    mediaType: MediaType? = null,
-    showVoteAverage: Boolean,
-    corners: Int
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(corners.dp))
-            .clickable {
-                mediaType?.let { mediaType ->
-                    when (mediaType) {
-                        MediaType.TV, MediaType.MOVIE -> {
-                            onNavigateTo(RootNavGraph.DETAIL + "/${mediaType.name.lowercase()}/${mediaInfo.id}")
-                        }
-                        MediaType.PERSON -> {
-                            onNavigateTo(RootNavGraph.PERSON + "/${mediaInfo.name ?: ""}/${mediaInfo.id}")
-                        }
-                        else -> {
-                            /*TODO: Navigate to lost your way screen*/
-                        }
-                    }
-                }
-                mediaInfo.mediaType?.let { mediaType ->
-                    when (mediaType) {
-                        MediaType.TV, MediaType.MOVIE -> {
-                            onNavigateTo(RootNavGraph.DETAIL + "/${mediaType.name.lowercase()}/${mediaInfo.id}")
-                        }
-                        MediaType.PERSON -> {
-                            onNavigateTo(RootNavGraph.PERSON + "/${mediaInfo.name ?: ""}/${mediaInfo.id}")
-                        }
-                        else -> {
-                            /*TODO: Navigate to lost your way screen*/
-                        }
-                    }
-                }
-            }
-            .background(MaterialTheme.colorScheme.surfaceContainer)
-            .padding(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(
-            modifier = Modifier
-                .height(150.dp)
-                .aspectRatio(0.675f)
-                .clip(RoundedCornerShape(corners.dp))
-        ) {
-            AsyncImage(
-                modifier = Modifier.fillMaxSize(),
-                model = C.TMDB_IMAGES_BASE_URL + C.POSTER_W300 + mediaInfo.posterPath,
-                placeholder = painterResource(id = R.drawable.placeholder),
-                error = painterResource(id = R.drawable.placeholder),
-                contentDescription = "Poster",
-                contentScale = ContentScale.Crop
-            )
-            if (showVoteAverage && mediaInfo.voteAverage != null) {
-                Text(
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .clip(RoundedCornerShape((corners / 3).dp))
-                        .background(onBackgroundLight.copy(.5f))
-                        .padding(horizontal = 4.dp)
-                        .align(Alignment.TopStart),
-                    text = formatVoteAverage(mediaInfo.voteAverage),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = backgroundLight
-                )
-            }
-        }
-        Column {
-            mediaInfo.name?.let { name ->
-                Text(
-                    text = name,
-                    style = MaterialTheme.typography.titleMedium,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-            }
-            mediaInfo.knownFor?.let { knownFor ->
-                if (knownFor.isNotEmpty()) {
-                    Text(
-                        text = knownFor.joinToString(", ") { it.name.toString() },
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 3,
-                        overflow = TextOverflow.Ellipsis
-                    )
-                }
-            }
-            mediaInfo.releaseDate?.let { releaseDate ->
-                Text(
-                    text = formatDate(releaseDate),
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            mediaInfo.overview?.let { overview ->
-                Spacer(modifier = Modifier.height(12.dp))
-                Text(
-                    text = overview,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 4,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
-        }
-    }
-}
-
-@Composable
-fun MediaCardShimmer(
-    modifier: Modifier = Modifier,
-    corners: Int
-) {
-    Row(
-        modifier = modifier
-            .clip(RoundedCornerShape(corners.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainerLow)
-            .padding(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Box(
-            modifier = Modifier
-                .height(150.dp)
-                .aspectRatio(0.675f)
-                .clip(RoundedCornerShape(corners.dp))
-                .shimmerEffect()
-        ) {
-            Text(
-                modifier = Modifier.align(Alignment.Center),
-                text = stringResource(id = R.string.tmdb),
-                style = MaterialTheme.typography.displaySmall,
-                color = MaterialTheme.colorScheme.surfaceContainerLow,
-                fontStyle = FontStyle.Italic,
-                fontWeight = FontWeight.Black,
-                textAlign = TextAlign.Center
-            )
-        }
-        Column {
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(MaterialTheme.shapes.small)
-                    .shimmerEffect(),
-                text = "",
-                style = MaterialTheme.typography.titleMedium
-            )
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                modifier = Modifier
-                    .clip(MaterialTheme.shapes.small)
-                    .shimmerEffect(),
-                text = "release date",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Transparent
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(MaterialTheme.shapes.small)
-                    .shimmerEffect(),
-                text = "",
-                style = MaterialTheme.typography.bodyMedium,
-                minLines = 4
-            )
-        }
-    }
-}
 
 @Composable
 fun MediaBanner(
     modifier: Modifier = Modifier,
-    onNavigateTo: (route: String) -> Unit,
+    onNavigateTo: (route: Route) -> Unit,
+    shape: Shape = MaterialTheme.shapes.medium,
+    height: Dp = 180.dp,
     mediaInfo: MediaInfo,
-    mediaType: MediaType? = null,
-    showVoteAverage: Boolean,
-    corners: Int
+    mediaType: MediaType?,
+    showVoteAverage: Boolean
 ) {
     Box(
         modifier = modifier
+            .height(height)
+            .aspectRatio(16 / 9f)
+            .clip(shape)
+            .border(
+                width = 2.dp,
+                color = MaterialTheme.colorScheme.onSurface.copy(.1f),
+                shape = shape
+            )
             .clickable {
                 mediaType?.let { mediaType ->
                     when (mediaType) {
                         MediaType.TV, MediaType.MOVIE -> {
-                            onNavigateTo(RootNavGraph.DETAIL + "/${mediaType.name.lowercase()}/${mediaInfo.id}")
+                            onNavigateTo(
+                                Route.Detail(
+                                    mediaType = mediaType.name.lowercase(),
+                                    mediaId = mediaInfo.id
+                                )
+                            )
                         }
+
                         MediaType.PERSON -> {
-                            onNavigateTo(RootNavGraph.PERSON + "/${mediaInfo.name ?: ""}/${mediaInfo.id}")
+                            Route.Person(
+                                personName = mediaInfo.name ?: "",
+                                personId = mediaInfo.id
+                            )
                         }
-                        else -> {
-                            /*TODO: Navigate to lost your way screen*/
-                        }
-                    }
-                }
-                mediaInfo.mediaType?.let { mediaType ->
-                    when (mediaType) {
-                        MediaType.TV, MediaType.MOVIE -> {
-                            onNavigateTo(RootNavGraph.DETAIL + "/${mediaType.name.lowercase()}/${mediaInfo.id}")
-                        }
-                        MediaType.PERSON -> {
-                            onNavigateTo(RootNavGraph.PERSON + "/${mediaInfo.name ?: ""}/${mediaInfo.id}")
-                        }
+
                         else -> {
                             /*TODO: Navigate to lost your way screen*/
                         }
@@ -276,7 +90,9 @@ fun MediaBanner(
             }
     ) {
         AsyncImage(
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .matchParentSize(),
             model = C.TMDB_IMAGES_BASE_URL + C.BACKDROP_W780 + mediaInfo.backdropPath,
             contentDescription = "Backdrop",
             placeholder = painterResource(id = R.drawable.placeholder),
@@ -286,15 +102,15 @@ fun MediaBanner(
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .background(onBackgroundLight.copy(.6f))
+                .background(onSurfaceLight.copy(.6f))
                 .padding(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
-                    .aspectRatio(0.675f)
-                    .clip(RoundedCornerShape(corners))
+                    .aspectRatio(2 / 3f)
+                    .clip(shape)
             ) {
                 AsyncImage(
                     modifier = Modifier.fillMaxSize(),
@@ -308,13 +124,13 @@ fun MediaBanner(
                     Text(
                         modifier = Modifier
                             .padding(8.dp)
-                            .clip(RoundedCornerShape((corners / 3).dp))
-                            .background(onBackgroundLight.copy(.5f))
+                            .clip(RoundedCornerShape(6.dp))
+                            .background(onSurfaceLight.copy(alpha = .5f))
                             .padding(horizontal = 4.dp)
                             .align(Alignment.TopStart),
                         text = formatVoteAverage(mediaInfo.voteAverage),
                         style = MaterialTheme.typography.labelMedium,
-                        color = backgroundLight
+                        color = surfaceLight
                     )
                 }
             }
@@ -326,7 +142,7 @@ fun MediaBanner(
                     Text(
                         text = name,
                         style = MaterialTheme.typography.titleMedium,
-                        color = backgroundLight,
+                        color = surfaceLight,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -335,7 +151,7 @@ fun MediaBanner(
                     Text(
                         text = overview,
                         style = MaterialTheme.typography.bodySmall,
-                        color = backgroundLight,
+                        color = surfaceLight,
                         maxLines = 3,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -348,51 +164,50 @@ fun MediaBanner(
 @Composable
 fun MediaBannerShimmer(
     modifier: Modifier = Modifier,
-    corners: Int
+    shape: Shape = MaterialTheme.shapes.medium,
+    height: Dp = 180.dp,
 ) {
     Box(
         modifier = modifier
+            .height(height)
+            .aspectRatio(16 / 9f)
+            .clip(shape)
+            .border(
+                width = 2.dp,
+                color = MaterialTheme.colorScheme.onSurface.copy(.1f),
+                shape = shape
+            )
     ) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .background(MaterialTheme.colorScheme.surfaceContainerLow)
                 .padding(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
-                    .aspectRatio(0.675f)
-                    .clip(RoundedCornerShape(corners.dp))
+                    .aspectRatio(2 / 3f)
+                    .fillMaxSize()
+                    .clip(shape)
                     .shimmerEffect()
-            ) {
-                Text(
-                    modifier = Modifier.align(Alignment.Center),
-                    text = stringResource(id = R.string.tmdb),
-                    style = MaterialTheme.typography.headlineLarge,
-                    color = MaterialTheme.colorScheme.surfaceContainerLow,
-                    fontStyle = FontStyle.Italic,
-                    fontWeight = FontWeight.Black,
-                    textAlign = TextAlign.Center
-                )
-            }
+            )
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Text(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(MaterialTheme.shapes.small)
+                        .clip(MaterialTheme.shapes.extraSmall)
                         .shimmerEffect(),
-                    text = "",
-                    style = MaterialTheme.typography.titleMedium
+                    text = "Title",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = Color.Transparent
                 )
                 Text(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clip(MaterialTheme.shapes.small)
+                        .clip(MaterialTheme.shapes.extraSmall)
                         .shimmerEffect(),
                     text = "",
                     style = MaterialTheme.typography.bodySmall,
@@ -406,7 +221,7 @@ fun MediaBannerShimmer(
 @Composable
 fun MediaPoster(
     modifier: Modifier = Modifier,
-    onNavigateTo: (route: String) -> Unit,
+    onNavigateTo: (route: Route) -> Unit,
     shape: Shape = MaterialTheme.shapes.medium,
     height: Dp = 170.dp,
     mediaInfo: MediaInfo,
@@ -428,11 +243,21 @@ fun MediaPoster(
                     mediaType?.let { mediaType ->
                         when (mediaType) {
                             MediaType.TV, MediaType.MOVIE -> {
-                                onNavigateTo(RootNavGraph.DETAIL + "/${mediaType.name.lowercase()}/${mediaInfo.id}")
+                                onNavigateTo(
+                                    Route.Detail(
+                                        mediaType = mediaType.name.lowercase(),
+                                        mediaId = mediaInfo.id
+                                    )
+                                )
                             }
+
                             MediaType.PERSON -> {
-                                onNavigateTo(RootNavGraph.PERSON + "/${mediaInfo.name ?: ""}/${mediaInfo.id}")
+                                Route.Person(
+                                    personName = mediaInfo.name ?: "",
+                                    personId = mediaInfo.id
+                                )
                             }
+
                             else -> {
                                 /*TODO: Navigate to lost your way screen*/
                             }
@@ -527,156 +352,6 @@ fun MediaPosterShimmer(
                 text = "",
                 minLines = 2,
                 maxLines = 2,
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalSharedTransitionApi::class)
-@Composable
-fun MediaCardPreview(
-    modifier: Modifier = Modifier,
-    showVoteAverage: Boolean,
-    corners: Int,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedVisibilityScope: AnimatedVisibilityScope
-) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(corners.dp))
-            .background(MaterialTheme.colorScheme.surfaceContainer)
-            .padding(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        with(sharedTransitionScope) {
-            Box(
-                modifier = Modifier
-                    .sharedElement(
-                        rememberSharedContentState(key = "Poster"),
-                        animatedVisibilityScope = animatedVisibilityScope
-                    )
-                    .height(150.dp)
-                    .aspectRatio(0.675f)
-                    .clip(RoundedCornerShape(corners.dp))
-            ) {
-                AsyncImage(
-                    modifier = Modifier.fillMaxSize(),
-                    model = C.TMDB_IMAGES_BASE_URL + C.POSTER_W300 + "/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg",
-                    placeholder = painterResource(id = R.drawable.placeholder),
-                    error = painterResource(id = R.drawable.placeholder),
-                    contentDescription = "Poster",
-                    contentScale = ContentScale.Crop
-                )
-                androidx.compose.animation.AnimatedVisibility(
-                    visible = showVoteAverage,
-                    enter = scaleIn(initialScale = .7f) + fadeIn(),
-                    exit = scaleOut(targetScale = .7f) + fadeOut()
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .clip(RoundedCornerShape((corners / 3).dp))
-                            .background(onBackgroundLight.copy(.5f))
-                            .padding(horizontal = 4.dp)
-                            .align(Alignment.TopStart),
-                        text = formatVoteAverage(8.5.toFloat()),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = backgroundLight
-                    )
-                }
-            }
-        }
-        Column {
-            Text(
-                text = "Spirited Away",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onBackground
-            )
-            Text(
-                text = formatDate(LocalDate.of(2002, 9, 20)),
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant
-            )
-            Spacer(modifier = Modifier.height(12.dp))
-            Text(
-                text = "A young girl, Chihiro, becomes trapped in a strange new world of spirits. When her parents undergo a mysterious transformation, she must call upon the courage she never knew she had to free her family.",
-                style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-                maxLines = 4,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
-    }
-}
-
-@OptIn(ExperimentalSharedTransitionApi::class)
-@Composable
-fun MediaPosterPreview(
-    modifier: Modifier = Modifier,
-    showTitle: Boolean,
-    showVoteAverage: Boolean,
-    corners: Int,
-    sharedTransitionScope: SharedTransitionScope,
-    animatedVisibilityScope: AnimatedVisibilityScope
-) {
-    Column(
-        modifier = Modifier.width(IntrinsicSize.Min),
-        verticalArrangement = Arrangement.spacedBy(2.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        with(sharedTransitionScope) {
-            Box(
-                modifier = modifier
-                    .sharedElement(
-                        rememberSharedContentState(key = "Poster"),
-                        animatedVisibilityScope = animatedVisibilityScope
-                    )
-                    .height(150.dp)
-                    .aspectRatio(0.675f)
-                    .clip(RoundedCornerShape(corners.dp))
-            ) {
-                AsyncImage(
-                    modifier = Modifier.fillMaxSize(),
-                    model = C.TMDB_IMAGES_BASE_URL + C.POSTER_W300 + "/39wmItIWsg5sZMyRUHLkWBcuVCM.jpg",
-                    placeholder = painterResource(id = R.drawable.placeholder),
-                    error = painterResource(id = R.drawable.placeholder),
-                    contentDescription = "Poster",
-                    contentScale = ContentScale.Crop
-                )
-                androidx.compose.animation.AnimatedVisibility(
-                    visible = showVoteAverage,
-                    enter = scaleIn(initialScale = .7f) + fadeIn(),
-                    exit = scaleOut(targetScale = .7f) + fadeOut()
-                ) {
-                    Text(
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .clip(RoundedCornerShape((corners / 3).dp))
-                            .background(onBackgroundLight.copy(.5f))
-                            .padding(horizontal = 4.dp)
-                            .align(Alignment.TopStart),
-                        text = formatVoteAverage(8.5.toFloat()),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = backgroundLight
-                    )
-                }
-            }
-        }
-        androidx.compose.animation.AnimatedVisibility(
-            visible = showTitle,
-            enter = slideInVertically() + scaleIn(initialScale = .7f) + fadeIn(),
-            exit = slideOutVertically() + scaleOut(targetScale = .7f) + fadeOut()
-        ) {
-            Text(
-                modifier = Modifier.fillMaxWidth(),
-                text = "Spirited Away",
-                style = MaterialTheme.typography.labelLarge,
-                color = MaterialTheme.colorScheme.onBackground,
-                textAlign = TextAlign.Center,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
             )
         }
     }

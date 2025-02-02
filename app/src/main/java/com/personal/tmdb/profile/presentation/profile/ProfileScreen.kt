@@ -17,7 +17,6 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -131,11 +130,6 @@ private fun ProfileScreen(
                                     tint = MaterialTheme.colorScheme.surfaceVariant
                                 )
                             }
-                            HorizontalDivider(
-                                modifier = Modifier.padding(horizontal = 16.dp),
-                                thickness = 2.dp,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = .1f)
-                            )
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -164,11 +158,6 @@ private fun ProfileScreen(
                                     tint = MaterialTheme.colorScheme.surfaceVariant
                                 )
                             }
-                            HorizontalDivider(
-                                modifier = Modifier.padding(horizontal = 16.dp),
-                                thickness = 2.dp,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = .1f)
-                            )
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -197,11 +186,6 @@ private fun ProfileScreen(
                                     tint = MaterialTheme.colorScheme.surfaceVariant
                                 )
                             }
-                            HorizontalDivider(
-                                modifier = Modifier.padding(horizontal = 16.dp),
-                                thickness = 2.dp,
-                                color = MaterialTheme.colorScheme.onSurface.copy(alpha = .1f)
-                            )
                         }
                     }
                     Row(
