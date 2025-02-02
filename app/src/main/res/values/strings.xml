@@ -27,7 +27,8 @@
     <string name="welcome">Welcome.</string>
     <string name="explore_now">Millions of movies, TV shows and people to discover. Explore now.</string>
     <string name="search_placeholder">Search for movies, tv shows, or people…</string>
-    <string name="trending">Trending</string>
+    <string name="trending_today">Trending Today</string>
+    <string name="trending_this_week">Trending This Week</string>
     <string name="join_today">Join Today</string>
     <string name="join_today_benefits">Get access to maintain your own custom personal lists, track what you\'ve seen and search and filter for what to watch next — regardless if it\'s in theatres, on TV or available on popular streaming services like Netflix, Amazon Prime Video, Disney Plus, Apple TV Plus, and Hulu.</string>
     <string name="sign_up">Sign Up</string>
@@ -126,4 +127,6 @@
     <string name="profile">Profile</string>
     <string name="me">Me</string>
     <string name="info">Info</string>
+    <string name="latest_review">Latest Review</string>
+    <string name="all_reviews">All Reviews</string>
 </resources>

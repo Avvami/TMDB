@@ -22,7 +22,7 @@ import com.personal.tmdb.core.presentation.components.staticComposable
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.detail.presentation.cast.CastScreen
 import com.personal.tmdb.detail.presentation.collection.CollectionScreen
-import com.personal.tmdb.detail.presentation.detail.DetailScreen
+import com.personal.tmdb.detail.presentation.detail.DetailScreenRoot
 import com.personal.tmdb.detail.presentation.episode.EpisodeDetailsScreen
 import com.personal.tmdb.detail.presentation.episodes.EpisodesScreen
 import com.personal.tmdb.detail.presentation.image.ImageViewerScreen
@@ -166,7 +166,7 @@ fun ChildNavHost(
             SearchScreenRoot(
                 bottomPadding = bottomBarPadding,
                 lazyGridState = scrollState as LazyGridState,
-                onNavigateTo = {},
+                onNavigateTo = onNavigateTo,
                 preferencesState = preferencesState
             )
         }
@@ -188,14 +188,14 @@ fun ChildNavHost(
         }
 
         animatedComposable<Route.Detail> {
-            DetailScreen(
-                navigateBack = onNavigateBack,
+            DetailScreenRoot(
+                bottomPadding = bottomBarPadding,
+                onNavigateBack = onNavigateBack,
                 onNavigateTo = { route ->
                     navController.navigate(route = route)
                 },
-                navigateToHome = {},
-                preferencesState = preferencesState,
-                userState = userState
+                preferencesState = { preferencesState.value },
+                userState = { userState.value }
             )
         }
         animatedComposable<Route.Reviews> {
@@ -297,12 +297,8 @@ object RootNavGraph {
     const val AUTH = "auth_screen"
     const val SETTINGS = "settings_screen"
     const val DETAIL = "detail_screen"
-    const val COLLECTION = "collection_screen"
-    const val CAST = "cast_screen"
     const val PERSON = "person_screen"
     const val APPEARANCE = "appearance_screen"
-    const val EPISODES = "episodes_screen"
     const val EPISODE = "episode_screen"
     const val IMAGE = "image_viewer_screen"
-    const val REVIEWS = "reviews_screen"
 }

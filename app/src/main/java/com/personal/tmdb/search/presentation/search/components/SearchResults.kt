@@ -20,7 +20,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
-import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.presentation.MediaState
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.MediaGrid
@@ -35,7 +34,6 @@ fun SearchResults(
     lazyGridState: LazyGridState,
     searchState: () -> MediaState,
     mediaType: () -> MediaType,
-    onNavigateTo: (route: Route) -> Unit,
     preferencesState: State<PreferencesState>,
     searchUiEvent: (SearchUiEvent) -> Unit
 ) {
@@ -106,7 +104,7 @@ fun SearchResults(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .animateItem(),
-                                onNavigateTo = onNavigateTo,
+                                onNavigateTo = { searchUiEvent(SearchUiEvent.OnNavigateTo(it)) },
                                 height = Dp.Unspecified,
                                 mediaInfo = mediaInfo,
                                 mediaType = mediaInfo.mediaType ?: mediaType(),

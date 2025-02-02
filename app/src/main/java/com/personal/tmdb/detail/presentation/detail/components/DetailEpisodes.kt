@@ -3,6 +3,7 @@ package com.personal.tmdb.detail.presentation.detail.components
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -21,7 +22,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,68 +33,81 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.personal.tmdb.R
-import com.personal.tmdb.core.navigation.RootNavGraph
-import com.personal.tmdb.core.presentation.PreferencesState
+import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.formatDate
 import com.personal.tmdb.core.util.formatRuntime
-import com.personal.tmdb.core.util.formatVoteAverage
 import com.personal.tmdb.detail.data.models.Season
 import com.personal.tmdb.detail.domain.models.EpisodeToAirInfo
 import com.personal.tmdb.detail.domain.models.MediaDetailInfo
+import com.personal.tmdb.detail.presentation.detail.DetailUiEvent
 
 @Composable
-fun AllEpisodes(
-    onNavigateTo: (route: String) -> Unit,
+fun DetailEpisodes(
+    modifier: Modifier = Modifier,
     info: MediaDetailInfo,
     seasons: List<Season>,
-    preferencesState: State<PreferencesState>
+    detailUiEvent: (DetailUiEvent) -> Unit
 ) {
     Column(
-        modifier = Modifier.padding(horizontal = 16.dp),
+        modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(MaterialTheme.shapes.extraSmall)
-                .clickable {
-                    onNavigateTo(RootNavGraph.EPISODES + "/${info.id}/${
-                        info.nextEpisodeToAir?.seasonNumber
-                            ?: info.lastEpisodeToAir?.seasonNumber ?: seasons.find { it.seasonNumber == 1 }?.seasonNumber ?: seasons[seasons.lastIndex].seasonNumber
-                    }")
+                .clickable(
+                    interactionSource = remember { MutableInteractionSource() },
+                    indication = null
+                ) {
+                    detailUiEvent(
+                        DetailUiEvent.OnNavigateTo(
+                            Route.Episodes(
+                                mediaId = info.id,
+                                seasonNumber = info.lastEpisodeToAir?.seasonNumber
+                                    ?: seasons.find { it.seasonNumber == 1 }?.seasonNumber
+                                    ?: seasons[seasons.lastIndex].seasonNumber
+                            )
+                        )
+                    )
                 },
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = stringResource(id = R.string.all_episodes),
+                modifier = Modifier.weight(1f),
+                text = stringResource(id = R.string.episodes),
                 style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Medium,
-                fontSize = 20.sp
+                fontWeight = FontWeight.Medium
             )
-            Icon(
-                imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
-                contentDescription = null
-            )
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(id = R.string.all_episodes),
+                    style = MaterialTheme.typography.bodyLarge
+                )
+                Icon(
+                    imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
+                    contentDescription = null
+                )
+            }
         }
         info.lastEpisodeToAir?.let { lastEpisodeToAir ->
             EpisodeToAir(
-                onNavigateTo = onNavigateTo,
-                preferencesState = preferencesState,
+                onNavigateTo = { detailUiEvent(DetailUiEvent.OnNavigateTo(it)) },
                 episodeToAir = lastEpisodeToAir,
-                textRes = R.string.last_episode
+                subTextRes = R.string.last_episode
             )
         }
         info.nextEpisodeToAir?.let { nextEpisodeToAir ->
             EpisodeToAir(
-                onNavigateTo = onNavigateTo,
-                preferencesState = preferencesState,
+                onNavigateTo = { detailUiEvent(DetailUiEvent.OnNavigateTo(it)) },
                 episodeToAir = nextEpisodeToAir,
-                textRes = R.string.next_episode
+                subTextRes = R.string.next_episode
             )
         }
     }
@@ -102,81 +116,63 @@ fun AllEpisodes(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun EpisodeToAir(
-    onNavigateTo: (route: String) -> Unit,
-    preferencesState: State<PreferencesState>,
+    modifier: Modifier = Modifier,
+    onNavigateTo: (route: Route) -> Unit,
     episodeToAir: EpisodeToAirInfo,
-    @StringRes textRes: Int
+    @StringRes subTextRes: Int? = null
 ) {
-    Column(
-        modifier = Modifier
+    Row(
+        modifier = modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(preferencesState.value.corners.dp))
+            .clip(MaterialTheme.shapes.medium)
             .background(MaterialTheme.colorScheme.surfaceContainer)
-            .clickable { onNavigateTo(RootNavGraph.EPISODE + "/${episodeToAir.showId}/${episodeToAir.seasonNumber}/${episodeToAir.episodeNumber}") }
-            .padding(8.dp)
+            .clickable {
+                onNavigateTo(
+                    Route.Episode(
+                        mediaId = episodeToAir.showId,
+                        seasonNumber = episodeToAir.seasonNumber,
+                        episodeNumber = episodeToAir.episodeNumber
+                    )
+                )
+            }
+            .padding(2.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        AsyncImage(
+            modifier = Modifier
+                .height(80.dp)
+                .aspectRatio(16 / 9f)
+                .clip(RoundedCornerShape(10.dp)),
+            model = C.TMDB_IMAGES_BASE_URL + C.STILL_W300 + episodeToAir.stillPath,
+            placeholder = painterResource(id = R.drawable.placeholder),
+            error = painterResource(id = R.drawable.placeholder),
+            contentDescription = "Still",
+            contentScale = ContentScale.Crop
+        )
+        Column(
+            modifier = Modifier.padding(start = 8.dp, top = 8.dp, end = 16.dp, bottom = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalAlignment = Alignment.End
         ) {
-            AsyncImage(
-                modifier = Modifier
-                    .height(80.dp)
-                    .aspectRatio(1.625f)
-                    .clip(RoundedCornerShape(preferencesState.value.corners.dp)),
-                model = C.TMDB_IMAGES_BASE_URL + C.STILL_W300 + episodeToAir.stillPath,
-                placeholder = painterResource(id = R.drawable.placeholder),
-                error = painterResource(id = R.drawable.placeholder),
-                contentDescription = "Still",
-                contentScale = ContentScale.Crop
-            )
             Column(
-                modifier = Modifier.padding(vertical = 4.dp),
-                verticalArrangement = Arrangement.spacedBy(4.dp)
+                verticalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 with(episodeToAir) {
                     episodeToAir.name?.let { name ->
                         Text(
-                            text = "${stringResource(
-                                id = R.string.season_episode,
-                                episodeToAir.seasonNumber,
-                                episodeToAir.episodeNumber
-                            )} $name",
+                            text = "${
+                                stringResource(
+                                    id = R.string.season_episode,
+                                    episodeToAir.seasonNumber,
+                                    episodeToAir.episodeNumber
+                                )
+                            } $name",
                             style = MaterialTheme.typography.titleMedium,
                             maxLines = 1,
                             overflow = TextOverflow.Ellipsis
                         )
                     }
                     buildList<@Composable FlowRowScope.() -> Unit> {
-                        voteAverage?.let { voteAverage ->
-                            if (voteAverage.toDouble() != 0.0) {
-                                add {
-                                    Row(
-                                        modifier = Modifier
-                                            .clip(MaterialTheme.shapes.extraSmall)
-                                            .background(MaterialTheme.colorScheme.inverseSurface)
-                                            .padding(
-                                                horizontal = 4.dp,
-                                                vertical = 2.dp
-                                            )
-                                            .align(Alignment.CenterVertically),
-                                        horizontalArrangement = Arrangement.spacedBy(2.dp),
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        Text(
-                                            text = formatVoteAverage(voteAverage),
-                                            style = MaterialTheme.typography.labelMedium,
-                                            color = MaterialTheme.colorScheme.inverseOnSurface
-                                        )
-                                        Icon(
-                                            modifier = Modifier.size(14.dp),
-                                            painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
-                                            contentDescription = "Rating",
-                                            tint = MaterialTheme.colorScheme.inverseOnSurface
-                                        )
-                                    }
-                                }
-                            }
-                        }
                         airDate?.let { airDate ->
                             add {
                                 Text(
@@ -211,19 +207,21 @@ fun EpisodeToAir(
                                         .align(Alignment.CenterVertically),
                                     painter = painterResource(id = R.drawable.icon_fiber_manual_record_fill1_wght400),
                                     contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                                    tint = MaterialTheme.colorScheme.surfaceVariant
                                 )
                             }
                         }
                     }
                 }
             }
+            subTextRes?.let {
+                Text(
+                    modifier = Modifier.align(Alignment.End),
+                    text = stringResource(id = it),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.surfaceVariant
+                )
+            }
         }
-        Text(
-            modifier = Modifier.align(Alignment.End),
-            text = stringResource(id = textRes),
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
     }
 }

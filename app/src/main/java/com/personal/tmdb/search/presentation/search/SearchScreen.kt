@@ -33,14 +33,22 @@ fun SearchScreenRoot(
     SearchScreen(
         modifier = Modifier.padding(bottom = bottomPadding),
         lazyGridState = lazyGridState,
-        onNavigateTo = onNavigateTo,
         preferencesState = preferencesState,
         searchQuery = viewModel::searchQuery,
         searchType = viewModel::searchType,
         searchState = viewModel::searchState,
         trendingState = viewModel::trendingState,
         popularPeopleState = viewModel::popularState,
-        searchUiEvent = viewModel::searchUiEvent
+        searchUiEvent = { event ->
+            when (event) {
+                is SearchUiEvent.OnNavigateTo -> {
+                    println(event.route)
+                    onNavigateTo(event.route)
+                }
+                else -> Unit
+            }
+            viewModel.searchUiEvent(event)
+        }
     )
 }
 
@@ -48,7 +56,6 @@ fun SearchScreenRoot(
 private fun SearchScreen(
     modifier: Modifier = Modifier,
     lazyGridState: LazyGridState,
-    onNavigateTo: (route: Route) -> Unit,
     preferencesState: State<PreferencesState>,
     searchQuery: () -> String,
     searchType: () -> String,
@@ -77,17 +84,16 @@ private fun SearchScreen(
             ) { targetState ->
                 if (targetState) {
                     SearchSuggestion(
-                        onNavigateTo = onNavigateTo,
                         trendingState = trendingState,
                         popularPeopleState = popularPeopleState,
-                        preferencesState = preferencesState
+                        preferencesState = preferencesState,
+                        searchUiEvent = searchUiEvent
                     )
                 } else {
                     SearchResults(
                         lazyGridState = lazyGridState,
                         searchState = searchState,
                         mediaType = { convertMediaType(searchType()) },
-                        onNavigateTo = onNavigateTo,
                         preferencesState = preferencesState,
                         searchUiEvent = searchUiEvent
                     )

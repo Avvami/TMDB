@@ -7,17 +7,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.presentation.MediaState
 import com.personal.tmdb.core.presentation.PreferencesState
+import com.personal.tmdb.search.presentation.search.SearchUiEvent
 
 @Composable
 fun SearchSuggestion(
     modifier: Modifier = Modifier,
-    onNavigateTo: (route: Route) -> Unit,
     trendingState: () -> MediaState,
     popularPeopleState: () -> MediaState,
-    preferencesState: State<PreferencesState>
+    preferencesState: State<PreferencesState>,
+    searchUiEvent: (SearchUiEvent) -> Unit
 ) {
     LazyColumn(
         modifier = modifier,
@@ -26,15 +26,15 @@ fun SearchSuggestion(
     ) {
         item {
             SearchTrending(
-                onNavigateTo = onNavigateTo,
-                trendingState = trendingState
+                trendingState = trendingState,
+                searchUiEvent = searchUiEvent
             )
         }
         item {
             SearchPopularPeople(
-                onNavigateTo = onNavigateTo,
                 popularState = popularPeopleState,
-                preferencesState = preferencesState
+                preferencesState = preferencesState,
+                searchUiEvent = searchUiEvent
             )
         }
     }

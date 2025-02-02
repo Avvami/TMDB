@@ -3,6 +3,7 @@ package com.personal.tmdb.detail.domain.models
 import com.personal.tmdb.core.domain.models.MediaResponseInfo
 import com.personal.tmdb.detail.data.models.Available
 import com.personal.tmdb.detail.data.models.BelongsToCollection
+import com.personal.tmdb.detail.data.models.Cast
 import com.personal.tmdb.detail.data.models.ContentRatings
 import com.personal.tmdb.detail.data.models.CreatedBy
 import com.personal.tmdb.detail.data.models.Credits
@@ -17,6 +18,7 @@ data class MediaDetailInfo(
     val aggregateCredits: Credits?,
     val backdropPath: String?,
     val belongsToCollection: BelongsToCollection?,
+    val cast: List<Cast>?,
     val contentRatings: ContentRatings?,
     val createdBy: List<CreatedBy>?,
     val credits: Credits?,

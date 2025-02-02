@@ -76,9 +76,11 @@ fun MediaBanner(
                         }
 
                         MediaType.PERSON -> {
-                            Route.Person(
-                                personName = mediaInfo.name ?: "",
-                                personId = mediaInfo.id
+                            onNavigateTo(
+                                Route.Person(
+                                    personName = mediaInfo.name ?: "",
+                                    personId = mediaInfo.id
+                                )
                             )
                         }
 
@@ -110,7 +112,7 @@ fun MediaBanner(
             Box(
                 modifier = Modifier
                     .aspectRatio(2 / 3f)
-                    .clip(shape)
+                    .clip(RoundedCornerShape(8.dp))
             ) {
                 AsyncImage(
                     modifier = Modifier.fillMaxSize(),
@@ -189,7 +191,7 @@ fun MediaBannerShimmer(
                 modifier = Modifier
                     .aspectRatio(2 / 3f)
                     .fillMaxSize()
-                    .clip(shape)
+                    .clip(RoundedCornerShape(8.dp))
                     .shimmerEffect()
             )
             Column(
@@ -252,9 +254,11 @@ fun MediaPoster(
                             }
 
                             MediaType.PERSON -> {
-                                Route.Person(
-                                    personName = mediaInfo.name ?: "",
-                                    personId = mediaInfo.id
+                                onNavigateTo(
+                                    Route.Person(
+                                        personName = mediaInfo.name ?: "",
+                                        personId = mediaInfo.id
+                                    )
                                 )
                             }
 

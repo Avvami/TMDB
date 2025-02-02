@@ -6,12 +6,12 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
+import com.personal.tmdb.core.domain.util.UiText
 import com.personal.tmdb.core.domain.util.appendToResponse
-import com.personal.tmdb.core.util.C
+import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.util.Resource
 import com.personal.tmdb.core.util.convertMediaType
-import com.personal.tmdb.detail.domain.models.CollectionInfo
-import com.personal.tmdb.detail.domain.models.MediaDetailInfo
 import com.personal.tmdb.detail.domain.repository.DetailRepository
 import com.personal.tmdb.detail.presentation.collection.CollectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -29,8 +30,15 @@ class DetailViewModel @Inject constructor(
     private val detailRepository: DetailRepository
 ): ViewModel() {
 
-    var detailState by mutableStateOf(DetailState())
-        private set
+    private val routeData = savedStateHandle.toRoute<Route.Detail>()
+
+    private val _detailState = MutableStateFlow(
+        DetailState(
+            mediaType = convertMediaType(routeData.mediaType),
+            mediaId = routeData.mediaId
+        )
+    )
+    val detailState = _detailState.asStateFlow()
 
     var collectionState by mutableStateOf(CollectionState())
         private set
@@ -41,7 +49,7 @@ class DetailViewModel @Inject constructor(
     private val _availableSearchQuery = MutableStateFlow("")
     var availableSearchQuery = _availableSearchQuery.asStateFlow()
 
-    private val _availableCountries = MutableStateFlow(detailState.mediaDetail?.watchProviders?.keys)
+    private val _availableCountries = MutableStateFlow(detailState.value.details?.watchProviders?.keys)
     val availableCountries = availableSearchQuery.combine(_availableCountries) { query, countries ->
         if (query.isBlank()) {
             countries
@@ -56,15 +64,11 @@ class DetailViewModel @Inject constructor(
         _availableCountries.value
     )
 
-    val mediaType: String = savedStateHandle[C.MEDIA_TYPE] ?: ""
-
-    val mediaId: Int = savedStateHandle[C.MEDIA_ID] ?: 0
-
     init {
         getMediaDetails(
-            mediaType = mediaType,
-            mediaId = mediaId,
-            appendToResponse = appendToResponse(mediaType),
+            mediaType = routeData.mediaType,
+            mediaId = routeData.mediaId,
+            appendToResponse = appendToResponse(routeData.mediaType),
             includeImageLanguage = "en,null"
         )
     }
@@ -77,67 +81,51 @@ class DetailViewModel @Inject constructor(
         includeImageLanguage: String? = null
     ) {
         viewModelScope.launch {
-            detailState = detailState.copy(
-                isLoading = true
-            )
-
-            var mediaDetail: MediaDetailInfo? = null
-            var error: String? = null
+            _detailState.update { it.copy(loading = true) }
 
             detailRepository.getMediaDetail(mediaType, mediaId, language, appendToResponse, includeImageLanguage).let { result ->
                 when (result) {
                     is Resource.Error -> {
-                        error = result.message
+                        _detailState.update { it.copy(errorMessage = UiText.DynamicString(result.message ?: "")) }
                     }
                     is Resource.Success -> {
-                        mediaDetail = result.data
+                        val details = result.data
+                        details?.belongsToCollection?.let { collection ->
+                            getCollection(collectionId = collection.id)
+                        }
+                        details?.let {
+                            if (it.watchProviders != null) {
+                                _availableCountries.value = it.watchProviders.keys
+                                availableState = availableState.copy(
+                                    selectedCountry = "United States"
+                                )
+                            }
+                        }
+                        _detailState.update {
+                            it.copy(
+                                details = details,
+                                watchCountry = "United States",
+                                loading = false
+                            )
+                        }
                     }
                 }
             }
-            mediaDetail?.belongsToCollection?.let { collection ->
-                getCollection(collectionId = collection.id)
-            }
-            mediaDetail?.let { detail ->
-                if (detail.watchProviders != null) {
-                    _availableCountries.value = detail.watchProviders.keys
-                    availableState = availableState.copy(
-                        selectedCountry = "United States"
-                    )
-                }
-            }
-
-            detailState = detailState.copy(
-                mediaDetail = mediaDetail,
-                mediaType = convertMediaType(mediaType),
-                isLoading = false,
-                error = error
-            )
         }
     }
 
     private fun getCollection(collectionId: Int, language: String? = null) {
         viewModelScope.launch {
-            collectionState = collectionState.copy(
-                isLoading = true
-            )
-
-            var collectionInfo: CollectionInfo? = null
-
             detailRepository.getCollection(collectionId, language).let { result ->
                 when (result) {
                     is Resource.Error -> {
                         println(result.message)
                     }
                     is Resource.Success -> {
-                        collectionInfo = result.data
+                        _detailState.update { it.copy(collection = result.data) }
                     }
                 }
             }
-
-            collectionState = collectionState.copy(
-                collectionInfo = collectionInfo,
-                isLoading = false
-            )
         }
     }
 
@@ -149,6 +137,8 @@ class DetailViewModel @Inject constructor(
 
     fun detailUiEvent(event: DetailUiEvent) {
         when (event) {
+            DetailUiEvent.NavigateBack -> {}
+            is DetailUiEvent.OnNavigateTo -> {}
             DetailUiEvent.ChangeCollapsedOverview -> {
                 isOverviewCollapsed = !isOverviewCollapsed
             }

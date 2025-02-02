@@ -87,7 +87,7 @@ class SearchViewModel @Inject constructor(
                 error = null
             )
 
-            searchRepository.getTrendingList(TimeWindow.DAY, language).let { result ->
+            searchRepository.getTrendingList(TimeWindow.WEEK, language).let { result ->
                 trendingState = when (result) {
                     is Resource.Error -> {
                         trendingState.copy(
@@ -151,6 +151,7 @@ class SearchViewModel @Inject constructor(
                     searchFor(searchType, searchQuery, 1)
                 }
             }
+            is SearchUiEvent.OnNavigateTo -> {}
         }
     }
 }

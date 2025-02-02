@@ -17,7 +17,7 @@ sealed interface Route {
     data class Detail(val mediaType: String, val mediaId: Int): Route
 
     @Serializable
-    data class Reviews(val mediaType: String, val mediaId: Int): Route
+    data class Reviews(val mediaType: String, val mediaId: Int, val selectedReviewIndex: Int? = null): Route
 
     @Serializable
     data class Episodes(val mediaId: Int, val seasonNumber: Int): Route

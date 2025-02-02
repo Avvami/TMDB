@@ -24,12 +24,13 @@ import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.presentation.MediaState
 import com.personal.tmdb.core.util.MediaType
 import com.personal.tmdb.core.util.shimmerEffect
+import com.personal.tmdb.search.presentation.search.SearchUiEvent
 
 @Composable
 fun SearchTrending(
     modifier: Modifier = Modifier,
-    onNavigateTo: (route: Route) -> Unit,
-    trendingState: () -> MediaState
+    trendingState: () -> MediaState,
+    searchUiEvent: (SearchUiEvent) -> Unit
 ) {
     if (trendingState().isLoading) {
         SearchTrendingShimmer(modifier)
@@ -50,7 +51,7 @@ fun SearchTrending(
                         contentDescription = "Trending"
                     )
                     Text(
-                        text = stringResource(id = R.string.trending),
+                        text = stringResource(id = R.string.trending_this_week),
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Medium
                     )
@@ -65,10 +66,24 @@ fun SearchTrending(
                                         mediaInfo.mediaType?.let { mediaType ->
                                             when(mediaType) {
                                                 MediaType.TV, MediaType.MOVIE -> {
-//                                                    onNavigateTo()
+                                                    searchUiEvent(
+                                                        SearchUiEvent.OnNavigateTo(
+                                                            Route.Detail(
+                                                                mediaType = mediaType.name.lowercase(),
+                                                                mediaId = mediaInfo.id
+                                                            )
+                                                        )
+                                                    )
                                                 }
                                                 MediaType.PERSON -> {
-//                                                    onNavigateTo()
+                                                    searchUiEvent(
+                                                        SearchUiEvent.OnNavigateTo(
+                                                            Route.Person(
+                                                                personName = mediaInfo.name,
+                                                                personId = mediaInfo.id
+                                                            )
+                                                        )
+                                                    )
                                                 }
                                                 else -> {
                                                     /*TODO: Navigate to lost your way screen*/
@@ -107,7 +122,7 @@ fun SearchTrendingShimmer(
                 contentDescription = "Trending"
             )
             Text(
-                text = stringResource(id = R.string.trending),
+                text = stringResource(id = R.string.trending_this_week),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Medium
             )

@@ -24,6 +24,7 @@ fun MediaDetailDto.toMediaDetailInfo(): MediaDetailInfo {
         aggregateCredits = aggregateCredits,
         backdropPath = backdropPath,
         belongsToCollection = belongsToCollection,
+        cast = aggregateCredits?.cast?.take(15) ?: credits?.cast?.take(15),
         contentRatings = contentRatings,
         createdBy = createdBy,
         credits = credits,
