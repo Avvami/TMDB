@@ -129,4 +129,6 @@
     <string name="info">Info</string>
     <string name="latest_review">Latest Review</string>
     <string name="all_reviews">All Reviews</string>
+    <string name="rate">Rate</string>
+    <string name="list">List</string>
 </resources>

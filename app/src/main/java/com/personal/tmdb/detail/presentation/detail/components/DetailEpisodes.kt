@@ -150,9 +150,10 @@ fun EpisodeToAir(
             contentScale = ContentScale.Crop
         )
         Column(
-            modifier = Modifier.padding(start = 8.dp, top = 8.dp, end = 16.dp, bottom = 8.dp),
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-            horizontalAlignment = Alignment.End
+            modifier = Modifier
+                .weight(1f)
+                .padding(start = 8.dp, top = 8.dp, end = 16.dp, bottom = 8.dp),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(2.dp)

@@ -28,6 +28,7 @@ import com.personal.tmdb.core.util.MediaType
 import com.personal.tmdb.detail.data.models.Images
 import com.personal.tmdb.detail.domain.util.ImageType
 import com.personal.tmdb.detail.presentation.detail.DetailUiEvent
+import com.personal.tmdb.ui.theme.surfaceLight
 
 @Composable
 fun DetailMedia(
@@ -74,7 +75,8 @@ fun DetailMedia(
                                 .fillMaxSize()
                                 .background(
                                     Brush.verticalGradient(
-                                        listOf(Color.Transparent, MaterialTheme.colorScheme.surfaceContainer.copy(.7f))
+                                        colors = listOf(Color.Transparent, MaterialTheme.colorScheme.scrim.copy(.7f)),
+                                        startY = 100f
                                     )
                                 )
                         ) {
@@ -84,7 +86,7 @@ fun DetailMedia(
                                     .padding(8.dp),
                                 text = if (posters.size == 1) "${posters.size} Poster" else "${posters.size} Posters",
                                 style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.onSurface
+                                color = surfaceLight
                             )
                         }
                     }
@@ -123,7 +125,8 @@ fun DetailMedia(
                                 .fillMaxSize()
                                 .background(
                                     Brush.verticalGradient(
-                                        listOf(Color.Transparent, MaterialTheme.colorScheme.surfaceContainer.copy(.7f))
+                                        colors = listOf(Color.Transparent, MaterialTheme.colorScheme.scrim.copy(.7f)),
+                                        startY = 100f
                                     )
                                 )
                         ) {
@@ -133,7 +136,7 @@ fun DetailMedia(
                                     .padding(8.dp),
                                 text = if (backdrops.size == 1) "${backdrops.size} Backdrop" else "${backdrops.size} Backdrops",
                                 style = MaterialTheme.typography.labelLarge,
-                                color = MaterialTheme.colorScheme.onSurface
+                                color = surfaceLight
                             )
                         }
                     }

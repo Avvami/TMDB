@@ -41,6 +41,7 @@ import com.personal.tmdb.core.presentation.components.MediaCarousel
 import com.personal.tmdb.core.presentation.components.MediaPoster
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.shareText
+import com.personal.tmdb.detail.presentation.detail.components.DetailActionButtons
 import com.personal.tmdb.detail.presentation.detail.components.DetailBanner
 import com.personal.tmdb.detail.presentation.detail.components.DetailCollection
 import com.personal.tmdb.detail.presentation.detail.components.DetailCredits
@@ -183,7 +184,14 @@ private fun DetailScreen(
                             detailUiEvent = detailUiEvent
                         )
                     }
-                    item { /*TODO: Display buttons*/ }
+                    item {
+                        DetailActionButtons(
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                            info = { info },
+                            userState = userState,
+                            detailUiEvent = detailUiEvent
+                        )
+                    }
                     detailState().collection?.let { collectionInfo ->
                         item {
                             DetailCollection(
