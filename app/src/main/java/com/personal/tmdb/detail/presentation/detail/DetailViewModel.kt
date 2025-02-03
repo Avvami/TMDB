@@ -137,7 +137,7 @@ class DetailViewModel @Inject constructor(
 
     fun detailUiEvent(event: DetailUiEvent) {
         when (event) {
-            DetailUiEvent.NavigateBack -> {}
+            DetailUiEvent.OnNavigateBack -> {}
             is DetailUiEvent.OnNavigateTo -> {}
             DetailUiEvent.ChangeCollapsedOverview -> {
                 isOverviewCollapsed = !isOverviewCollapsed

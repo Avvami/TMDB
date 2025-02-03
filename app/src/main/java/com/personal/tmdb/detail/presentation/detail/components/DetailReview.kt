@@ -29,6 +29,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
 import com.personal.tmdb.core.navigation.Route
+import com.personal.tmdb.core.presentation.components.HtmlTextContainer
 import com.personal.tmdb.core.util.MediaType
 import com.personal.tmdb.core.util.formatDate
 import com.personal.tmdb.detail.domain.models.ReviewInfo
@@ -115,7 +116,7 @@ fun DetailReview(
         ) {
             with(reviews().last()) {
                 buildList<@Composable FlowRowScope.() -> Unit> {
-                    authorDetails?.rating?.takeIf { it != 0 }.let { rating ->
+                    authorDetails?.rating?.let { rating ->
                         add {
                             Row(
                                 modifier = Modifier.align(Alignment.CenterVertically),
@@ -177,13 +178,17 @@ fun DetailReview(
                     }
                 }
                 content?.let { content ->
-                    Text(
-                        text = content,
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = MaterialTheme.colorScheme.surfaceVariant,
-                        maxLines = 4,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    HtmlTextContainer(
+                        text = content
+                    ) {
+                        Text(
+                            text = it,
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.surfaceVariant,
+                            maxLines = 4,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 }
             }
         }

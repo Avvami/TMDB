@@ -69,7 +69,7 @@ fun DetailScreenRoot(
         detailState = { detailState },
         detailUiEvent = { event ->
             when (event) {
-                DetailUiEvent.NavigateBack -> onNavigateBack()
+                DetailUiEvent.OnNavigateBack -> onNavigateBack()
                 is DetailUiEvent.OnNavigateTo -> onNavigateTo(event.route)
                 else -> Unit
             }
@@ -98,7 +98,7 @@ private fun DetailScreen(
                 ),
                 navigationIcon = {
                     IconButton(
-                        onClick = { detailUiEvent(DetailUiEvent.NavigateBack) }
+                        onClick = { detailUiEvent(DetailUiEvent.OnNavigateBack) }
                     )  {
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.ArrowBack,

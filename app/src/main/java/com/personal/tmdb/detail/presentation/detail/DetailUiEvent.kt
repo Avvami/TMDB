@@ -3,7 +3,7 @@ package com.personal.tmdb.detail.presentation.detail
 import com.personal.tmdb.core.navigation.Route
 
 sealed interface DetailUiEvent {
-    data object NavigateBack: DetailUiEvent
+    data object OnNavigateBack: DetailUiEvent
     data class OnNavigateTo(val route: Route): DetailUiEvent
     data object ChangeCollapsedOverview: DetailUiEvent
     data class SetSelectedCountry(val country: String): DetailUiEvent

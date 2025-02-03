@@ -27,7 +27,7 @@ import com.personal.tmdb.detail.presentation.episode.EpisodeDetailsScreen
 import com.personal.tmdb.detail.presentation.episodes.EpisodesScreen
 import com.personal.tmdb.detail.presentation.image.ImageViewerScreen
 import com.personal.tmdb.detail.presentation.person.PersonScreen
-import com.personal.tmdb.detail.presentation.reviews.ReviewsScreen
+import com.personal.tmdb.detail.presentation.reviews.ReviewsScreenRoot
 import com.personal.tmdb.home.presentation.home.HomeScreenRoot
 import com.personal.tmdb.profile.presentation.profile.ProfileScreenRoot
 import com.personal.tmdb.search.presentation.search.SearchScreenRoot
@@ -199,10 +199,9 @@ fun ChildNavHost(
             )
         }
         animatedComposable<Route.Reviews> {
-            ReviewsScreen(
-                navigateBack = onNavigateBack,
-                navigateToHome = {},
-                preferencesState = preferencesState
+            ReviewsScreenRoot(
+                bottomPadding = bottomBarPadding,
+                onNavigateBack = onNavigateBack
             )
         }
         animatedComposable<Route.Episodes> {

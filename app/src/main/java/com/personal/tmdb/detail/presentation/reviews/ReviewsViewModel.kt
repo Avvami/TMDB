@@ -1,16 +1,17 @@
 package com.personal.tmdb.detail.presentation.reviews
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.personal.tmdb.core.util.C
+import androidx.navigation.toRoute
+import com.personal.tmdb.core.domain.util.UiText
+import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.util.Resource
-import com.personal.tmdb.detail.domain.models.ReviewsResponseInfo
 import com.personal.tmdb.detail.domain.repository.DetailRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,17 +21,20 @@ class ReviewsViewModel @Inject constructor(
     private val detailRepository: DetailRepository
 ): ViewModel() {
 
-    var reviewsState by mutableStateOf(ReviewsState())
-        private set
+    private val routeData = savedStateHandle.toRoute<Route.Reviews>()
 
-    val mediaType: String = savedStateHandle[C.MEDIA_TYPE] ?: ""
-
-    val mediaId: Int = savedStateHandle[C.MEDIA_ID] ?: 0
+    private val _reviewsState = MutableStateFlow(
+        ReviewsState(
+            selectedReviewIndex = routeData.selectedReviewIndex ?: 0,
+            showSelectedReview = routeData.selectedReviewIndex != null
+        )
+    )
+    val reviewsState = _reviewsState.asStateFlow()
 
     init {
         getReviews(
-            mediaType = mediaType,
-            mediaId = mediaId
+            mediaType = routeData.mediaType,
+            mediaId = routeData.mediaId
         )
     }
 
@@ -41,29 +45,42 @@ class ReviewsViewModel @Inject constructor(
         language: String? = null
     ) {
         viewModelScope.launch {
-            reviewsState = reviewsState.copy(
-                isLoading = true
-            )
-
-            var reviews: ReviewsResponseInfo? = null
-            var error: String? = null
+            _reviewsState.update { it.copy(loading = true) }
 
             detailRepository.getReviews(mediaType, mediaId, page, language).let { result ->
                 when(result) {
                     is Resource.Error -> {
-                        error = result.message
+                        _reviewsState.update {
+                            it.copy(
+                                loading = false,
+                                errorMessage = UiText.DynamicString(result.message ?: "")
+                            )
+                        }
                     }
                     is Resource.Success -> {
-                        reviews = result.data
+                        _reviewsState.update {
+                            it.copy(
+                                loading = false,
+                                reviews = result.data
+                            )
+                        }
                     }
                 }
             }
+        }
+    }
 
-            reviewsState = reviewsState.copy(
-                isLoading = false,
-                reviews = reviews,
-                error = error
-            )
+    fun reviewsUiEvent(event: ReviewsUiEvent) {
+        when (event) {
+            ReviewsUiEvent.OnNavigateBack -> {}
+            is ReviewsUiEvent.SetSelectedReview -> {
+                _reviewsState.update {
+                    it.copy(
+                        selectedReviewIndex = event.reviewIndex,
+                        showSelectedReview = event.show
+                    )
+                }
+            }
         }
     }
 }
