@@ -135,8 +135,7 @@ fun EpisodeToAir(
                     )
                 )
             }
-            .padding(2.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+            .padding(2.dp)
     ) {
         AsyncImage(
             modifier = Modifier
@@ -152,7 +151,7 @@ fun EpisodeToAir(
         Column(
             modifier = Modifier
                 .weight(1f)
-                .padding(start = 8.dp, top = 8.dp, end = 16.dp, bottom = 8.dp),
+                .padding(start = 12.dp, top = 8.dp, end = 16.dp, bottom = 8.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Column(

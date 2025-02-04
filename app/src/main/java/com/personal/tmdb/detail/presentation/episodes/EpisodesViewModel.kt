@@ -1,18 +1,18 @@
 package com.personal.tmdb.detail.presentation.episodes
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.personal.tmdb.core.util.C
+import androidx.navigation.toRoute
+import com.personal.tmdb.core.domain.util.UiText
+import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.util.MediaType
 import com.personal.tmdb.core.util.Resource
-import com.personal.tmdb.detail.domain.models.SeasonInfo
 import com.personal.tmdb.detail.domain.repository.DetailRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,37 +22,39 @@ class EpisodesViewModel @Inject constructor(
     private val detailRepository: DetailRepository
 ): ViewModel() {
 
-    var seasonState by mutableStateOf(SeasonState())
-        private set
+    private val routeData = savedStateHandle.toRoute<Route.Episodes>()
 
-    var selectedSeasonNumber by mutableIntStateOf(savedStateHandle[C.SEASON_NUMBER] ?: 0)
-        private set
-
-    val mediaId: Int = savedStateHandle[C.MEDIA_ID] ?: 0
+    private val _seasonState = MutableStateFlow(
+        SeasonState(
+            mediaId = routeData.mediaId,
+            seasonNumber = routeData.seasonNumber
+        )
+    )
+    val seasonState = _seasonState.asStateFlow()
 
     init {
         getMediaDetails(
-            mediaId = mediaId,
-            seasonNumber = selectedSeasonNumber
+            mediaId = routeData.mediaId,
+            seasonNumber = routeData.seasonNumber
         )
     }
 
     private fun getMediaDetails(mediaId: Int, seasonNumber: Int, language: String? = null) {
         viewModelScope.launch {
-            seasonState = seasonState.copy(
-                isLoading = true
-            )
+            _seasonState.update { it.copy(loading = true) }
 
             detailRepository.getMediaDetail(MediaType.TV.name.lowercase(), mediaId, language).let { result ->
                 when (result) {
                     is Resource.Error -> {
-                        seasonState = seasonState.copy(
-                            isLoading = false,
-                            error = result.message
-                        )
+                        _seasonState.update {
+                            it.copy(
+                                loading = false,
+                                errorMessage = UiText.DynamicString(result.message ?: "")
+                            )
+                        }
                     }
                     is Resource.Success -> {
-                        seasonState = seasonState.copy(mediaDetail = result.data)
+                        _seasonState.update { it.copy(mediaDetail = result.data) }
                         getSeasonDetails(mediaId, seasonNumber, language)
                     }
                 }
@@ -62,49 +64,46 @@ class EpisodesViewModel @Inject constructor(
 
     private fun getSeasonDetails(mediaId: Int, seasonNumber: Int, language: String? = null) {
         viewModelScope.launch {
-            seasonState = seasonState.copy(
-                isLoading = true
-            )
-
-            var seasonInfo: SeasonInfo? = null
-            var error: String? = null
+            _seasonState.update {
+                it.copy(
+                    seasonNumber = seasonNumber,
+                    overviewCollapsed = true,
+                    loading = true
+                )
+            }
 
             detailRepository.getSeasonDetails(mediaId, seasonNumber, language).let { result ->
                 when (result) {
                     is Resource.Error -> {
-                        error = result.message
+                        _seasonState.update {
+                            it.copy(
+                                loading = false,
+                                errorMessage = UiText.DynamicString(result.message ?: "")
+                            )
+                        }
                     }
                     is Resource.Success -> {
-                        seasonInfo = result.data
+                        _seasonState.update {
+                            it.copy(
+                                seasonInfo = result.data,
+                                loading = false,
+                                errorMessage = UiText.DynamicString(result.message ?: "")
+                            )
+                        }
                     }
                 }
             }
-
-            seasonState = seasonState.copy(
-                seasonInfo = seasonInfo,
-                isLoading = false,
-                error = error
-            )
         }
     }
 
-    var isOverviewCollapsed by mutableStateOf(true)
-        private set
-
-    var isSeasonDialogOpen by mutableStateOf(false)
-        private set
-
     fun episodesUiEvent(event: EpisodesUiEvent) {
         when(event) {
-            EpisodesUiEvent.ChangeCollapsedOverview -> {
-                isOverviewCollapsed = !isOverviewCollapsed
-            }
-            EpisodesUiEvent.ChangeSeasonDialogState -> {
-                isSeasonDialogOpen = !isSeasonDialogOpen
+            EpisodesUiEvent.OnNavigateBack -> {}
+            is EpisodesUiEvent.OnNavigateTo -> {}
+            EpisodesUiEvent.ChangeOverviewState -> {
+                _seasonState.update { it.copy(overviewCollapsed = !it.overviewCollapsed) }
             }
             is EpisodesUiEvent.SetSelectedSeason -> {
-                isOverviewCollapsed = true
-                selectedSeasonNumber = event.seasonNumber
                 getSeasonDetails(event.mediaId, event.seasonNumber)
             }
         }

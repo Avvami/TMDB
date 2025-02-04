@@ -68,7 +68,7 @@ fun ReviewsScreenRoot(
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
 @Composable
-fun ReviewsScreen(
+private fun ReviewsScreen(
     modifier: Modifier = Modifier,
     reviewsState: () -> ReviewsState,
     reviewsUiEvent: (ReviewsUiEvent) -> Unit

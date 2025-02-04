@@ -16,30 +16,50 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.personal.tmdb.R
-import com.personal.tmdb.core.presentation.PreferencesState
-import com.personal.tmdb.core.presentation.components.CustomIconButton
+import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.shareText
 import com.personal.tmdb.detail.presentation.episodes.components.seasonInfo
-import com.personal.tmdb.detail.presentation.episodes.components.seasonInfoShimmer
 import com.personal.tmdb.detail.presentation.episodes.components.seasonSelect
+
+@Composable
+fun EpisodesScreenRoot(
+    bottomPadding: Dp,
+    onNavigateBack: () -> Unit,
+    onNavigateTo: (route: Route) -> Unit,
+    viewModel: EpisodesViewModel = hiltViewModel()
+) {
+    val seasonState by viewModel.seasonState.collectAsStateWithLifecycle()
+    EpisodesScreen(
+        modifier = Modifier.padding(bottom = bottomPadding),
+        seasonState = { seasonState },
+        episodesUiEvent = { event ->
+            when (event) {
+                EpisodesUiEvent.OnNavigateBack -> onNavigateBack()
+                is EpisodesUiEvent.OnNavigateTo -> onNavigateTo(event.route)
+                else -> Unit
+            }
+            viewModel.episodesUiEvent(event)
+        }
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EpisodesScreen(
-    navigateBack: () -> Unit,
-    onNavigateTo: (route: String) -> Unit,
-    navigateToHome: () -> Unit,
-    preferencesState: State<PreferencesState>,
-    episodesViewModel: EpisodesViewModel = hiltViewModel()
+private fun EpisodesScreen(
+    modifier: Modifier = Modifier,
+    seasonState: () -> SeasonState,
+    episodesUiEvent: (EpisodesUiEvent) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -51,9 +71,8 @@ fun EpisodesScreen(
                     )
                 },
                 navigationIcon = {
-                    CustomIconButton(
-                        onClick = navigateBack,
-                        onLongClick = navigateToHome
+                    IconButton(
+                        onClick = { episodesUiEvent(EpisodesUiEvent.OnNavigateBack) }
                     )  {
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
@@ -66,10 +85,7 @@ fun EpisodesScreen(
                     IconButton(
                         onClick = {
                             context.shareText(
-                                C.SHARE_SEASON.format(
-                                    episodesViewModel.mediaId,
-                                    episodesViewModel.selectedSeasonNumber
-                                )
+                                C.SHARE_SEASON.format(seasonState().mediaId, seasonState().seasonNumber)
                             )
                         }
                     ) {
@@ -80,42 +96,30 @@ fun EpisodesScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    titleContentColor = MaterialTheme.colorScheme.onBackground,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
-                    actionIconContentColor = MaterialTheme.colorScheme.onBackground
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                    actionIconContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
         },
-        containerColor = MaterialTheme.colorScheme.background,
-        contentColor = MaterialTheme.colorScheme.onBackground
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface
     ) { innerPadding ->
         LazyColumn(
-            modifier = Modifier
+            modifier = modifier
                 .fillMaxSize()
-                .padding(innerPadding),
-            contentPadding = PaddingValues(bottom = 16.dp)
+                .padding(top = innerPadding.calculateTopPadding()),
+            contentPadding = PaddingValues(bottom = 8.dp)
         ) {
             seasonSelect(
-                seasonState = episodesViewModel::seasonState,
-                selectedSeasonNumber = episodesViewModel::selectedSeasonNumber,
-                isSeasonDialogOpen = episodesViewModel::isSeasonDialogOpen,
-                episodesUiEvent = episodesViewModel::episodesUiEvent
+                seasonState = seasonState,
+                episodesUiEvent = episodesUiEvent
             )
-            if (episodesViewModel.seasonState.isLoading) {
-                seasonInfoShimmer()
-            } else {
-                episodesViewModel.seasonState.seasonInfo?.let { seasonInfo ->
-                    seasonInfo(
-                        onNavigateTo = onNavigateTo,
-                        seriesId = episodesViewModel::mediaId,
-                        seasonInfo = { seasonInfo },
-                        isOverviewCollapsed = episodesViewModel::isOverviewCollapsed,
-                        preferencesState = preferencesState,
-                        episodesUiEvent = episodesViewModel::episodesUiEvent
-                    )
-                }
-            }
+            seasonInfo(
+                seasonState = seasonState,
+                episodesUiEvent = episodesUiEvent
+            )
         }
     }
 }

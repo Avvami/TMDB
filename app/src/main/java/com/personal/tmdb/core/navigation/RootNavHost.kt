@@ -24,7 +24,7 @@ import com.personal.tmdb.detail.presentation.cast.CastScreen
 import com.personal.tmdb.detail.presentation.collection.CollectionScreen
 import com.personal.tmdb.detail.presentation.detail.DetailScreenRoot
 import com.personal.tmdb.detail.presentation.episode.EpisodeDetailsScreen
-import com.personal.tmdb.detail.presentation.episodes.EpisodesScreen
+import com.personal.tmdb.detail.presentation.episodes.EpisodesScreenRoot
 import com.personal.tmdb.detail.presentation.image.ImageViewerScreen
 import com.personal.tmdb.detail.presentation.person.PersonScreen
 import com.personal.tmdb.detail.presentation.reviews.ReviewsScreenRoot
@@ -191,9 +191,7 @@ fun ChildNavHost(
             DetailScreenRoot(
                 bottomPadding = bottomBarPadding,
                 onNavigateBack = onNavigateBack,
-                onNavigateTo = { route ->
-                    navController.navigate(route = route)
-                },
+                onNavigateTo = onNavigateTo,
                 preferencesState = { preferencesState.value },
                 userState = { userState.value }
             )
@@ -205,15 +203,10 @@ fun ChildNavHost(
             )
         }
         animatedComposable<Route.Episodes> {
-            EpisodesScreen(
-                navigateBack = onNavigateBack,
-                onNavigateTo = { route ->
-                    navController.navigate(route = route) {
-                        launchSingleTop = true
-                    }
-                },
-                navigateToHome = {},
-                preferencesState = preferencesState
+            EpisodesScreenRoot(
+                bottomPadding = bottomBarPadding,
+                onNavigateBack = onNavigateBack,
+                onNavigateTo = onNavigateTo
             )
         }
         animatedComposable<Route.Episode> {
@@ -298,6 +291,5 @@ object RootNavGraph {
     const val DETAIL = "detail_screen"
     const val PERSON = "person_screen"
     const val APPEARANCE = "appearance_screen"
-    const val EPISODE = "episode_screen"
     const val IMAGE = "image_viewer_screen"
 }
