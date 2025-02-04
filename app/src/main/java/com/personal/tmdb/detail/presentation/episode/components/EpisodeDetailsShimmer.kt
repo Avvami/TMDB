@@ -1,15 +1,15 @@
 package com.personal.tmdb.detail.presentation.episode.components
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.sizeIn
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,115 +21,104 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
+import com.personal.tmdb.UserState
 import com.personal.tmdb.core.util.shimmerEffect
 
 @Composable
-fun EpisodeDetailsShimmer() {
+fun EpisodeDetailsShimmer(
+    modifier: Modifier = Modifier,
+    userState: () -> UserState
+) {
     Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        modifier = modifier,
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Box(
-            modifier = Modifier
-                .height(200.dp)
-                .fillMaxWidth()
-                .shimmerEffect(),
-            contentAlignment = Alignment.Center
+        Column(
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
                 modifier = Modifier
-                    .align(Alignment.Center),
-                text = stringResource(id = R.string.tmdb),
-                style = MaterialTheme.typography.displayLarge,
-                color = MaterialTheme.colorScheme.surfaceContainerLow,
+                    .clip(MaterialTheme.shapes.extraSmall)
+                    .shimmerEffect(),
+                text = "Episode title shimmer",
+                style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Medium,
-                textAlign = TextAlign.Center
+                color = Color.Transparent
+            )
+            Text(
+                modifier = Modifier
+                    .clip(MaterialTheme.shapes.extraSmall)
+                    .shimmerEffect(),
+                text = "Jan 1, 1111",
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color.Transparent
             )
         }
-        Column(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(MaterialTheme.shapes.extraSmall)
+                .shimmerEffect(),
+            text = "",
+            style = MaterialTheme.typography.bodyLarge,
+            minLines = 4
+        )
+        Text(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(MaterialTheme.shapes.extraSmall)
+                .shimmerEffect(),
+            text = "",
+            style = MaterialTheme.typography.labelLarge
+        )
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Column(
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                Text(
+            if (!userState().sessionId.isNullOrEmpty()) {
+                Button(
                     modifier = Modifier
                         .clip(MaterialTheme.shapes.small)
                         .shimmerEffect(),
-                    text = "Media title",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Medium,
-                    color = Color.Transparent
-                )
-                Text(
-                    modifier = Modifier
-                        .clip(MaterialTheme.shapes.small)
-                        .shimmerEffect(),
-                    text = "Media release date, genres, runtime",
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = Color.Transparent
-                )
-            }
-            Column(
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(8.dp)
-                        .clip(RoundedCornerShape(2.dp))
-                        .shimmerEffect()
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    onClick = {},
+                    enabled = false,
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        disabledContainerColor = Color.Transparent,
+                        disabledContentColor = Color.Transparent
+                    )
                 ) {
-                    Row(
-                        modifier = Modifier
-                            .clip(MaterialTheme.shapes.small)
-                            .shimmerEffect(),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        Box(
-                            modifier = Modifier
-                                .sizeIn(minWidth = 32.dp, minHeight = 32.dp)
-                                .clip(MaterialTheme.shapes.small)
-                        )
-                        Column {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(2.dp)
-                            ) {
-                                Text(
-                                    text = "0.0",
-                                    style = MaterialTheme.typography.labelLarge,
-                                    color = Color.Transparent
-                                )
-                                Icon(
-                                    modifier = Modifier.size(14.dp),
-                                    painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
-                                    contentDescription = null,
-                                    tint = Color.Transparent
-                                )
-                            }
-                        }
-                    }
+                    Icon(
+                        modifier = Modifier.size(ButtonDefaults.IconSize),
+                        painter = painterResource(id = R.drawable.icon_thumbs_up_down_fill0_wght400),
+                        contentDescription = null
+                    )
+                    Spacer(modifier = Modifier.width(ButtonDefaults.IconSpacing))
+                    Text(text = stringResource(id = R.string.rate))
                 }
             }
-            Text(
+            Button(
                 modifier = Modifier
-                    .fillMaxWidth()
                     .clip(MaterialTheme.shapes.small)
                     .shimmerEffect(),
-                text = "",
-                style = MaterialTheme.typography.bodyLarge,
-                minLines = 4
-            )
+                onClick = {},
+                enabled = false,
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
+                colors = ButtonDefaults.buttonColors(
+                    disabledContainerColor = Color.Transparent,
+                    disabledContentColor = Color.Transparent
+                )
+            ) {
+                Icon(
+                    modifier = Modifier.size(ButtonDefaults.IconSize),
+                    painter = painterResource(id = R.drawable.icon_thumbs_up_down_fill1_wght400),
+                    contentDescription = null
+                )
+                Spacer(modifier = Modifier.width(ButtonDefaults.IconSpacing))
+                Text(text = "10 (10)")
+            }
         }
     }
 }

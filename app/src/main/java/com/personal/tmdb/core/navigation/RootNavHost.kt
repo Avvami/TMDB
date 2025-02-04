@@ -23,7 +23,7 @@ import com.personal.tmdb.core.util.C
 import com.personal.tmdb.detail.presentation.cast.CastScreen
 import com.personal.tmdb.detail.presentation.collection.CollectionScreen
 import com.personal.tmdb.detail.presentation.detail.DetailScreenRoot
-import com.personal.tmdb.detail.presentation.episode.EpisodeDetailsScreen
+import com.personal.tmdb.detail.presentation.episode.EpisodeDetailsScreenRoot
 import com.personal.tmdb.detail.presentation.episodes.EpisodesScreenRoot
 import com.personal.tmdb.detail.presentation.image.ImageViewerScreen
 import com.personal.tmdb.detail.presentation.person.PersonScreen
@@ -210,15 +210,11 @@ fun ChildNavHost(
             )
         }
         animatedComposable<Route.Episode> {
-            EpisodeDetailsScreen(
-                navigateBack = onNavigateBack,
-                onNavigateTo = { route ->
-                    navController.navigate(route = route) {
-                        launchSingleTop = true
-                    }
-                },
-                navigateToHome = {},
-                userState = userState
+            EpisodeDetailsScreenRoot(
+                bottomPadding = bottomBarPadding,
+                onNavigateBack = onNavigateBack,
+                onNavigateTo = onNavigateTo,
+                userState = { userState.value }
             )
         }
         animatedComposable<Route.Collection> {

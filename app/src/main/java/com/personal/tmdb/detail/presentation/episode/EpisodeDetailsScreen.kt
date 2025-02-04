@@ -1,27 +1,19 @@
 package com.personal.tmdb.detail.presentation.episode
 
-import android.net.Uri
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.LocalOverscrollConfiguration
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowRight
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -32,8 +24,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -41,36 +33,57 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.personal.tmdb.R
 import com.personal.tmdb.UserState
-import com.personal.tmdb.core.navigation.RootNavGraph
-import com.personal.tmdb.core.presentation.components.CustomIconButton
-import com.personal.tmdb.core.presentation.components.MediaRowView
+import com.personal.tmdb.core.navigation.Route
+import com.personal.tmdb.core.presentation.components.MediaCarousel
 import com.personal.tmdb.core.util.C
+import com.personal.tmdb.core.util.MediaType
 import com.personal.tmdb.core.util.shareText
-import com.personal.tmdb.detail.data.models.Cast
 import com.personal.tmdb.detail.domain.util.ImageType
-import com.personal.tmdb.detail.presentation.episode.components.EpisodeDetails
+import com.personal.tmdb.detail.presentation.detail.components.AnnotatedItem
+import com.personal.tmdb.detail.presentation.detail.components.AnnotatedOverflowListText
+import com.personal.tmdb.detail.presentation.episode.components.EpisodeActionButtons
 import com.personal.tmdb.detail.presentation.episode.components.EpisodeDetailsShimmer
-import com.personal.tmdb.ui.theme.backgroundLight
-import com.personal.tmdb.ui.theme.onBackgroundLight
+import com.personal.tmdb.detail.presentation.episode.components.EpisodeOverview
+import com.personal.tmdb.detail.presentation.episode.components.EpisodeTitle
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun EpisodeDetailsScreen(
-    navigateBack: () -> Unit,
-    onNavigateTo: (route: String) -> Unit,
-    navigateToHome: () -> Unit,
-    userState: State<UserState>,
-    episodeDetailsViewModel: EpisodeDetailsViewModel = hiltViewModel()
+fun EpisodeDetailsScreenRoot(
+    bottomPadding: Dp,
+    onNavigateBack: () -> Unit,
+    onNavigateTo: (route: Route) -> Unit,
+    userState: () -> UserState,
+    viewModel: EpisodeDetailsViewModel = hiltViewModel()
+) {
+    val episodeDetailsState by viewModel.episodeDetailsState.collectAsStateWithLifecycle()
+    EpisodeDetailsScreen(
+        modifier = Modifier.padding(bottom = bottomPadding),
+        episodeDetailsState = { episodeDetailsState },
+        userState = userState,
+        episodeDetailsUiEvent = { event ->
+            when (event) {
+                EpisodeDetailsUiEvent.OnNavigateBack -> onNavigateBack()
+                is EpisodeDetailsUiEvent.OnNavigateTo -> onNavigateTo(event.route)
+            }
+            viewModel.episodeDetailsUiEvent(event)
+        }
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun EpisodeDetailsScreen(
+    modifier: Modifier = Modifier,
+    episodeDetailsState: () -> EpisodeDetailsState,
+    userState: () -> UserState,
+    episodeDetailsUiEvent: (EpisodeDetailsUiEvent) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -79,16 +92,17 @@ fun EpisodeDetailsScreen(
                     Text(
                         text = stringResource(
                             id = R.string.season_episode,
-                            episodeDetailsViewModel.seasonNumber,
-                            episodeDetailsViewModel.episodeNumber
+                            episodeDetailsState().seasonNumber,
+                            episodeDetailsState().episodeNumber
                         ),
                         fontWeight = FontWeight.Medium
                     )
                 },
                 navigationIcon = {
-                    CustomIconButton(
-                        onClick = navigateBack,
-                        onLongClick = navigateToHome
+                    IconButton(
+                        onClick = {
+                            episodeDetailsUiEvent(EpisodeDetailsUiEvent.OnNavigateBack)
+                        }
                     )  {
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
@@ -102,9 +116,9 @@ fun EpisodeDetailsScreen(
                         onClick = {
                             context.shareText(
                                 C.SHARE_EPISODE.format(
-                                    episodeDetailsViewModel.seriesId,
-                                    episodeDetailsViewModel.seasonNumber,
-                                    episodeDetailsViewModel.episodeNumber
+                                    episodeDetailsState().mediaId,
+                                    episodeDetailsState().seasonNumber,
+                                    episodeDetailsState().episodeNumber
                                 )
                             )
                         }
@@ -116,139 +130,145 @@ fun EpisodeDetailsScreen(
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    titleContentColor = MaterialTheme.colorScheme.onBackground,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
-                    actionIconContentColor = MaterialTheme.colorScheme.onBackground
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                    actionIconContentColor = MaterialTheme.colorScheme.onSurface
                 )
             )
         },
-        containerColor = MaterialTheme.colorScheme.background,
-        contentColor = MaterialTheme.colorScheme.onBackground
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface
     ) { innerPadding ->
         LazyColumn(
-            modifier = Modifier.padding(innerPadding),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
+            modifier = modifier.padding(top = innerPadding.calculateTopPadding()),
+            verticalArrangement = Arrangement.spacedBy(16.dp),
             contentPadding = PaddingValues(bottom = 16.dp)
         ) {
-            if (episodeDetailsViewModel.episodeDetailsState.isLoading) {
+            if (episodeDetailsState().loading) {
                 item {
-                    EpisodeDetailsShimmer()
+                    EpisodeDetailsShimmer(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        userState = userState
+                    )
                 }
             } else {
-                episodeDetailsViewModel.episodeDetailsState.error?.let {
+                episodeDetailsState().episodeDetails?.let { episodeDetails ->
                     item {
-                        Box(
-                            modifier = Modifier
-                                .height(200.dp)
-                                .fillMaxWidth()
-                                .background(MaterialTheme.colorScheme.surfaceContainerHigh),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                modifier = Modifier
-                                    .align(Alignment.Center),
-                                text = stringResource(id = R.string.tmdb),
-                                style = MaterialTheme.typography.titleLarge,
-                                color = MaterialTheme.colorScheme.outlineVariant,
-                                fontWeight = FontWeight.Medium,
-                                textAlign = TextAlign.Center
-                            )
-                        }
-                    }
-                }
-                episodeDetailsViewModel.episodeDetailsState.episodeDetails?.let { info ->
-                    item {
-                        Box(
-                            modifier = Modifier
-                                .height(200.dp)
-                                .fillMaxWidth(),
-                            contentAlignment = Alignment.Center
-                        ) {
-                            Text(
-                                modifier = Modifier.align(Alignment.Center),
-                                text = stringResource(id = R.string.tmdb),
-                                style = MaterialTheme.typography.displayMedium,
-                                color = MaterialTheme.colorScheme.surfaceContainerLow,
-                                fontStyle = FontStyle.Italic,
-                                fontWeight = FontWeight.Black,
-                                textAlign = TextAlign.Center
-                            )
-                            info.images?.stills?.let { stills ->
-                                if (stills.isNotEmpty()) {
-                                    val horizontalPagerState = rememberPagerState(
-                                        pageCount = { stills.size }
-                                    )
-                                    CompositionLocalProvider(
-                                        LocalOverscrollConfiguration provides null
-                                    ) {
-                                        HorizontalPager(
-                                            state = horizontalPagerState,
-                                            beyondViewportPageCount = 1
-                                        ) { page ->
-                                            AsyncImage(
-                                                modifier = Modifier
-                                                    .fillMaxSize()
-                                                    .clickable {
-                                                        onNavigateTo(RootNavGraph.IMAGE + "/${ImageType.STILLS.name.lowercase()}" +
-                                                                "/${Uri.encode(C.EPISODE_MEDIA_IMAGES.format(
-                                                                    episodeDetailsViewModel.seriesId,
-                                                                    episodeDetailsViewModel.seasonNumber,
-                                                                    episodeDetailsViewModel.episodeNumber
-                                                                ))}?${C.IMAGE_INDEX}=$page")
-                                                    },
-                                                model = C.TMDB_IMAGES_BASE_URL + C.BACKDROP_W1280 + stills[page]?.filePath,
-                                                contentDescription = "Backdrop",
-                                                placeholder = painterResource(id = R.drawable.placeholder),
-                                                error = painterResource(id = R.drawable.placeholder),
-                                                contentScale = ContentScale.Crop
-                                            )
-                                        }
-                                    }
-                                    Text(
-                                        modifier = Modifier
-                                            .padding(8.dp)
-                                            .clip(MaterialTheme.shapes.extraSmall)
-                                            .background(onBackgroundLight)
-                                            .padding(horizontal = 4.dp, vertical = 2.dp)
-                                            .align(Alignment.BottomEnd),
-                                        text = stringResource(
-                                            id = R.string.stills_pages,
-                                            (horizontalPagerState.currentPage + 1),
-                                            horizontalPagerState.pageCount
-                                        ),
-                                        style = MaterialTheme.typography.labelMedium,
-                                        color = backgroundLight
-                                    )
-                                }
-                            }
-                        }
-                    }
-                    item {
-                        EpisodeDetails(
-                            info = { info },
-                            isOverviewCollapsed = episodeDetailsViewModel::isOverviewCollapsed,
-                            episodeDetailsUiEvent = episodeDetailsViewModel::episodeDetailsUiEvent
+                        EpisodeTitle(
+                            modifier = Modifier.padding(horizontal = 16.dp),
+                            episodeInfo = { episodeDetails }
                         )
                     }
-                    if (!info.guestStars.isNullOrEmpty()) {
+                    episodeDetails.overview?.let { overview ->
                         item {
-                            MediaRowView(
-                                onNavigateTo = {
-                                    onNavigateTo(RootNavGraph.CAST + "/${Uri.encode(info.name ?: "") ?: ""}/tv/${episodeDetailsViewModel.seriesId}" +
-                                            "?${C.SEASON_NUMBER}=${episodeDetailsViewModel.seasonNumber}?${C.EPISODE_NUMBER}=${episodeDetailsViewModel.episodeNumber}")
+                            EpisodeOverview(
+                                modifier = Modifier.padding(horizontal = 16.dp),
+                                overview = overview
+                            )
+                        }
+                    }
+                    episodeDetails.guestStars?.takeIf { it.isNotEmpty() }?.let { guestStars ->
+                        item {
+                            AnnotatedOverflowListText(
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dp)
+                                    .clickable(
+                                        interactionSource = remember { MutableInteractionSource() },
+                                        indication = null
+                                    ) {
+                                        episodeDetailsUiEvent(
+                                            EpisodeDetailsUiEvent.OnNavigateTo(
+                                                Route.Cast(
+                                                    mediaName = episodeDetails.name ?: "",
+                                                    mediaType = MediaType.TV.name.lowercase(),
+                                                    mediaId = episodeDetailsState().mediaId,
+                                                    seasonNumber = episodeDetailsState().seasonNumber,
+                                                    episodeNumber = episodeDetailsState().episodeNumber
+                                                )
+                                            )
+                                        )
+                                    },
+                                titlePrefix = stringResource(id = R.string.guest_stars),
+                                items = guestStars.map { AnnotatedItem(id = it.id, name = it.name) }
+                            )
+                        }
+                    }
+                    if (!userState().sessionId.isNullOrEmpty() || episodeDetails.voteAverage != null) {
+                        item {
+                            EpisodeActionButtons(
+                                modifier = Modifier.padding(horizontal = 16.dp),
+                                episodeDetails = { episodeDetails },
+                                userState = userState
+                            )
+                        }
+                    }
+                    episodeDetails.images?.stills?.takeIf { it.isNotEmpty() }?.let { stills ->
+                        item {
+                            MediaCarousel(
+                                titleContent = {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable(
+                                                interactionSource = remember { MutableInteractionSource() },
+                                                indication = null
+                                            ) {
+                                                episodeDetailsUiEvent(
+                                                    EpisodeDetailsUiEvent.OnNavigateTo(
+                                                        Route.Image(
+                                                            imageType = ImageType.STILLS.name.lowercase(),
+                                                            imagesPath = C.EPISODE_MEDIA_IMAGES.format(
+                                                                episodeDetailsState().mediaId,
+                                                                episodeDetailsState().seasonNumber,
+                                                                episodeDetailsState().episodeNumber
+                                                            )
+                                                        )
+                                                    )
+                                                )
+                                            },
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                    ) {
+                                        Text(
+                                            modifier = Modifier.weight(1f),
+                                            text = stringResource(id = R.string.stills)
+                                        )
+                                        Icon(
+                                            imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
+                                            contentDescription = null
+                                        )
+                                    }
                                 },
-                                titleRes = R.string.cast_and_crew,
-                                titleFontSize = 20.sp,
                                 items = {
-                                    items(
-                                        count = info.guestStars.size,
-                                        key = { info.guestStars[it].id }
-                                    ) { index ->
-                                        val guestInfo = info.guestStars[index]
-                                        GuestStar(
-                                            onNavigateTo = onNavigateTo,
-                                            guestInfo = guestInfo
+                                    itemsIndexed(
+                                        items = stills
+                                    ) { index, image ->
+                                        AsyncImage(
+                                            modifier = Modifier
+                                                .height(170.dp)
+                                                .aspectRatio(16 / 9f)
+                                                .clip(MaterialTheme.shapes.medium)
+                                                .clickable {
+                                                    episodeDetailsUiEvent(
+                                                        EpisodeDetailsUiEvent.OnNavigateTo(
+                                                            Route.Image(
+                                                                imageType = ImageType.STILLS.name.lowercase(),
+                                                                imagesPath = C.EPISODE_MEDIA_IMAGES.format(
+                                                                    episodeDetailsState().mediaId,
+                                                                    episodeDetailsState().seasonNumber,
+                                                                    episodeDetailsState().episodeNumber
+                                                                ),
+                                                                selectedImageIndex = index
+                                                            )
+                                                        )
+                                                    )
+                                                },
+                                            model = C.TMDB_IMAGES_BASE_URL + C.BACKDROP_W780 + image?.filePath,
+                                            placeholder = painterResource(id = R.drawable.placeholder),
+                                            error = painterResource(id = R.drawable.placeholder),
+                                            contentDescription = "Poster",
+                                            contentScale = ContentScale.Crop
                                         )
                                     }
                                 }
@@ -256,54 +276,6 @@ fun EpisodeDetailsScreen(
                         }
                     }
                 }
-            }
-        }
-    }
-}
-
-@Composable
-fun GuestStar(
-    onNavigateTo: (route: String) -> Unit,
-    guestInfo: Cast
-) {
-    Column(
-        modifier = Modifier
-            .width(IntrinsicSize.Min)
-            .clip(MaterialTheme.shapes.small)
-            .clickable { onNavigateTo(RootNavGraph.PERSON + "/${guestInfo.name}/${guestInfo.id}") }
-        ,
-        verticalArrangement = Arrangement.spacedBy(4.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        AsyncImage(
-            modifier = Modifier
-                .size(100.dp)
-                .clip(CircleShape),
-            model = C.TMDB_IMAGES_BASE_URL + C.POSTER_W300 + guestInfo.profilePath,
-            placeholder = painterResource(id = R.drawable.placeholder),
-            error = painterResource(id = R.drawable.placeholder),
-            contentDescription = "Profile",
-            contentScale = ContentScale.Crop
-        )
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = guestInfo.name,
-                style = MaterialTheme.typography.labelMedium,
-                textAlign = TextAlign.Center,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            guestInfo.character?.let { character ->
-                Text(
-                    text = character,
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                    textAlign = TextAlign.Center,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
             }
         }
     }

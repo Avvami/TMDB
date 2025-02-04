@@ -24,7 +24,7 @@ interface DetailRepository {
 
     suspend fun getPerson(personId: Int, language: String? = null, appendToResponse: String? = null): Resource<PersonInfo>
 
-    suspend fun getEpisodeDetails(seriesId: Int, seasonNumber: Int, episodeNumber: Int, language: String? = null, appendToResponse: String? = null, includeImageLanguage: String? = null): Resource<EpisodeDetailsInfo>
+    suspend fun getEpisodeDetails(mediaId: Int, seasonNumber: Int, episodeNumber: Int, language: String? = null, appendToResponse: String? = null, includeImageLanguage: String? = null): Resource<EpisodeDetailsInfo>
 
     suspend fun getImages(path: String, language: String? = null, includeImageLanguage: String? = null): Resource<Images>
 

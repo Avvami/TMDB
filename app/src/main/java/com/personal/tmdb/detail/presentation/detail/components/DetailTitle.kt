@@ -49,7 +49,7 @@ fun DetailTitle(
             ) {
                 FlowRow(
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(6.dp)
                 ) {
                     components.forEachIndexed { index, component ->
                         component()

@@ -126,7 +126,7 @@ class DetailRepositoryImpl @Inject constructor(
     }
 
     override suspend fun getEpisodeDetails(
-        seriesId: Int,
+        mediaId: Int,
         seasonNumber: Int,
         episodeNumber: Int,
         language: String?,
@@ -136,7 +136,7 @@ class DetailRepositoryImpl @Inject constructor(
         return try {
             Resource.Success(
                 data = tmdbApi.getEpisodeDetails(
-                    seriesId,
+                    mediaId,
                     seasonNumber,
                     episodeNumber,
                     language,

@@ -1,18 +1,19 @@
 package com.personal.tmdb.detail.presentation.episode
 
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.toRoute
+import com.personal.tmdb.core.domain.util.UiText
 import com.personal.tmdb.core.domain.util.appendToResponse
-import com.personal.tmdb.core.util.C
+import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.util.MediaType
 import com.personal.tmdb.core.util.Resource
-import com.personal.tmdb.detail.domain.models.EpisodeDetailsInfo
 import com.personal.tmdb.detail.domain.repository.DetailRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,27 +23,29 @@ class EpisodeDetailsViewModel@Inject constructor(
     private val detailRepository: DetailRepository
 ): ViewModel() {
 
-    val seasonNumber: Int = savedStateHandle[C.SEASON_NUMBER] ?: 0
+    private val routeData = savedStateHandle.toRoute<Route.Episode>()
 
-    val episodeNumber: Int = savedStateHandle[C.EPISODE_NUMBER] ?: 0
-
-    val seriesId: Int = savedStateHandle[C.MEDIA_ID] ?: 0
-
-    var episodeDetailsState by mutableStateOf(EpisodeDetailsState())
-        private set
+    private val _episodeDetailsState = MutableStateFlow(
+        EpisodeDetailsState(
+            mediaId = routeData.mediaId,
+            seasonNumber = routeData.seasonNumber,
+            episodeNumber = routeData.episodeNumber
+        )
+    )
+    val episodeDetailsState = _episodeDetailsState.asStateFlow()
 
     init {
         getEpisodeDetails(
-            seriesId = seriesId,
-            seasonNumber = seasonNumber,
-            episodeNumber = episodeNumber,
+            mediaId = routeData.mediaId,
+            seasonNumber = routeData.seasonNumber,
+            episodeNumber = routeData.episodeNumber,
             appendToResponse = appendToResponse(MediaType.EPISODE.name.lowercase()),
-            includeImageLanguage = "null"
+            includeImageLanguage = "en,null"
         )
     }
 
     private fun getEpisodeDetails(
-        seriesId: Int,
+        mediaId: Int,
         seasonNumber: Int,
         episodeNumber: Int,
         language: String? = null,
@@ -50,40 +53,35 @@ class EpisodeDetailsViewModel@Inject constructor(
         includeImageLanguage: String? = null
     ) {
         viewModelScope.launch {
-            episodeDetailsState = episodeDetailsState.copy(
-                isLoading = true
-            )
+            _episodeDetailsState.update { it.copy(loading = true) }
 
-            var episodeDetails: EpisodeDetailsInfo? = null
-            var error: String? = null
-
-            detailRepository.getEpisodeDetails(seriesId, seasonNumber, episodeNumber, language, appendToResponse, includeImageLanguage).let { result ->
+            detailRepository.getEpisodeDetails(mediaId, seasonNumber, episodeNumber, language, appendToResponse, includeImageLanguage).let { result ->
                 when(result) {
                     is Resource.Error -> {
-                        error = result.message
+                        _episodeDetailsState.update {
+                            it.copy(
+                                loading = false,
+                                errorMessage = UiText.DynamicString(result.message ?: "")
+                            )
+                        }
                     }
                     is Resource.Success -> {
-                        episodeDetails = result.data
+                        _episodeDetailsState.update {
+                            it.copy(
+                                episodeDetails = result.data,
+                                loading = false
+                            )
+                        }
                     }
                 }
             }
-
-            episodeDetailsState = episodeDetailsState.copy(
-                episodeDetails = episodeDetails,
-                isLoading = false,
-                error = error
-            )
         }
     }
 
-    var isOverviewCollapsed by mutableStateOf(true)
-        private set
-
     fun episodeDetailsUiEvent(event: EpisodeDetailsUiEvent) {
         when(event) {
-            EpisodeDetailsUiEvent.ChangeCollapsedOverview -> {
-                isOverviewCollapsed = !isOverviewCollapsed
-            }
+            EpisodeDetailsUiEvent.OnNavigateBack -> {}
+            is EpisodeDetailsUiEvent.OnNavigateTo -> {}
         }
     }
 }
