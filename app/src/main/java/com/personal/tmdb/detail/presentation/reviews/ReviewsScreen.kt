@@ -97,7 +97,7 @@ private fun ReviewsScreen(
                 navigationIcon = {
                     IconButton(
                         onClick = {
-                            if (reviewsState().showSelectedReview) {
+                            if (reviewsState().showSelectedReview && reviewsState().selectedReviewIndex != 0) {
                                 reviewsUiEvent(ReviewsUiEvent.SetSelectedReview(reviewsState().selectedReviewIndex, false))
                             } else {
                                 reviewsUiEvent(ReviewsUiEvent.OnNavigateBack)
@@ -120,7 +120,7 @@ private fun ReviewsScreen(
             lazyGridState.scrollToItem(reviewsState().selectedReviewIndex)
         }
         BackHandler {
-            if (reviewsState().showSelectedReview) {
+            if (reviewsState().showSelectedReview && reviewsState().selectedReviewIndex != 0) {
                 reviewsUiEvent(ReviewsUiEvent.SetSelectedReview(reviewsState().selectedReviewIndex, false))
             } else {
                 reviewsUiEvent(ReviewsUiEvent.OnNavigateBack)

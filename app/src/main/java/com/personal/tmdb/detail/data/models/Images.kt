@@ -13,5 +13,7 @@ data class Images(
     @Json(name = "backdrops")
     val backdrops: List<Image?>?,
     @Json(name = "posters")
-    val posters: List<Image?>?
+    val posters: List<Image?>?,
+    @Json(name = "logos")
+    val logos: List<Image?>?
 )

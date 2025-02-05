@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,6 +33,9 @@ import com.personal.tmdb.core.util.C
 import com.personal.tmdb.detail.data.models.Provider
 import com.personal.tmdb.detail.domain.models.MediaDetailInfo
 import com.personal.tmdb.detail.presentation.detail.DetailUiEvent
+import com.personal.tmdb.ui.theme.onSurfaceDark
+import com.personal.tmdb.ui.theme.surfaceContainerDark
+import com.personal.tmdb.ui.theme.surfaceVariantDark
 
 @Composable
 fun DetailBanner(
@@ -70,9 +74,20 @@ fun DetailBanner(
                     .fillMaxSize()
                     .background(
                         Brush.verticalGradient(
-                            listOf(Color.Transparent, MaterialTheme.colorScheme.surfaceContainer)
+                            listOf(Color.Transparent, surfaceContainerDark)
                         )
                     )
+            )
+            AsyncImage(
+                modifier = Modifier
+                    .padding(8.dp)
+                    .align(Alignment.BottomCenter)
+                    .sizeIn(maxWidth = 200.dp, maxHeight = 70.dp)
+                    .fillMaxSize(),
+                model = C.TMDB_IMAGES_BASE_URL + C.LOGO_W500 + (info().images?.logos?.find { it?.iso6391 == "en" }?.filePath
+                    ?: info().images?.logos?.getOrNull(0)?.filePath),
+                contentDescription = "Logo",
+                contentScale = ContentScale.Inside
             )
         }
         info().watchProviders?.takeIf { it.isNotEmpty() }?.let { watchProviders ->
@@ -85,7 +100,7 @@ fun DetailBanner(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(MaterialTheme.colorScheme.surfaceContainer)
+                        .background(surfaceContainerDark)
                         .padding(horizontal = 8.dp, vertical = 4.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
                     verticalAlignment = Alignment.CenterVertically
@@ -156,12 +171,12 @@ fun WatchNow(
         Text(
             text = stringResource(id = available),
             style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.surfaceVariant
+            color = surfaceVariantDark
         )
         Text(
             text = stringResource(id = R.string.watch_now),
             style = MaterialTheme.typography.labelLarge,
-            color = MaterialTheme.colorScheme.onSurface
+            color = onSurfaceDark
         )
     }
 }

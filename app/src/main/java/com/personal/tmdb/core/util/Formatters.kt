@@ -7,6 +7,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.buildAnnotatedString
 import com.personal.tmdb.R
+import com.personal.tmdb.core.domain.util.UiText
 import com.personal.tmdb.ui.theme.tmdbRatingGreen
 import com.personal.tmdb.ui.theme.tmdbRatingOrange
 import com.personal.tmdb.ui.theme.tmdbRatingRed
@@ -15,15 +16,18 @@ import java.time.format.DateTimeFormatter
 import java.util.NavigableMap
 import java.util.TreeMap
 
-
-fun formatRuntime(minutes: Int, context: Context): String {
+fun formatRuntime(minutes: Int): UiText {
     return when {
-        minutes < 60 -> UiText.StringResource(R.string.runtime_min, minutes).asString(context)
-        minutes == 60 -> UiText.StringResource(R.string.runtime_h, minutes).asString(context)
+        minutes < 60 -> UiText.StringResource(R.string.runtime_min, minutes)
+        minutes == 60 -> UiText.StringResource(R.string.runtime_h, minutes)
+        minutes % 60 == 0 -> {
+            val hours = minutes / 60
+            UiText.StringResource(R.string.runtime_h, hours)
+        }
         else -> {
             val hours = minutes / 60
             val remainingMinutes = minutes % 60
-            UiText.StringResource(R.string.runtime_full, hours, remainingMinutes).asString(context)
+            UiText.StringResource(R.string.runtime_full, hours, remainingMinutes)
         }
     }
 }

@@ -2,8 +2,11 @@ package com.personal.tmdb.home.presentation.home
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.personal.tmdb.core.domain.models.MediaInfo
+import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.Resource
 import com.personal.tmdb.core.util.TimeWindow
+import com.personal.tmdb.detail.domain.repository.DetailRepository
 import com.personal.tmdb.home.domain.repository.HomeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val homeRepository: HomeRepository
+    private val homeRepository: HomeRepository,
+    private val detailRepository: DetailRepository
 ): ViewModel() {
 
     private val _homeState = MutableStateFlow(HomeState())
@@ -35,16 +39,29 @@ class HomeViewModel @Inject constructor(
                     }
                     is Resource.Success -> {
                         val trending = result.data
+                        val randomMedia = trending?.results?.randomOrNull()
+                        randomMedia?.let {
+                            getRandomMediaLogos(it)
+                        }
                         _homeState.update {
                             it.copy(
                                 loading = false,
                                 trending = trending,
-                                randomMedia = trending?.results?.randomOrNull()
+                                randomMedia = randomMedia
                             )
                         }
                     }
                 }
             }
+        }
+    }
+
+    private suspend fun getRandomMediaLogos(randomMedia: MediaInfo) {
+        detailRepository.getImages(
+            path = C.MEDIA_IMAGES.format(randomMedia.mediaType?.name?.lowercase().toString(), randomMedia.id),
+            includeImageLanguage = "en,null"
+        ).let { imagesResult ->
+            _homeState.update { it.copy(randomMediaLogos = imagesResult.data?.logos) }
         }
     }
 

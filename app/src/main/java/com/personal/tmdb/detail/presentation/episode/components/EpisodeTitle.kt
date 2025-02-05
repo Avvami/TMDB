@@ -12,7 +12,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -51,10 +50,9 @@ fun EpisodeTitle(
             }
             episodeInfo().runtime?.let { runtime ->
                 add {
-                    val context = LocalContext.current
                     Text(
                         modifier = Modifier.align(Alignment.CenterVertically),
-                        text = formatRuntime(runtime, context),
+                        text = formatRuntime(runtime).asString(),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.surfaceVariant
                     )

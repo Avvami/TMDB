@@ -38,6 +38,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
 import com.personal.tmdb.UserState
+import com.personal.tmdb.core.util.compactDecimalFormat
 import com.personal.tmdb.core.util.formatVoteAverage
 import com.personal.tmdb.detail.domain.models.MediaDetailInfo
 import com.personal.tmdb.detail.presentation.detail.DetailUiEvent
@@ -102,11 +103,11 @@ fun DetailActionButtons(
                             ) {
                                 append(formatVoteAverage(voteAverage))
                             }
-                            info().voteCount?.let { voteCount ->
+                            info().voteCount?.takeIf { it != 0 }?.let { voteCount ->
                                 withStyle(
                                     style = MaterialTheme.typography.labelLarge.copy(color = MaterialTheme.colorScheme.surfaceVariant).toSpanStyle()
                                 ) {
-                                    append(" ($voteCount)")
+                                    append(" (${compactDecimalFormat(voteCount.toLong())})")
                                 }
                             }
                         }
