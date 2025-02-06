@@ -42,7 +42,6 @@ fun SearchScreenRoot(
         searchUiEvent = { event ->
             when (event) {
                 is SearchUiEvent.OnNavigateTo -> {
-                    println(event.route)
                     onNavigateTo(event.route)
                 }
                 else -> Unit

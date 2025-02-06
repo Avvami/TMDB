@@ -25,7 +25,7 @@ import com.personal.tmdb.detail.presentation.collection.CollectionScreen
 import com.personal.tmdb.detail.presentation.detail.DetailScreenRoot
 import com.personal.tmdb.detail.presentation.episode.EpisodeDetailsScreenRoot
 import com.personal.tmdb.detail.presentation.episodes.EpisodesScreenRoot
-import com.personal.tmdb.detail.presentation.image.ImageViewerScreen
+import com.personal.tmdb.detail.presentation.image.ImageViewerScreenRoot
 import com.personal.tmdb.detail.presentation.person.PersonScreen
 import com.personal.tmdb.detail.presentation.reviews.ReviewsScreenRoot
 import com.personal.tmdb.home.presentation.home.HomeScreenRoot
@@ -45,6 +45,9 @@ fun RootNavHost(
     uiEvent: (UiEvent) -> Unit
 ) {
     val scope = rememberCoroutineScope()
+    val onNavigateBack: () -> Unit = {
+        rootNavController.navigateUp()
+    }
 
     NavHost(
         navController = rootNavController,
@@ -65,6 +68,7 @@ fun RootNavHost(
                 }
             }
             ChildNavHost(
+                rootNavController = rootNavController,
                 navController = homeNavController,
                 scrollState = lazyListState,
                 startDestination = Route.Home,
@@ -89,6 +93,7 @@ fun RootNavHost(
                 }
             }
             ChildNavHost(
+                rootNavController = rootNavController,
                 navController = searchNavController,
                 scrollState = lazyGridState,
                 startDestination = Route.Search,
@@ -120,6 +125,7 @@ fun RootNavHost(
                 }
             }
             ChildNavHost(
+                rootNavController = rootNavController,
                 navController = profileNavController,
                 scrollState = lazyListState,
                 startDestination = Route.Profile(approved),
@@ -129,11 +135,18 @@ fun RootNavHost(
                 uiEvent = uiEvent
             )
         }
+        animatedComposable<Route.Image> {
+            ImageViewerScreenRoot(
+                onNavigateBack = onNavigateBack,
+                preferencesState = { preferencesState.value }
+            )
+        }
     }
 }
 
 @Composable
 fun ChildNavHost(
+    rootNavController: NavHostController,
     navController: NavHostController,
     scrollState: Any,
     startDestination: Route,
@@ -146,8 +159,9 @@ fun ChildNavHost(
         navController.navigateUp()
     }
     val onNavigateTo: (route: Route) -> Unit = { route ->
-        navController.navigate(route = route) {
-            launchSingleTop = true
+        val controller = if (route is Route.Image) rootNavController else navController
+        controller.navigate(route = route) {
+            launchSingleTop = if (route is Route.Image) true else route !is Route.Detail
         }
     }
     NavHost(
@@ -249,12 +263,6 @@ fun ChildNavHost(
                     }
                 },
                 navigateToHome = {},
-                preferencesState = preferencesState
-            )
-        }
-        animatedComposable<Route.Image> {
-            ImageViewerScreen(
-                navigateBack = onNavigateBack,
                 preferencesState = preferencesState
             )
         }

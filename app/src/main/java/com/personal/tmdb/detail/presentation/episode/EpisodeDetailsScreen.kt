@@ -1,7 +1,6 @@
 package com.personal.tmdb.detail.presentation.episode
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -25,7 +24,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -174,7 +172,7 @@ private fun EpisodeDetailsScreen(
                                 modifier = Modifier
                                     .padding(horizontal = 16.dp)
                                     .clickable(
-                                        interactionSource = remember { MutableInteractionSource() },
+                                        interactionSource = null,
                                         indication = null
                                     ) {
                                         episodeDetailsUiEvent(
@@ -210,23 +208,29 @@ private fun EpisodeDetailsScreen(
                                     Row(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .clickable(
-                                                interactionSource = remember { MutableInteractionSource() },
-                                                indication = null
-                                            ) {
-                                                episodeDetailsUiEvent(
-                                                    EpisodeDetailsUiEvent.OnNavigateTo(
-                                                        Route.Image(
-                                                            imageType = ImageType.STILLS.name.lowercase(),
-                                                            imagesPath = C.EPISODE_MEDIA_IMAGES.format(
-                                                                episodeDetailsState().mediaId,
-                                                                episodeDetailsState().seasonNumber,
-                                                                episodeDetailsState().episodeNumber
+                                            .then(
+                                                if (stills.size > 1) {
+                                                    Modifier.clickable(
+                                                        interactionSource = null,
+                                                        indication = null
+                                                    ) {
+                                                        episodeDetailsUiEvent(
+                                                            EpisodeDetailsUiEvent.OnNavigateTo(
+                                                                Route.Image(
+                                                                    imageType = ImageType.STILLS.name.lowercase(),
+                                                                    imagesPath = C.EPISODE_MEDIA_IMAGES.format(
+                                                                        episodeDetailsState().mediaId,
+                                                                        episodeDetailsState().seasonNumber,
+                                                                        episodeDetailsState().episodeNumber
+                                                                    )
+                                                                )
                                                             )
                                                         )
-                                                    )
-                                                )
-                                            },
+                                                    }
+                                                } else {
+                                                    Modifier
+                                                }
+                                            ),
                                         verticalAlignment = Alignment.CenterVertically,
                                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                                     ) {
@@ -234,10 +238,12 @@ private fun EpisodeDetailsScreen(
                                             modifier = Modifier.weight(1f),
                                             text = stringResource(id = R.string.stills)
                                         )
-                                        Icon(
-                                            imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
-                                            contentDescription = null
-                                        )
+                                        if (stills.size > 1) {
+                                            Icon(
+                                                imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
+                                                contentDescription = null
+                                            )
+                                        }
                                     }
                                 },
                                 items = {

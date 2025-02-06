@@ -45,23 +45,20 @@ fun ReviewsScreenShimmer(
                     color = Color.Transparent
                 )
                 Row(
-                    modifier = Modifier.align(Alignment.CenterVertically),
+                    modifier = Modifier
+                        .align(Alignment.CenterVertically)
+                        .clip(MaterialTheme.shapes.extraSmall)
+                        .shimmerEffect(),
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        modifier = Modifier
-                            .size(18.dp)
-                            .clip(MaterialTheme.shapes.extraSmall)
-                            .shimmerEffect(),
+                        modifier = Modifier.size(18.dp),
                         painter = painterResource(id = R.drawable.icon_thumbs_up_down_fill1_wght400),
                         contentDescription = "Thumbs",
                         tint = Color.Transparent
                     )
                     Text(
-                        modifier = Modifier
-                            .clip(MaterialTheme.shapes.extraSmall)
-                            .shimmerEffect(),
                         text = "10",
                         style = MaterialTheme.typography.titleMedium,
                         color = Color.Transparent

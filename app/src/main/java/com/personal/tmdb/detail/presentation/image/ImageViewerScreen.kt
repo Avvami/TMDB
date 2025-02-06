@@ -1,5 +1,7 @@
 package com.personal.tmdb.detail.presentation.image
 
+import android.app.Activity
+import android.os.Build
 import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -17,6 +19,7 @@ import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.LocalOverscrollConfiguration
+import androidx.compose.foundation.OverscrollConfiguration
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -43,7 +46,7 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.automirrored.rounded.KeyboardArrowLeft
+import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -58,12 +61,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -77,8 +79,8 @@ import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
-import com.personal.tmdb.MainActivity
 import com.personal.tmdb.R
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.util.ApplySystemBarsTheme
@@ -88,58 +90,67 @@ import com.personal.tmdb.core.util.findActivity
 import com.personal.tmdb.core.util.negativeHorizontalPadding
 import com.personal.tmdb.core.util.shareText
 import com.personal.tmdb.detail.domain.util.ImageType
-import com.personal.tmdb.ui.theme.backgroundLight
-import com.personal.tmdb.ui.theme.scrimLight
-import com.personal.tmdb.ui.theme.surfaceVariantLight
+import com.personal.tmdb.ui.theme.onSurfaceDark
+import com.personal.tmdb.ui.theme.surfaceVariantDark
 import kotlinx.coroutines.launch
 import net.engawapg.lib.zoomable.ScrollGesturePropagation
 import net.engawapg.lib.zoomable.rememberZoomState
 import net.engawapg.lib.zoomable.zoomable
 
+@Composable
+fun ImageViewerScreenRoot(
+    onNavigateBack: () -> Unit,
+    preferencesState: () -> PreferencesState,
+    viewModel: ImageViewerViewModel = hiltViewModel()
+) {
+    val imagesState by viewModel.imagesState.collectAsStateWithLifecycle()
+    ImageViewerScreen(
+        imagesState = { imagesState },
+        preferencesState = preferencesState,
+        imageViewerUiEvent = { event ->
+            when (event) {
+                ImageViewerUiEvent.OnNavigateBack -> onNavigateBack()
+                else -> Unit
+            }
+            viewModel.imageViewerUiEvent(event)
+        }
+    )
+}
+
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun ImageViewerScreen(
-    navigateBack: () -> Unit,
-    preferencesState: State<PreferencesState>,
-    imageViewerViewModel: ImageViewerViewModel = hiltViewModel()
+private fun ImageViewerScreen(
+    imagesState: () -> ImagesState,
+    preferencesState: () -> PreferencesState,
+    imageViewerUiEvent: (ImageViewerUiEvent) -> Unit
 ) {
     ApplySystemBarsTheme(applyLightStatusBars = true)
     val horizontalPagerState = rememberPagerState(
-        pageCount = { imageViewerViewModel.imagesState.images?.size ?: 0 },
-        initialPage = imageViewerViewModel.initialPage
+        pageCount = { imagesState().imagesByType?.size ?: 0 },
+        initialPage = imagesState().initialPage ?: 0
     )
     val lazyGridState = rememberLazyGridState()
     val scope = rememberCoroutineScope()
     val view = LocalView.current
     val context = LocalContext.current
-    val activity = context.findActivity() as MainActivity
+    val activity = context.findActivity()
     val darkTheme = isSystemInDarkTheme()
-    val windowInsetsController = WindowCompat.getInsetsController(activity.window, activity.window.decorView)
     DisposableEffect(Unit) {
         onDispose {
-            applySystemBarsTheme(view, context, preferencesState.value.darkTheme ?: darkTheme)
+            applySystemBarsTheme(view, context, preferencesState().darkTheme ?: darkTheme)
         }
     }
     BackHandler {
-        if (imageViewerViewModel.showGridView) {
-            imageViewerViewModel.imageViewerUiEvent(ImageViewerUiEvent.ChangeShowGridView)
-            return@BackHandler
-        }
-        if (imageViewerViewModel.hideUi) {
-            windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
-            navigateBack()
-            return@BackHandler
-        }
-        navigateBack()
+        onBackAction(activity, imagesState(), imageViewerUiEvent)
     }
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(scrimLight)
+            .background(MaterialTheme.colorScheme.scrim)
     ) {
-        imageViewerViewModel.imagesState.images?.let { images ->
+        imagesState().imagesByType?.let { images ->
             AnimatedContent(
-                targetState = imageViewerViewModel.showGridView,
+                targetState = imagesState().showGridView,
                 label = "Image viewer animation",
                 transitionSpec = {
                     scaleIn(initialScale = .7f) + fadeIn() togetherWith scaleOut(targetScale = .7f) + fadeOut()
@@ -156,7 +167,7 @@ fun ImageViewerScreen(
                         horizontalArrangement = Arrangement.spacedBy(2.dp),
                         verticalArrangement = Arrangement.spacedBy(2.dp)
                     ) {
-                        if (!imageViewerViewModel.imagesState.state?.backdrops.isNullOrEmpty() && !imageViewerViewModel.imagesState.state?.posters.isNullOrEmpty()) {
+                        if (!imagesState().state?.backdrops.isNullOrEmpty() && !imagesState().state?.posters.isNullOrEmpty()) {
                             item(
                                 span = { GridItemSpan(maxLineSpan) }
                             ) {
@@ -167,27 +178,27 @@ fun ImageViewerScreen(
                                     verticalAlignment = Alignment.CenterVertically
                                 ) {
                                     TextButton(
-                                        onClick = { imageViewerViewModel.imageViewerUiEvent(ImageViewerUiEvent.SetImageType(ImageType.POSTERS)) },
+                                        onClick = { imageViewerUiEvent(ImageViewerUiEvent.SetImageType(ImageType.POSTERS)) },
                                         colors = ButtonDefaults.textButtonColors(
-                                            contentColor = if (imageViewerViewModel.imageType == ImageType.POSTERS) backgroundLight else surfaceVariantLight
+                                            contentColor = if (imagesState().imageType == ImageType.POSTERS) onSurfaceDark else surfaceVariantDark
                                         )
                                     ) {
                                         Text(
                                             text = stringResource(id = R.string.posters),
-                                            fontWeight = if (imageViewerViewModel.imageType == ImageType.POSTERS) FontWeight.Medium else FontWeight.Normal,
-                                            fontSize = if (imageViewerViewModel.imageType == ImageType.POSTERS) 18.sp else 16.sp
+                                            fontWeight = if (imagesState().imageType == ImageType.POSTERS) FontWeight.Medium else FontWeight.Normal,
+                                            fontSize = if (imagesState().imageType == ImageType.POSTERS) 18.sp else 16.sp
                                         )
                                     }
                                     TextButton(
-                                        onClick = { imageViewerViewModel.imageViewerUiEvent(ImageViewerUiEvent.SetImageType(ImageType.BACKDROPS)) },
+                                        onClick = { imageViewerUiEvent(ImageViewerUiEvent.SetImageType(ImageType.BACKDROPS)) },
                                         colors = ButtonDefaults.textButtonColors(
-                                            contentColor = if (imageViewerViewModel.imageType == ImageType.BACKDROPS) backgroundLight else surfaceVariantLight
+                                            contentColor = if (imagesState().imageType == ImageType.BACKDROPS) onSurfaceDark else surfaceVariantDark
                                         )
                                     ) {
                                         Text(
                                             text = stringResource(id = R.string.backdrops),
-                                            fontWeight = if (imageViewerViewModel.imageType == ImageType.BACKDROPS) FontWeight.Medium else FontWeight.Normal,
-                                            fontSize = if (imageViewerViewModel.imageType == ImageType.BACKDROPS) 18.sp else 16.sp
+                                            fontWeight = if (imagesState().imageType == ImageType.BACKDROPS) FontWeight.Medium else FontWeight.Normal,
+                                            fontSize = if (imagesState().imageType == ImageType.BACKDROPS) 18.sp else 16.sp
                                         )
                                     }
                                 }
@@ -203,7 +214,7 @@ fun ImageViewerScreen(
                                     .aspectRatio(1f)
                                     .clip(MaterialTheme.shapes.extraSmall)
                                     .clickable {
-                                        imageViewerViewModel.imageViewerUiEvent(ImageViewerUiEvent.ChangeShowGridView)
+                                        imageViewerUiEvent(ImageViewerUiEvent.ChangeShowGridViewState)
                                         scope.launch {
                                             horizontalPagerState.scrollToPage(index)
                                         }
@@ -218,7 +229,7 @@ fun ImageViewerScreen(
                     }
                 } else {
                     CompositionLocalProvider(
-                        LocalOverscrollConfiguration provides null
+                        LocalOverscrollConfiguration provides if (Build.VERSION.SDK_INT > 30) OverscrollConfiguration() else null
                     ) {
                         HorizontalPager(
                             modifier = Modifier
@@ -235,9 +246,8 @@ fun ImageViewerScreen(
                                     .fillMaxSize()
                                     .graphicsLayer {
                                         val endOffset = (
-                                                (horizontalPagerState.currentPage - page) + horizontalPagerState
-                                                    .currentPageOffsetFraction
-                                                ).coerceAtMost(0f)
+                                                (horizontalPagerState.currentPage - page) + horizontalPagerState.currentPageOffsetFraction
+                                        ).coerceAtMost(0f)
                                         alpha = 1f + endOffset
                                         val scale = 1f + (endOffset * .2f)
                                         scaleX = scale
@@ -248,12 +258,12 @@ fun ImageViewerScreen(
                                         enableOneFingerZoom = false,
                                         scrollGesturePropagation = ScrollGesturePropagation.ContentEdge,
                                         onTap = {
-                                            imageViewerViewModel.imageViewerUiEvent(ImageViewerUiEvent.ChangeHideUi)
-                                            if (imageViewerViewModel.hideUi) {
-                                                windowInsetsController.hide(WindowInsetsCompat.Type.statusBars())
+                                            if (imagesState().hideUi) {
+                                                showSystemBars(activity)
                                             } else {
-                                                windowInsetsController.show(WindowInsetsCompat.Type.statusBars())
+                                                hideSystemBars(activity)
                                             }
+                                            imageViewerUiEvent(ImageViewerUiEvent.ChangeHideUiState)
                                         }
                                     ),
                                 model = C.TMDB_IMAGES_BASE_URL + C.ORIGINAL + images[page]?.filePath,
@@ -263,7 +273,7 @@ fun ImageViewerScreen(
                                 contentDescription = "Image"
                             )
                             val isVisible = page == horizontalPagerState.settledPage
-                            LaunchedEffect(isVisible) {
+                            LaunchedEffect(key1 = isVisible) {
                                 if (!isVisible) {
                                     zoomState.reset()
                                 }
@@ -274,7 +284,7 @@ fun ImageViewerScreen(
             }
         }
         AnimatedVisibility(
-            visible = !imageViewerViewModel.hideUi,
+            visible = !imagesState().hideUi,
             enter = slideInVertically(animationSpec = spring(stiffness = Spring.StiffnessLow)) + fadeIn(animationSpec = tween(delayMillis = 50)),
             exit = slideOutVertically(animationSpec = spring(stiffness = Spring.StiffnessLow)) + fadeOut(animationSpec = tween(durationMillis = 250))
         ) {
@@ -283,17 +293,17 @@ fun ImageViewerScreen(
             ) {
                 TopAppBar(
                     modifier = Modifier
-                        .background(scrimLight.copy(.5f))
+                        .background(MaterialTheme.colorScheme.scrim.copy(.5f))
                         .statusBarsPadding(),
                     title = {
                         AnimatedVisibility(
-                            visible = !imageViewerViewModel.showGridView,
+                            visible = !imagesState().showGridView,
                             enter = expandVertically() + fadeIn(),
                             exit = shrinkVertically() + fadeOut()
                         ) {
                             Text(
                                 text = stringResource(
-                                    id = when(imageViewerViewModel.imageType) {
+                                    id = when (imagesState().imageType) {
                                         ImageType.PROFILES -> R.string.profiles
                                         ImageType.STILLS -> R.string.stills
                                         ImageType.BACKDROPS -> R.string.backdrops
@@ -308,36 +318,30 @@ fun ImageViewerScreen(
                     navigationIcon = {
                         IconButton(
                             onClick = {
-                                if (imageViewerViewModel.showGridView) {
-                                    imageViewerViewModel.imageViewerUiEvent(ImageViewerUiEvent.ChangeShowGridView)
-                                } else {
-                                    navigateBack()
-                                }
+                                onBackAction(activity, imagesState(), imageViewerUiEvent)
                             }
                         ) {
                             Icon(
                                 imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
-                                contentDescription = "Back",
-                                tint = backgroundLight
+                                contentDescription = "Back"
                             )
                         }
                     },
                     actions = {
                         AnimatedVisibility(
-                            visible = !imageViewerViewModel.showGridView,
+                            visible = !imagesState().showGridView,
                             enter = expandVertically() + fadeIn(),
                             exit = shrinkVertically() + fadeOut()
                         ) {
                             Row {
                                 IconButton(
                                     onClick = {
-                                        context.shareText(C.SHARE_IMAGE.format(imageViewerViewModel.imagesState.images?.get(horizontalPagerState.currentPage)?.filePath))
+                                        context.shareText(C.SHARE_IMAGE.format(imagesState().imagesByType?.get(horizontalPagerState.currentPage)?.filePath))
                                     }
                                 ) {
                                     Icon(
                                         imageVector = Icons.Rounded.Share,
-                                        contentDescription = "Share",
-                                        tint = backgroundLight
+                                        contentDescription = "Share"
                                     )
                                 }
                                 IconButton(
@@ -345,8 +349,7 @@ fun ImageViewerScreen(
                                 ) {
                                     Icon(
                                         painter = painterResource(id = R.drawable.icon_download_fill1_wght400),
-                                        contentDescription = "Download",
-                                        tint = backgroundLight
+                                        contentDescription = "Download"
                                     )
                                 }
                             }
@@ -354,28 +357,28 @@ fun ImageViewerScreen(
                     },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = Color.Transparent,
-                        navigationIconContentColor = backgroundLight,
-                        titleContentColor = backgroundLight,
-                        actionIconContentColor = backgroundLight
+                        navigationIconContentColor = onSurfaceDark,
+                        titleContentColor = onSurfaceDark,
+                        actionIconContentColor = onSurfaceDark
                     )
                 )
                 androidx.compose.animation.AnimatedVisibility(
                     modifier = Modifier.align(Alignment.CenterHorizontally),
-                    visible = !imageViewerViewModel.showGridView && horizontalPagerState.pageCount != 0,
+                    visible = !imagesState().showGridView && horizontalPagerState.pageCount != 0,
                     enter = slideInVertically() + fadeIn(animationSpec = tween(delayMillis = 50)),
                     exit = slideOutVertically() + fadeOut(animationSpec = tween(durationMillis = 250))
                 ) {
                     Row(
                         modifier = Modifier
                             .clip(CircleShape)
-                            .background(scrimLight.copy(.5f))
+                            .background(MaterialTheme.colorScheme.scrim.copy(.5f))
                             .clickable(
                                 interactionSource = null,
                                 indication = null
                             ) {
-                                imageViewerViewModel.imageViewerUiEvent(ImageViewerUiEvent.ChangeShowGridView)
+                                imageViewerUiEvent(ImageViewerUiEvent.ChangeShowGridViewState)
                             }
-                            .padding(start = 6.dp, top = 2.dp, end = 4.dp, bottom = 2.dp),
+                            .padding(start = 8.dp, top = 2.dp, end = 4.dp, bottom = 2.dp),
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
                         Text(
@@ -384,20 +387,52 @@ fun ImageViewerScreen(
                                 (horizontalPagerState.currentPage + 1),
                                 horizontalPagerState.pageCount
                             ),
-                            style = MaterialTheme.typography.labelLarge,
-                            color = backgroundLight
+                            style = MaterialTheme.typography.titleMedium,
+                            color = onSurfaceDark
                         )
                         Icon(
-                            modifier = Modifier
-                                .size(18.dp)
-                                .rotate(-90f),
-                            imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowLeft,
+                            modifier = Modifier.size(20.dp),
+                            imageVector = Icons.Rounded.KeyboardArrowDown,
                             contentDescription = "Dropdown",
-                            tint = backgroundLight
+                            tint = onSurfaceDark
                         )
                     }
                 }
             }
         }
     }
+}
+
+private fun onBackAction(
+    activity: Activity,
+    imagesState: ImagesState,
+    imageViewerUiEvent: (ImageViewerUiEvent) -> Unit
+) {
+    when {
+        imagesState.showGridView -> {
+            if (imagesState.initialPage == null) imageViewerUiEvent(ImageViewerUiEvent.OnNavigateBack) else
+                imageViewerUiEvent(ImageViewerUiEvent.ChangeShowGridViewState)
+        }
+        imagesState.hideUi -> {
+            showSystemBars(activity)
+            if (imagesState.initialPage == null) {
+                imageViewerUiEvent(ImageViewerUiEvent.ChangeHideUiState)
+                imageViewerUiEvent(ImageViewerUiEvent.ChangeShowGridViewState)
+            } else{
+                imageViewerUiEvent(ImageViewerUiEvent.OnNavigateBack)
+            }
+        }
+        imagesState.initialPage == null -> imageViewerUiEvent(ImageViewerUiEvent.ChangeShowGridViewState)
+        else -> imageViewerUiEvent(ImageViewerUiEvent.OnNavigateBack)
+    }
+}
+
+private fun showSystemBars(activity: Activity) {
+    val windowInsetsController = WindowCompat.getInsetsController(activity.window, activity.window.decorView)
+    windowInsetsController.show(WindowInsetsCompat.Type.systemBars())
+}
+
+private fun hideSystemBars(activity: Activity) {
+    val windowInsetsController = WindowCompat.getInsetsController(activity.window, activity.window.decorView)
+    windowInsetsController.hide(WindowInsetsCompat.Type.statusBars())
 }

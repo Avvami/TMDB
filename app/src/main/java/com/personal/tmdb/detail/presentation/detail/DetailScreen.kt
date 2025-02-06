@@ -2,7 +2,6 @@ package com.personal.tmdb.detail.presentation.detail
 
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
@@ -24,7 +23,6 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
@@ -167,7 +165,7 @@ private fun DetailScreen(
                                     .padding(horizontal = 16.dp)
                                     .fillMaxWidth()
                                     .clickable(
-                                        interactionSource = remember { MutableInteractionSource() },
+                                        interactionSource = null,
                                         indication = null
                                     ) {
                                         detailUiEvent(DetailUiEvent.ChangeCollapsedOverview)
@@ -266,7 +264,7 @@ private fun DetailScreen(
                                         MediaPoster(
                                             onNavigateTo = { detailUiEvent(DetailUiEvent.OnNavigateTo(it)) },
                                             mediaInfo = mediaInfo,
-                                            mediaType = detailState().mediaType,
+                                            mediaType = mediaInfo.mediaType ?: detailState().mediaType,
                                             showTitle = preferencesState().showTitle,
                                             showVoteAverage = preferencesState().showVoteAverage,
                                         )
@@ -289,7 +287,7 @@ private fun DetailScreen(
                                         MediaPoster(
                                             onNavigateTo = { detailUiEvent(DetailUiEvent.OnNavigateTo(it)) },
                                             mediaInfo = mediaInfo,
-                                            mediaType = detailState().mediaType,
+                                            mediaType = mediaInfo.mediaType ?: detailState().mediaType,
                                             showTitle = preferencesState().showTitle,
                                             showVoteAverage = preferencesState().showVoteAverage,
                                         )

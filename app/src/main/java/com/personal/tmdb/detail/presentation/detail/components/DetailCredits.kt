@@ -1,7 +1,6 @@
 package com.personal.tmdb.detail.presentation.detail.components
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -14,7 +13,6 @@ import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -97,7 +95,7 @@ fun DetailCredits(
                 AnnotatedOverflowListText(
                     modifier = Modifier
                         .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
+                            interactionSource = null,
                             indication = null
                         ) {
                             detailUiEvent(
