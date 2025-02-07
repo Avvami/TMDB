@@ -1,189 +1,158 @@
 package com.personal.tmdb.detail.presentation.collection.components
 
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.ArrowDropDown
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.offset
 import com.personal.tmdb.R
 import com.personal.tmdb.core.presentation.PreferencesState
-import com.personal.tmdb.core.presentation.components.MediaListViewShimmer
+import com.personal.tmdb.core.presentation.components.MediaGrid
+import com.personal.tmdb.core.presentation.components.MediaPosterShimmer
 import com.personal.tmdb.core.util.shimmerEffect
 
 @Composable
 fun CollectionScreenShimmer(
-    innerPadding: PaddingValues,
-    preferencesState: State<PreferencesState>
+    modifier: Modifier = Modifier,
+    preferencesState: () -> PreferencesState
 ) {
-    MediaListViewShimmer(
-        modifier = Modifier.padding(bottom = innerPadding.calculateBottomPadding()),
-        contentPadding = PaddingValues(start = 16.dp, end = 16.dp, bottom = 16.dp),
-        preferencesState = preferencesState,
-        topItemContent = {
-            val sidePadding = (-16).dp
-            Column(
-                modifier = Modifier
-                    .layout { measurable, constraints ->
-                        val placeable =
-                            measurable.measure(constraints.offset(horizontal = -sidePadding.roundToPx() * 2))
-                        layout(
-                            width = placeable.width + sidePadding.roundToPx() * 2,
-                            height = placeable.height
-                        ) {
-                            placeable.place(+sidePadding.roundToPx(), 0)
-                        }
-                    }
-                    .padding(bottom = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                Box(
-                    modifier = Modifier.background(MaterialTheme.colorScheme.surfaceContainerLow)
+    CompositionLocalProvider(
+        LocalMinimumInteractiveComponentSize provides Dp.Unspecified,
+        LocalContentColor provides Color.Transparent
+    ) {
+        MediaGrid(
+            modifier = modifier,
+            contentPadding = PaddingValues(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 16.dp),
+            span = {
+                item(
+                    span = { GridItemSpan(maxLineSpan) }
                 ) {
                     Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(bottom = 16.dp)
-                            .padding(top = innerPadding.calculateTopPadding()),
+                        modifier = Modifier.padding(bottom = 8.dp),
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         Text(
                             modifier = Modifier
-                                .clip(MaterialTheme.shapes.small)
-                                .padding(horizontal = 16.dp)
+                                .clip(MaterialTheme.shapes.extraSmall)
                                 .shimmerEffect(),
+                            text = "Collection Name",
+                            style = MaterialTheme.typography.titleLarge,
+                            fontWeight = FontWeight.Medium
+                        )
+                        Text(
+                            modifier = Modifier
+                                .clip(MaterialTheme.shapes.extraSmall)
+                                .shimmerEffect()
+                                .fillMaxWidth(),
                             text = "",
                             style = MaterialTheme.typography.bodyLarge,
-                            minLines = 3
+                            minLines = 4
                         )
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.SpaceEvenly
+                            modifier = modifier,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalAlignment = Alignment.CenterVertically
                         ) {
-                            Column(
-                                modifier = Modifier.padding(horizontal = 4.dp),
-                                verticalArrangement = Arrangement.spacedBy(4.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
+                            Button(
+                                modifier = Modifier
+                                    .clip(MaterialTheme.shapes.small)
+                                    .shimmerEffect(),
+                                enabled = false,
+                                onClick = {},
+                                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    disabledContainerColor = Color.Transparent,
+                                    disabledContentColor = Color.Transparent
+                                )
                             ) {
-                                Text(
-                                    modifier = Modifier
-                                        .clip(MaterialTheme.shapes.small)
-                                        .shimmerEffect(),
-                                    text = "00",
-                                    style = MaterialTheme.typography.titleLarge,
-                                    fontWeight = FontWeight.Medium,
-                                    color = Color.Transparent
-                                )
-                                Text(
-                                    modifier = Modifier
-                                        .clip(MaterialTheme.shapes.small)
-                                        .shimmerEffect(),
-                                    text = stringResource(id = R.string.number_of_movies),
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = Color.Transparent
-                                )
+                                Text(text = stringResource(id = R.string.amount_of_movies, 10))
                             }
-                            Column(
-                                modifier = Modifier.padding(horizontal = 4.dp),
-                                verticalArrangement = Arrangement.spacedBy(4.dp),
-                                horizontalAlignment = Alignment.CenterHorizontally
-                            ) {
-                                Row(
-                                    modifier = Modifier
-                                        .clip(MaterialTheme.shapes.small)
-                                        .shimmerEffect(),
-                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(
-                                        text = "0.0",
-                                        style = MaterialTheme.typography.titleLarge,
-                                        fontWeight = FontWeight.Medium,
-                                        color = Color.Transparent
-                                    )
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.icon_bar_chart_fill0_wght400),
-                                        contentDescription = "Rating",
-                                        tint = Color.Transparent
-                                    )
-                                }
-                                Text(
-                                    modifier = Modifier
-                                        .clip(MaterialTheme.shapes.small)
-                                        .shimmerEffect(),
-                                    text = stringResource(id = R.string.average_rating),
-                                    style = MaterialTheme.typography.titleMedium,
-                                    color = Color.Transparent
+                            Button(
+                                modifier = Modifier
+                                    .clip(MaterialTheme.shapes.small)
+                                    .shimmerEffect(),
+                                enabled = false,
+                                onClick = {},
+                                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
+                                colors = ButtonDefaults.buttonColors(
+                                    disabledContainerColor = Color.Transparent,
+                                    disabledContentColor = Color.Transparent
                                 )
+                            ) {
+                                Icon(
+                                    modifier = Modifier.size(ButtonDefaults.IconSize),
+                                    painter = painterResource(id = R.drawable.icon_thumbs_up_down_fill1_wght400),
+                                    contentDescription = null
+                                )
+                                Spacer(modifier = Modifier.width(ButtonDefaults.IconSpacing))
+                                Text(text = "10")
                             }
                         }
-                    }
-                    Text(
-                        modifier = Modifier.align(Alignment.Center),
-                        text = stringResource(id = R.string.tmdb),
-                        style = MaterialTheme.typography.displayLarge,
-                        color = MaterialTheme.colorScheme.surfaceContainer,
-                        fontStyle = FontStyle.Italic,
-                        fontWeight = FontWeight.Black,
-                        textAlign = TextAlign.Center
-                    )
-                }
-                SuggestionChip(
-                    modifier = Modifier
-                        .padding(horizontal = 16.dp)
-                        .clip(SuggestionChipDefaults.shape)
-                        .shimmerEffect()
-                        .height(SuggestionChipDefaults.Height),
-                    enabled = false,
-                    colors = SuggestionChipDefaults.suggestionChipColors(
-                        containerColor = Color.Transparent,
-                        labelColor = Color.Transparent,
-                        iconContentColor = Color.Transparent,
-                        disabledLabelColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent,
-                        disabledIconContentColor = Color.Transparent
-                    ),
-                    border = BorderStroke(width = 1.dp, color = Color.Transparent),
-                    onClick = {},
-                    label = {
-                        Text(text = stringResource(id = R.string.sort_by))
-                    },
-                    icon = {
-                        Icon(
-                            modifier = Modifier.size(SuggestionChipDefaults.IconSize),
-                            imageVector = Icons.Rounded.ArrowDropDown,
-                            contentDescription = "Dropdown"
+                        SuggestionChip(
+                            modifier = Modifier
+                                .clip(MaterialTheme.shapes.small)
+                                .shimmerEffect(),
+                            enabled = false,
+                            onClick = {},
+                            icon = {
+                                Icon(
+                                    modifier = Modifier.size(SuggestionChipDefaults.IconSize),
+                                    painter = painterResource(id = R.drawable.icon_page_info_fill0_wght400),
+                                    contentDescription = "Sort by"
+                                )
+                            },
+                            label = {
+                                Text(text = stringResource(id = R.string.sort_by))
+                            },
+                            colors = SuggestionChipDefaults.suggestionChipColors(
+                                disabledContainerColor = Color.Transparent,
+                                disabledIconContentColor = Color.Transparent,
+                                disabledLabelColor = Color.Transparent
+                            ),
+                            border = null
                         )
                     }
-                )
+                }
+            },
+            items = {
+                items(
+                    count = 4,
+                    contentType = { "Poster" }
+                ) {
+                    MediaPosterShimmer(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .animateItem(),
+                        height = Dp.Unspecified,
+                        showTitle = preferencesState().showTitle,
+                    )
+                }
             }
-        }
-    )
+        )
+    }
 }

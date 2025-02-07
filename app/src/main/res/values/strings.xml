@@ -44,7 +44,7 @@
     <string name="empty_search_suggest">Try search for another movie, show, or person.</string>
     <string name="part_of_collection">Part of the %s</string>
     <string name="includes">Includes %s</string>
-    <string name="number_of_movies">Number of movies</string>
+    <string name="amount_of_movies">%d movies</string>
     <string name="average_rating">Average rating</string>
     <string name="sort_by">Sort By</string>
     <string name="rating">Rating</string>
@@ -131,4 +131,6 @@
     <string name="all_reviews">All Reviews</string>
     <string name="rate">Rate</string>
     <string name="list">List</string>
+    <string name="empty_collection">There are no items added to this collection.</string>
+    <string name="unselected">Unselected</string>
 </resources>

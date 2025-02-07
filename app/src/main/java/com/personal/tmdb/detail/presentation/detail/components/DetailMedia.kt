@@ -54,7 +54,7 @@ fun DetailMedia(
                                     DetailUiEvent.OnNavigateTo(
                                         Route.Image(
                                             imageType = ImageType.POSTERS.name.lowercase(),
-                                            imagesPath = C.MEDIA_IMAGES.format(mediaType(), mediaId()),
+                                            imagesPath = C.MEDIA_IMAGES.format(mediaType().name.lowercase(), mediaId()),
                                         )
                                     )
                                 )
@@ -104,7 +104,7 @@ fun DetailMedia(
                                     DetailUiEvent.OnNavigateTo(
                                         Route.Image(
                                             imageType = ImageType.BACKDROPS.name.lowercase(),
-                                            imagesPath = C.MEDIA_IMAGES.format(mediaType(), mediaId()),
+                                            imagesPath = C.MEDIA_IMAGES.format(mediaType().name.lowercase(), mediaId()),
                                         )
                                     )
                                 )

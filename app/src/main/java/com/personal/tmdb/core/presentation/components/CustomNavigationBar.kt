@@ -171,6 +171,14 @@ internal fun textColor(selected: Boolean, enabled: Boolean, colors: NavigationBa
         else -> colors.unselectedTextColor
     }
 
+/**
+ * ProvideContentColorTextStyle
+ *
+ * A convenience method to provide values to both LocalContentColor and LocalTextStyle in one call.
+ * This is less expensive than nesting calls to CompositionLocalProvider.
+ *
+ * Text styles will be merged with the current value of LocalTextStyle.
+ */
 @Composable
 internal fun ProvideContentColorTextStyle(
     contentColor: Color,
