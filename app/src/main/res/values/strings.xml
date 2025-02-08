@@ -70,7 +70,8 @@
     <string name="rent_buy_available">Available to Rent or Buy</string>
     <string name="watch_now">Watch Now</string>
     <string name="watch_link_not_provided">TMDB API does not provide the actual deep links to the content, so please proceed to the official TMDB website.</string>
-    <string name="genres">Genres:</string>
+    <string name="genres">Genres</string>
+    <string name="genres_list">Genres:</string>
     <string name="cast">Cast</string>
     <string name="crew">Crew</string>
     <string name="gender_not_specified">Gender not specified</string>
@@ -108,7 +109,8 @@
     <string name="stills_pages">%d/%d</string>
     <string name="episode_name">%d. %s</string>
     <string name="cast_and_crew"><![CDATA[Cast & Crew]]></string>
-    <string name="guest_stars">Guest Stars:</string>
+    <string name="guest_stars">Guest Stars</string>
+    <string name="guest_stars_list">Guest Stars:</string>
     <string name="media_type">Media type</string>
     <string name="department">Department</string>
     <string name="clear">Clear</string>

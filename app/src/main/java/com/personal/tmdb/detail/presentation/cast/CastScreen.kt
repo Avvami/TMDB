@@ -35,7 +35,6 @@ import com.personal.tmdb.core.util.shareText
 import com.personal.tmdb.detail.presentation.cast.components.AnnotatedCastItem
 import com.personal.tmdb.detail.presentation.cast.components.CastInfoCard
 import com.personal.tmdb.detail.presentation.cast.components.CastScreenShimmer
-import com.personal.tmdb.detail.presentation.cast.components.annotatedCastText
 
 @Composable
 fun CastScreenRoot(
@@ -59,7 +58,7 @@ fun CastScreenRoot(
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
-fun CastScreen(
+private fun CastScreen(
     modifier: Modifier = Modifier,
     castState: () -> CastState,
     castUiEvent: (CastUiEvent) -> Unit
@@ -153,12 +152,7 @@ fun CastScreen(
                                 profilePath = cast.profilePath,
                                 name = cast.name,
                                 character = cast.character,
-                                activity = cast.roles?.let { role ->
-                                    annotatedCastText(
-                                        items = role.map { AnnotatedCastItem(it.creditId, it.character, it.episodeCount) },
-                                        onNavigateTo = { castUiEvent(CastUiEvent.OnNavigateTo(it)) }
-                                    )
-                                }
+                                activity = cast.roles?.map { AnnotatedCastItem(it.creditId, it.character, it.episodeCount) }
                             )
                         }
                     }
@@ -182,12 +176,7 @@ fun CastScreen(
                                 profilePath = cast.profilePath,
                                 name = cast.name,
                                 character = cast.character,
-                                activity = cast.roles?.let { role ->
-                                    annotatedCastText(
-                                        items = role.map { AnnotatedCastItem(it.creditId, it.character, it.episodeCount) },
-                                        onNavigateTo = { castUiEvent(CastUiEvent.OnNavigateTo(it)) }
-                                    )
-                                }
+                                activity = cast.roles?.map { AnnotatedCastItem(it.creditId, it.character, it.episodeCount) }
                             )
                         }
                     }
@@ -226,13 +215,8 @@ fun CastScreen(
                                         profileId = crew.id,
                                         profilePath = crew.profilePath,
                                         name = crew.name,
-                                        department = department,
-                                        activity = crew.jobs?.let { jobs ->
-                                            annotatedCastText(
-                                                items = jobs.map { AnnotatedCastItem(it.creditId, it.job, it.episodeCount) },
-                                                onNavigateTo = { castUiEvent(CastUiEvent.OnNavigateTo(it)) }
-                                            )
-                                        }
+                                        job = crew.job,
+                                        activity = crew.jobs?.map { AnnotatedCastItem(it.creditId, it.job, it.episodeCount) }
                                     )
                                 }
                             }

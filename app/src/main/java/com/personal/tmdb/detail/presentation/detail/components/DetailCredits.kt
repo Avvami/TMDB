@@ -48,7 +48,7 @@ fun DetailCredits(
                 ) {
                     Text(
                         modifier = Modifier.align(Alignment.CenterVertically),
-                        text = stringResource(id = R.string.genres),
+                        text = stringResource(id = R.string.genres_list),
                         style = MaterialTheme.typography.labelLarge
                     )
                     genres.fastForEach { genre ->

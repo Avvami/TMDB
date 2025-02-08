@@ -31,20 +31,5 @@ fun CastScreenShimmer() {
         repeat(15) {
             CastInfoCardShimmer()
         }
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.surfaceContainer)
-                .padding(horizontal = 16.dp, vertical = 4.dp),
-        ) {
-            Text(
-                text = stringResource(id = R.string.crew),
-                style = MaterialTheme.typography.titleMedium,
-                color = Color.Transparent
-            )
-        }
-        repeat(15) {
-            CastInfoCardShimmer()
-        }
     }
 }

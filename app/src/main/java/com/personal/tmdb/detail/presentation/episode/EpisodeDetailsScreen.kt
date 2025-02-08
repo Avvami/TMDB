@@ -187,7 +187,7 @@ private fun EpisodeDetailsScreen(
                                             )
                                         )
                                     },
-                                titlePrefix = stringResource(id = R.string.guest_stars),
+                                titlePrefix = stringResource(id = R.string.guest_stars_list),
                                 items = guestStars.map { AnnotatedItem(id = it.id, name = it.name) }
                             )
                         }

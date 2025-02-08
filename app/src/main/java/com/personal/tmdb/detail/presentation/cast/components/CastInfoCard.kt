@@ -18,7 +18,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.personal.tmdb.R
@@ -33,8 +32,8 @@ fun CastInfoCard(
     profilePath: String?,
     name: String,
     character: String? = null,
-    department: String? = null,
-    activity: AnnotatedString?
+    job: String? = null,
+    activity: List<AnnotatedCastItem>?
 ) {
     Row(
         modifier = Modifier
@@ -75,14 +74,14 @@ fun CastInfoCard(
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
-            department?.let { department ->
+            job?.let { job ->
                 Text(
-                    text = department,
+                    text = job,
                     style = MaterialTheme.typography.bodyMedium
                 )
             }
             if (!activity.isNullOrEmpty()) {
-                Text(text = activity)
+                AnnotatedCastText(items = activity)
             }
         }
     }
@@ -121,7 +120,7 @@ fun CastInfoCardShimmer() {
                     .clip(MaterialTheme.shapes.extraSmall)
                     .shimmerEffect(),
                 text = "",
-                style = MaterialTheme.typography.displayMedium
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     }
