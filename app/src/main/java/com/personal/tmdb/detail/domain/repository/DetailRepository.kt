@@ -5,6 +5,7 @@ import com.personal.tmdb.detail.data.models.Images
 import com.personal.tmdb.detail.domain.models.CollectionInfo
 import com.personal.tmdb.detail.domain.models.CreditsInfo
 import com.personal.tmdb.detail.domain.models.EpisodeDetailsInfo
+import com.personal.tmdb.detail.domain.models.GenresInfo
 import com.personal.tmdb.detail.domain.models.MediaDetailInfo
 import com.personal.tmdb.detail.domain.models.PersonInfo
 import com.personal.tmdb.detail.domain.models.ReviewsResponseInfo
@@ -29,4 +30,6 @@ interface DetailRepository {
     suspend fun getImages(path: String, language: String? = null, includeImageLanguage: String? = null): Resource<Images>
 
     suspend fun getReviews(mediaType: String, mediaId: Int, page: Int, language: String?): Resource<ReviewsResponseInfo>
+
+    suspend fun getGenres(mediaType: String, language: String?): Resource<GenresInfo>
 }

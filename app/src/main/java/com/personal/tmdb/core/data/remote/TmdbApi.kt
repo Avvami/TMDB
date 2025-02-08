@@ -12,6 +12,7 @@ import com.personal.tmdb.core.data.models.MediaResponseDto
 import com.personal.tmdb.detail.data.models.CollectionDto
 import com.personal.tmdb.detail.data.models.Credits
 import com.personal.tmdb.detail.data.models.EpisodeDetailsDto
+import com.personal.tmdb.detail.data.models.Genres
 import com.personal.tmdb.detail.data.models.Images
 import com.personal.tmdb.detail.data.models.MediaDetailDto
 import com.personal.tmdb.detail.data.models.PersonDto
@@ -159,4 +160,11 @@ interface TmdbApi {
     suspend fun getNowPlaying(
         @Query("language") language: String?
     ): MediaResponseDto
+
+    @Headers("Authorization: Bearer ${BuildConfig.TMDB_API_KEY}")
+    @GET("3/genre/{media_type}/list?")
+    suspend fun getGenres(
+        @Path("media_type") mediaType: String,
+        @Query("language") language: String?
+    ): Genres
 }

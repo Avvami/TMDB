@@ -1,14 +1,16 @@
 package com.personal.tmdb.detail.presentation.collection
 
+import androidx.compose.ui.util.fastFilter
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.personal.tmdb.core.domain.util.UiText
 import com.personal.tmdb.core.navigation.Route
+import com.personal.tmdb.core.util.MediaType
 import com.personal.tmdb.core.util.Resource
-import com.personal.tmdb.detail.domain.util.CollectionSortType
 import com.personal.tmdb.detail.domain.repository.DetailRepository
+import com.personal.tmdb.detail.domain.util.CollectionSortType
 import com.personal.tmdb.detail.domain.util.convertCollectionSortType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -59,6 +61,29 @@ class CollectionViewModel @Inject constructor(
                                 loading = false,
                                 collectionInfo = collectionInfo,
                                 originalParts = collectionInfo?.parts
+                            )
+                        }
+                        getGenres()
+                    }
+                }
+            }
+        }
+    }
+
+    private fun getGenres(language: String? = null) {
+        viewModelScope.launch {
+            detailRepository.getGenres(MediaType.MOVIE.name.lowercase(), language).let { result ->
+                when (result) {
+                    is Resource.Error -> {
+                        println(result.message)
+                    }
+                    is Resource.Success -> {
+                        _collectionState.update { state ->
+                            val genres = result.data?.genres
+                                ?.fastFilter { genre -> state.collectionInfo?.genresIds?.contains(genre.id) == true }
+                                ?: emptyList()
+                            state.copy(
+                                genres = genres
                             )
                         }
                     }

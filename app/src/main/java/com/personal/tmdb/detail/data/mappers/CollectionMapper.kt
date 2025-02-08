@@ -1,5 +1,6 @@
 package com.personal.tmdb.detail.data.mappers
 
+import androidx.compose.ui.util.fastFlatMap
 import com.personal.tmdb.core.domain.models.MediaInfo
 import com.personal.tmdb.core.util.convertMediaType
 import com.personal.tmdb.detail.data.models.CollectionDto
@@ -10,6 +11,7 @@ import java.time.format.DateTimeFormatter
 
 fun CollectionDto.toCollectionInfo(): CollectionInfo {
     val mediaList = parts?.map { it.toMediaInfo() }
+    val genresIds = parts?.fastFlatMap { it.genreIds.orEmpty() }?.distinct()
     return CollectionInfo(
         averageRating = (mediaList?.takeIf { it.isNotEmpty() }
             ?.sumOf { it.voteAverage?.toDouble() ?: 0.0 }
@@ -17,8 +19,9 @@ fun CollectionDto.toCollectionInfo(): CollectionInfo {
             ?: 0.0).toFloat(),
         backdropPath = backdropPath,
         id = id,
+        genresIds = genresIds,
         name = name,
-        overview = overview,
+        overview = if (overview.isNullOrEmpty()) null else overview,
         parts = mediaList,
         posterPath = posterPath
     )
@@ -30,7 +33,7 @@ fun Part.toMediaInfo(): MediaInfo {
         id = id,
         mediaType = convertMediaType(mediaType),
         name = title,
-        overview = overview,
+        overview = if (overview.isNullOrEmpty()) null else overview,
         posterPath = posterPath,
         releaseDate = try {
             LocalDate.parse(releaseDate, DateTimeFormatter.ISO_LOCAL_DATE)

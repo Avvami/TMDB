@@ -3,6 +3,9 @@ package com.personal.tmdb.detail.presentation.collection
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -15,16 +18,22 @@ import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -33,6 +42,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastForEach
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.personal.tmdb.R
@@ -72,7 +82,7 @@ fun CollectionScreenRoot(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 private fun CollectionScreen(
     modifier: Modifier = Modifier,
@@ -160,6 +170,44 @@ private fun CollectionScreen(
                                     maxLines = if (collapsed) 4 else Int.MAX_VALUE,
                                     overflow = TextOverflow.Ellipsis
                                 )
+                            }
+                        }
+                        collectionState().genres.takeIf { it.isNotEmpty() }?.let { genres ->
+                            item(
+                                span = { GridItemSpan(maxCurrentLineSpan) }
+                            ) {
+                                CompositionLocalProvider(
+                                    LocalMinimumInteractiveComponentSize provides Dp.Unspecified,
+                                    LocalContentColor provides MaterialTheme.colorScheme.surfaceVariant
+                                ) {
+                                    FlowRow(
+                                        modifier = Modifier
+                                            .animateItem()
+                                            .padding(top = 8.dp),
+                                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                                    ) {
+                                        Text(
+                                            modifier = Modifier.align(Alignment.CenterVertically),
+                                            text = stringResource(id = R.string.genres),
+                                            style = MaterialTheme.typography.labelLarge
+                                        )
+                                        genres.fastForEach { genre ->
+                                            SuggestionChip(
+                                                modifier = Modifier.align(Alignment.CenterVertically),
+                                                onClick = { /*TODO: Navigate to genre screen*/ },
+                                                label = {
+                                                    Text(text = genre.name)
+                                                },
+                                                colors = SuggestionChipDefaults.suggestionChipColors(
+                                                    containerColor = MaterialTheme.colorScheme.surfaceContainer,
+                                                    labelColor = MaterialTheme.colorScheme.surfaceVariant
+                                                ),
+                                                border = null
+                                            )
+                                        }
+                                    }
+                                }
                             }
                         }
                         item(

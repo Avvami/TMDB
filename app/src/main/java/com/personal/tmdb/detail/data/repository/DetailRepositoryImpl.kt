@@ -5,6 +5,7 @@ import com.personal.tmdb.core.util.Resource
 import com.personal.tmdb.detail.data.mappers.toCollectionInfo
 import com.personal.tmdb.detail.data.mappers.toCreditsInfo
 import com.personal.tmdb.detail.data.mappers.toEpisodeDetailsInfo
+import com.personal.tmdb.detail.data.mappers.toGenresInfo
 import com.personal.tmdb.detail.data.mappers.toMediaDetailInfo
 import com.personal.tmdb.detail.data.mappers.toPersonInfo
 import com.personal.tmdb.detail.data.mappers.toReviewsResponseInfo
@@ -13,6 +14,7 @@ import com.personal.tmdb.detail.data.models.Images
 import com.personal.tmdb.detail.domain.models.CollectionInfo
 import com.personal.tmdb.detail.domain.models.CreditsInfo
 import com.personal.tmdb.detail.domain.models.EpisodeDetailsInfo
+import com.personal.tmdb.detail.domain.models.GenresInfo
 import com.personal.tmdb.detail.domain.models.MediaDetailInfo
 import com.personal.tmdb.detail.domain.models.PersonInfo
 import com.personal.tmdb.detail.domain.models.ReviewsResponseInfo
@@ -180,6 +182,22 @@ class DetailRepositoryImpl @Inject constructor(
                 data = tmdbApi.getReviews(
                     mediaType, mediaId, page, language
                 ).toReviewsResponseInfo()
+            )
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Resource.Error(e.message ?: "Unknown")
+        }
+    }
+
+    override suspend fun getGenres(
+        mediaType: String,
+        language: String?
+    ): Resource<GenresInfo> {
+        return try {
+            Resource.Success(
+                data = tmdbApi.getGenres(
+                    mediaType, language
+                ).toGenresInfo()
             )
         } catch (e: Exception) {
             e.printStackTrace()

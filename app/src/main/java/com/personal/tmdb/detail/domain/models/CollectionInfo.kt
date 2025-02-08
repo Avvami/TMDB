@@ -6,6 +6,7 @@ data class CollectionInfo(
     val averageRating: Float,
     val backdropPath: String?,
     val id: Int,
+    val genresIds: List<Int>?,
     val name: String?,
     val overview: String?,
     val parts: List<MediaInfo>?,
