@@ -26,7 +26,7 @@ import com.personal.tmdb.detail.presentation.detail.DetailScreenRoot
 import com.personal.tmdb.detail.presentation.episode.EpisodeDetailsScreenRoot
 import com.personal.tmdb.detail.presentation.episodes.EpisodesScreenRoot
 import com.personal.tmdb.detail.presentation.image.ImageViewerScreenRoot
-import com.personal.tmdb.detail.presentation.person.PersonScreen
+import com.personal.tmdb.detail.presentation.person.PersonScreenRoot
 import com.personal.tmdb.detail.presentation.reviews.ReviewsScreenRoot
 import com.personal.tmdb.home.presentation.home.HomeScreenRoot
 import com.personal.tmdb.profile.presentation.profile.ProfileScreenRoot
@@ -247,15 +247,11 @@ fun ChildNavHost(
             )
         }
         animatedComposable<Route.Person> {
-            PersonScreen(
-                navigateBack = onNavigateBack,
-                onNavigateTo = { route ->
-                    navController.navigate(route = route) {
-                        launchSingleTop = true
-                    }
-                },
-                navigateToHome = {},
-                preferencesState = preferencesState
+            PersonScreenRoot(
+                bottomPadding = bottomBarPadding,
+                onNavigateBack = onNavigateBack,
+                onNavigateTo = onNavigateTo,
+                preferencesState = { preferencesState.value }
             )
         }
         animatedComposable<Route.Settings> {
@@ -284,8 +280,5 @@ fun ChildNavHost(
 object RootNavGraph {
     const val AUTH = "auth_screen"
     const val SETTINGS = "settings_screen"
-    const val DETAIL = "detail_screen"
-    const val PERSON = "person_screen"
     const val APPEARANCE = "appearance_screen"
-    const val IMAGE = "image_viewer_screen"
 }

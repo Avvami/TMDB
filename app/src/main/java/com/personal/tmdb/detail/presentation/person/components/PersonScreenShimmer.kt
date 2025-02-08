@@ -1,7 +1,5 @@
 package com.personal.tmdb.detail.presentation.person.components
 
-import androidx.compose.foundation.ExperimentalFoundationApi
-import androidx.compose.foundation.LocalOverscrollConfiguration
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
@@ -18,21 +16,17 @@ import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.PagerDefaults
 import androidx.compose.foundation.pager.PagerSnapDistance
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.minimumInteractiveComponentSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.State
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
 import com.personal.tmdb.R
 import com.personal.tmdb.core.presentation.PreferencesState
@@ -40,10 +34,9 @@ import com.personal.tmdb.core.presentation.components.MediaPosterShimmer
 import com.personal.tmdb.core.util.shimmerEffect
 import kotlin.math.absoluteValue
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun PersonScreenShimmer(
-    preferencesState: State<PreferencesState>
+    preferencesState: () -> PreferencesState
 ) {
     val pageCount = 10
     val horizontalPagerState = rememberPagerState(
@@ -51,61 +44,60 @@ fun PersonScreenShimmer(
         initialPage = pageCount / 2
     )
     BoxWithConstraints(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp)
+        modifier = Modifier.fillMaxWidth()
     ) {
         val contentPadding = (maxWidth - 150.dp) / 2
-        CompositionLocalProvider(
-            LocalOverscrollConfiguration provides null
-        ) {
-            HorizontalPager(
+        HorizontalPager(
+            userScrollEnabled = false,
+            state = horizontalPagerState,
+            contentPadding = PaddingValues(horizontal = contentPadding),
+            pageSpacing = (maxWidth / 150) - 8.dp,
+            flingBehavior = PagerDefaults.flingBehavior(
                 state = horizontalPagerState,
-                contentPadding = PaddingValues(horizontal = contentPadding),
-                pageSpacing = (maxWidth / 150) - 8.dp,
-                flingBehavior = PagerDefaults.flingBehavior(
-                    state = horizontalPagerState,
-                    pagerSnapDistance = PagerSnapDistance.atMost(3)
-                )
-            ) { page ->
-                Box(
-                    modifier = Modifier
-                        .height(230.dp)
-                        .aspectRatio(0.675f)
-                        .graphicsLayer {
-                            val pageOffset =
-                                ((horizontalPagerState.currentPage - page) + horizontalPagerState.currentPageOffsetFraction).absoluteValue
-                            lerp(
-                                start = .85f,
-                                stop = 1f,
-                                fraction = 1f - pageOffset.absoluteValue.coerceIn(
-                                    0f,
-                                    1f
-                                ),
-                            ).also { scale ->
-                                scaleX = scale
-                                scaleY = scale
-                            }
+                pagerSnapDistance = PagerSnapDistance.atMost(3)
+            )
+        ) { page ->
+            Box(
+                modifier = Modifier
+                    .height(230.dp)
+                    .aspectRatio(2 / 3f)
+                    .graphicsLayer {
+                        val pageOffset =
+                            ((horizontalPagerState.currentPage - page) + horizontalPagerState.currentPageOffsetFraction).absoluteValue
+                        lerp(
+                            start = .85f,
+                            stop = 1f,
+                            fraction = 1f - pageOffset.absoluteValue.coerceIn(
+                                0f,
+                                1f
+                            ),
+                        ).also { scale ->
+                            scaleX = scale
+                            scaleY = scale
                         }
-                        .clip(RoundedCornerShape(preferencesState.value.corners.dp))
-                        .shimmerEffect()
-                )
-            }
+                    }
+                    .clip(MaterialTheme.shapes.large)
+                    .shimmerEffect()
+            )
         }
     }
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(start = 16.dp, top = 4.dp, end = 16.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp, Alignment.CenterHorizontally),
         verticalAlignment = Alignment.CenterVertically
     ) {
         repeat(3) {
-            Box(modifier = Modifier.size(48.dp), contentAlignment = Alignment.Center) {
-                Box(modifier = Modifier
-                    .size(24.dp)
-                    .clip(MaterialTheme.shapes.small)
-                    .shimmerEffect()
+            Box(
+                modifier = Modifier.minimumInteractiveComponentSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clip(MaterialTheme.shapes.extraSmall)
+                        .shimmerEffect()
                 )
             }
         }
@@ -113,120 +105,108 @@ fun PersonScreenShimmer(
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(start = 16.dp, top = 4.dp, end = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
             modifier = Modifier
-                .clip(MaterialTheme.shapes.small)
+                .clip(MaterialTheme.shapes.extraSmall)
                 .shimmerEffect(),
             text = stringResource(id = R.string.personal_info),
             style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Medium,
-            fontSize = 20.sp,
-            color = Color.Transparent
+            fontWeight = FontWeight.Medium
         )
         Column(
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             Text(
                 modifier = Modifier
-                    .clip(MaterialTheme.shapes.small)
+                    .clip(MaterialTheme.shapes.extraSmall)
                     .shimmerEffect(),
                 text = stringResource(id = R.string.known_for),
-                style = MaterialTheme.typography.labelLarge,
-                color = Color.Transparent
+                style = MaterialTheme.typography.labelLarge
             )
             Text(
                 modifier = Modifier
-                    .clip(MaterialTheme.shapes.small)
+                    .clip(MaterialTheme.shapes.extraSmall)
                     .shimmerEffect(),
-                text = "Depart",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Transparent
+                text = "Acting",
+                style = MaterialTheme.typography.bodyMedium
             )
         }
         Column(
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             Text(
                 modifier = Modifier
-                    .clip(MaterialTheme.shapes.small)
+                    .clip(MaterialTheme.shapes.extraSmall)
                     .shimmerEffect(),
                 text = stringResource(id = R.string.gender),
-                style = MaterialTheme.typography.labelLarge,
-                color = Color.Transparent
+                style = MaterialTheme.typography.labelLarge
             )
             Text(
                 modifier = Modifier
-                    .clip(MaterialTheme.shapes.small)
+                    .clip(MaterialTheme.shapes.extraSmall)
                     .shimmerEffect(),
                 text = "Bender",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Transparent
+                style = MaterialTheme.typography.bodyMedium
             )
         }
         Column(
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             Text(
                 modifier = Modifier
-                    .clip(MaterialTheme.shapes.small)
+                    .clip(MaterialTheme.shapes.extraSmall)
                     .shimmerEffect(),
                 text = stringResource(id = R.string.birthday),
-                style = MaterialTheme.typography.labelLarge,
-                color = Color.Transparent
+                style = MaterialTheme.typography.labelLarge
             )
             Text(
                 modifier = Modifier
-                    .clip(MaterialTheme.shapes.small)
+                    .clip(MaterialTheme.shapes.extraSmall)
                     .shimmerEffect(),
-                text = "birthday date (many years old)",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Transparent
+                text = "Jan 00, 0000 (00 years old)",
+                style = MaterialTheme.typography.bodyMedium
             )
         }
         Column(
-            verticalArrangement = Arrangement.spacedBy(4.dp)
+            verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
             Text(
                 modifier = Modifier
-                    .clip(MaterialTheme.shapes.small)
+                    .clip(MaterialTheme.shapes.extraSmall)
                     .shimmerEffect(),
                 text = stringResource(id = R.string.place_of_birth),
-                style = MaterialTheme.typography.labelLarge,
-                color = Color.Transparent
+                style = MaterialTheme.typography.labelLarge
             )
             Text(
                 modifier = Modifier
-                    .clip(MaterialTheme.shapes.small)
+                    .clip(MaterialTheme.shapes.extraSmall)
                     .shimmerEffect(),
-                text = "placeOfBirth on our earth",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Transparent
+                text = "Somewhere on the Mars",
+                style = MaterialTheme.typography.bodyMedium
             )
         }
     }
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp),
+            .padding(start = 16.dp, top = 16.dp, end = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
             modifier = Modifier
-                .clip(MaterialTheme.shapes.small)
+                .clip(MaterialTheme.shapes.extraSmall)
                 .shimmerEffect(),
             text = stringResource(id = R.string.bio),
             style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Medium,
-            fontSize = 20.sp,
-            color = Color.Transparent
+            fontWeight = FontWeight.Medium
         )
         Text(
             modifier = Modifier
                 .fillMaxWidth()
-                .clip(MaterialTheme.shapes.small)
+                .clip(MaterialTheme.shapes.extraSmall)
                 .shimmerEffect(),
             text = "",
             style = MaterialTheme.typography.bodyLarge,
@@ -234,26 +214,24 @@ fun PersonScreenShimmer(
         )
     }
     Column(
-        modifier = Modifier.padding(vertical = 8.dp),
+        modifier = Modifier.padding(top = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         Text(
             modifier = Modifier
                 .padding(horizontal = 16.dp)
-                .clip(MaterialTheme.shapes.small)
+                .clip(MaterialTheme.shapes.extraSmall)
                 .shimmerEffect(),
             text = "Know for",
             style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Medium,
-            fontSize = 20.sp,
-            color = Color.Transparent
+            fontWeight = FontWeight.Medium
         )
         LazyRow(
             contentPadding = PaddingValues(horizontal = 16.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(5) {
-                MediaPosterShimmer(showTitle = preferencesState.value.showTitle)
+                MediaPosterShimmer(showTitle = preferencesState().showTitle)
             }
         }
     }

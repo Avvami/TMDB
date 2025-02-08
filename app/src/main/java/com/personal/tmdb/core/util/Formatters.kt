@@ -1,16 +1,16 @@
 package com.personal.tmdb.core.util
 
-import android.content.Context
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import com.personal.tmdb.R
 import com.personal.tmdb.core.domain.util.UiText
-import com.personal.tmdb.ui.theme.tmdbRatingGreen
-import com.personal.tmdb.ui.theme.tmdbRatingOrange
-import com.personal.tmdb.ui.theme.tmdbRatingRed
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.NavigableMap
@@ -29,16 +29,6 @@ fun formatRuntime(minutes: Int): UiText {
             val remainingMinutes = minutes % 60
             UiText.StringResource(R.string.runtime_full, hours, remainingMinutes)
         }
-    }
-}
-
-@Composable
-fun formatVoteAverageToColor(vote: Float): Color {
-    return when (vote) {
-        in 0f ..< 3.5f -> tmdbRatingRed
-        in 3.5f ..< 7f -> tmdbRatingOrange
-        in 7f .. 10f -> tmdbRatingGreen
-        else -> MaterialTheme.colorScheme.surfaceVariant
     }
 }
 
@@ -67,30 +57,52 @@ fun formatEpisodesCount(numberOfEpisodes: Int): String {
 
 fun formatDate(localDate: LocalDate): String = localDate.format(DateTimeFormatter.ofPattern("MMM d, yyyy"))
 
-fun formatGender(genderCode: Int, context: Context): String {
+fun formatGender(genderCode: Int): UiText {
     return when (genderCode) {
-        1 -> UiText.StringResource(R.string.female).asString(context)
-        2 -> UiText.StringResource(R.string.male).asString(context)
-        3 -> UiText.StringResource(R.string.non_binary).asString(context)
-        else -> UiText.StringResource(R.string.gender_not_specified).asString(context)
+        1 -> UiText.StringResource(R.string.female)
+        2 -> UiText.StringResource(R.string.male)
+        3 -> UiText.StringResource(R.string.non_binary)
+        else -> UiText.StringResource(R.string.gender_not_specified)
     }
 }
 
-fun formatPersonActing(numberOfEpisodes: Int?, character: String?, job: String?): AnnotatedString {
-    return buildAnnotatedString {
-        numberOfEpisodes?.let {
-            append("(${formatEpisodesCount(it)})")
-        }
-        if (numberOfEpisodes != null && (!character.isNullOrEmpty() || !job.isNullOrEmpty())) {
-            append(" ")
-        }
-        if (!character.isNullOrEmpty()) {
-            append("as $character")
-        }
-        if (!job.isNullOrEmpty()) {
-            append("... $job")
+@Composable
+fun formatPersonActing(
+    primaryTextStyle: SpanStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.onSurface).toSpanStyle(),
+    secondaryTextStyle: SpanStyle = MaterialTheme.typography.bodyMedium.copy(color = MaterialTheme.colorScheme.surfaceVariant).toSpanStyle(),
+    numberOfEpisodes: Int?,
+    character: String?,
+    job: String?
+): AnnotatedString {
+    val annotatedString by remember {
+        derivedStateOf {
+            buildAnnotatedString {
+                numberOfEpisodes?.let {
+                    withStyle(style = secondaryTextStyle) {
+                        append("(${formatEpisodesCount(it)})")
+                    }
+                }
+                withStyle(style = primaryTextStyle) {
+                    if (numberOfEpisodes != null && (!character.isNullOrEmpty() || !job.isNullOrEmpty())) {
+                        append(" ")
+                    }
+                    if (!character.isNullOrEmpty()) {
+                        withStyle(style = secondaryTextStyle) {
+                            append("as ")
+                        }
+                        append("$character")
+                    }
+                    if (!job.isNullOrEmpty()) {
+                        withStyle(style = secondaryTextStyle) {
+                            append("... ")
+                        }
+                        append("$job")
+                    }
+                }
+            }
         }
     }
+    return annotatedString
 }
 
 private val suffixes: NavigableMap<Long, String> = TreeMap<Long, String>().apply {
