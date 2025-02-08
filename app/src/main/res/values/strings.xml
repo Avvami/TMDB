@@ -13,7 +13,7 @@
     <string name="join_benefits">In order to use extended features and rating capabilities of TMDB, as well as get personal recommendations you will need to login to your account. If you do not have an account, registering for an account is free and simple.</string>
     <string name="or">or</string>
     <string name="join_tmdb">Join TMDB</string>
-    <string name="app_version">TMDB for Android v%s (%s)</string>
+    <string name="app_version">%s (%s)</string>
     <string name="account">Account</string>
     <string name="watchlist">Watchlist</string>
     <string name="favorite">Favorite</string>
@@ -23,7 +23,7 @@
     <string name="help">Help</string>
     <string name="support_forums">Support Forums</string>
     <string name="privacy_policy">Privacy Policy</string>
-    <string name="lists">Lists</string>
+    <string name="my_lists">My Lists</string>
     <string name="welcome">Welcome.</string>
     <string name="explore_now">Millions of movies, TV shows and people to discover. Explore now.</string>
     <string name="search_placeholder">Search for movies, tv shows, or people…</string>
@@ -135,4 +135,9 @@
     <string name="list">List</string>
     <string name="empty_collection">There are no items added to this collection.</string>
     <string name="unselected">Unselected</string>
+    <string name="app_settings">App Settings</string>
+    <string name="about">About</string>
+    <string name="version">Version</string>
+    <string name="not_certified">The app uses the TMDB API but is not endorsed or certified by TMDB.</string>
+    <string name="github">Project on GitHub</string>
 </resources>

@@ -30,6 +30,7 @@ fun CustomListItem(
     leadingContent: @Composable (() -> Unit)? = null,
     trailingContent: @Composable (() -> Unit)? = null,
     selected: Boolean = false,
+    enabled: Boolean = true,
     colors: ListItemColors = ListItemDefaults.colors(
         leadingIconColor = MaterialTheme.colorScheme.surfaceVariant,
         headlineColor = MaterialTheme.colorScheme.onSurface,
@@ -45,6 +46,7 @@ fun CustomListItem(
     Surface(
         modifier = modifier,
         onClick = onClick,
+        enabled = enabled,
         color = containerColor
     ) {
         Row(
@@ -60,15 +62,16 @@ fun CustomListItem(
             }
             ProvideContentColorTextStyle(
                 contentColor = colors.headlineColor,
-                textStyle = MaterialTheme.typography.titleMedium
+                textStyle = MaterialTheme.typography.bodyLarge
             ) {
                 Box(modifier = Modifier.weight(1f)) {
                     headlineContent()
                 }
             }
             trailingContent?.let {
-                CompositionLocalProvider(
-                    LocalContentColor provides colors.trailingIconColor,
+                ProvideContentColorTextStyle(
+                    contentColor = colors.trailingIconColor,
+                    textStyle = MaterialTheme.typography.bodyLarge,
                     content = it
                 )
             }

@@ -32,7 +32,7 @@ import com.personal.tmdb.home.presentation.home.HomeScreenRoot
 import com.personal.tmdb.profile.presentation.profile.ProfileScreenRoot
 import com.personal.tmdb.search.presentation.search.SearchScreenRoot
 import com.personal.tmdb.settings.presentation.appearance.AppearanceScreen
-import com.personal.tmdb.settings.presentation.settings.SettingsScreen
+import com.personal.tmdb.settings.presentation.settings.SettingsScreenRoot
 import kotlinx.coroutines.launch
 
 @Composable
@@ -194,8 +194,7 @@ fun ChildNavHost(
             ProfileScreenRoot(
                 bottomPadding = bottomBarPadding,
                 lazyListState = scrollState as LazyListState,
-                onNavigateTo = {},
-                preferencesState = { preferencesState.value },
+                onNavigateTo = onNavigateTo,
                 userState = { userState.value },
                 uiEvent = uiEvent
             )
@@ -255,15 +254,12 @@ fun ChildNavHost(
             )
         }
         animatedComposable<Route.Settings> {
-            SettingsScreen(
-                navigateBack = onNavigateBack,
-                onNavigateTo = { route ->
-                    navController.navigate(route = route) {
-                        launchSingleTop = true
-                    }
-                },
-                preferencesState = preferencesState,
-                userState = userState,
+            SettingsScreenRoot(
+                bottomPadding = bottomBarPadding,
+                onNavigateBack = onNavigateBack,
+                onNavigateTo = onNavigateTo,
+                preferencesState = { preferencesState.value },
+                userState = { userState.value },
                 uiEvent = uiEvent
             )
         }
@@ -274,11 +270,9 @@ fun ChildNavHost(
                 uiEvent = uiEvent
             )
         }
+        animatedComposable<Route.Language> {}
+        animatedComposable<Route.Watchlist> {}
+        animatedComposable<Route.MyLists> {}
+        animatedComposable<Route.Favorite> {}
     }
-}
-
-object RootNavGraph {
-    const val AUTH = "auth_screen"
-    const val SETTINGS = "settings_screen"
-    const val APPEARANCE = "appearance_screen"
 }

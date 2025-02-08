@@ -1,6 +1,5 @@
 package com.personal.tmdb.search.presentation.search.components
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +21,7 @@ import androidx.compose.ui.util.fastForEach
 import com.personal.tmdb.R
 import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.presentation.MediaState
+import com.personal.tmdb.core.presentation.components.CustomListItem
 import com.personal.tmdb.core.util.MediaType
 import com.personal.tmdb.core.util.shimmerEffect
 import com.personal.tmdb.search.presentation.search.SearchUiEvent
@@ -59,41 +59,39 @@ fun SearchTrending(
                 Column {
                     mediaInfoList.fastForEach { mediaInfo ->
                         mediaInfo.name?.let { name ->
-                            Text(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable {
-                                        mediaInfo.mediaType?.let { mediaType ->
-                                            when(mediaType) {
-                                                MediaType.TV, MediaType.MOVIE -> {
-                                                    searchUiEvent(
-                                                        SearchUiEvent.OnNavigateTo(
-                                                            Route.Detail(
-                                                                mediaType = mediaType.name.lowercase(),
-                                                                mediaId = mediaInfo.id
-                                                            )
+                            CustomListItem(
+                                onClick = {
+                                    mediaInfo.mediaType?.let { mediaType ->
+                                        when (mediaType) {
+                                            MediaType.TV, MediaType.MOVIE -> {
+                                                searchUiEvent(
+                                                    SearchUiEvent.OnNavigateTo(
+                                                        Route.Detail(
+                                                            mediaType = mediaType.name.lowercase(),
+                                                            mediaId = mediaInfo.id
                                                         )
                                                     )
-                                                }
-                                                MediaType.PERSON -> {
-                                                    searchUiEvent(
-                                                        SearchUiEvent.OnNavigateTo(
-                                                            Route.Person(
-                                                                personName = mediaInfo.name,
-                                                                personId = mediaInfo.id
-                                                            )
+                                                )
+                                            }
+                                            MediaType.PERSON -> {
+                                                searchUiEvent(
+                                                    SearchUiEvent.OnNavigateTo(
+                                                        Route.Person(
+                                                            personName = mediaInfo.name,
+                                                            personId = mediaInfo.id
                                                         )
                                                     )
-                                                }
-                                                else -> {
-                                                    /*TODO: Navigate to lost your way screen*/
-                                                }
+                                                )
+                                            }
+                                            else -> {
+                                                /*TODO: Navigate to lost your way screen*/
                                             }
                                         }
                                     }
-                                    .padding(horizontal = 16.dp, vertical = 12.dp),
-                                text = name,
-                                style = MaterialTheme.typography.bodyLarge
+                                },
+                                headlineContent = {
+                                    Text(text = name)
+                                }
                             )
                         }
                     }
@@ -129,14 +127,18 @@ fun SearchTrendingShimmer(
         }
         Column {
             repeat(10) {
-                Text(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 12.dp)
-                        .clip(MaterialTheme.shapes.extraSmall)
-                        .shimmerEffect(),
-                    text = "",
-                    style = MaterialTheme.typography.bodyLarge
+                CustomListItem(
+                    enabled = false,
+                    onClick = {},
+                    headlineContent = {
+                        Text(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(MaterialTheme.shapes.extraSmall)
+                                .shimmerEffect(),
+                            text = ""
+                        )
+                    }
                 )
             }
         }

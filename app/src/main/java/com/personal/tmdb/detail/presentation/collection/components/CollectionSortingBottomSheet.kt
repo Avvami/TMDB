@@ -42,13 +42,14 @@ fun CollectionSortingBottomSheet(
     collectionUiEvent: (CollectionUiEvent) -> Unit
 ) {
     ModalBottomSheet(
-        modifier = modifier.padding(bottom = 8.dp),
         onDismissRequest = onDismissRequest,
         dragHandle = { CustomDragHandle() },
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
         contentColor = MaterialTheme.colorScheme.onSurface
     ) {
-        Column {
+        Column(
+            modifier = modifier.padding(bottom = 8.dp),
+        ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

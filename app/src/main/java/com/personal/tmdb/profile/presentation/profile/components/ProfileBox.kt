@@ -49,11 +49,11 @@ import androidx.compose.ui.window.DialogProperties
 import coil3.compose.AsyncImage
 import com.personal.tmdb.MainActivity
 import com.personal.tmdb.R
-import com.personal.tmdb.UiEvent
 import com.personal.tmdb.UserState
 import com.personal.tmdb.core.presentation.components.AutoResizedText
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.findActivity
+import com.personal.tmdb.profile.presentation.profile.ProfileUiEvent
 import com.personal.tmdb.ui.theme.surfaceLight
 import com.personal.tmdb.ui.theme.surfaceVariantLight
 import com.personal.tmdb.ui.theme.tmdbRadialDarkPurple
@@ -63,7 +63,7 @@ import com.personal.tmdb.ui.theme.tmdbRed
 fun ProfileBox(
     modifier: Modifier = Modifier,
     userState: () -> UserState,
-    uiEvent: (UiEvent) -> Unit
+    profileUiEvent: (ProfileUiEvent) -> Unit
 ) {
     AnimatedContent(
         modifier = modifier,
@@ -78,7 +78,7 @@ fun ProfileBox(
         } else {
             SignedOutUser(
                 userState = userState,
-                uiEvent = uiEvent
+                profileUiEvent = profileUiEvent
             )
         }
     }
@@ -144,7 +144,7 @@ fun SignedInUser(
 fun SignedOutUser(
     modifier: Modifier = Modifier,
     userState: () -> UserState,
-    uiEvent: (UiEvent) -> Unit
+    profileUiEvent: (ProfileUiEvent) -> Unit
 ) {
     val activity = LocalContext.current.findActivity() as MainActivity
     var showLoadingDialog by remember { mutableStateOf(false) }
@@ -197,7 +197,7 @@ fun SignedOutUser(
             activity.openCustomChromeTab(
                 url = "https://www.themoviedb.org/auth/access?request_token=${userState().requestToken}"
             )
-            uiEvent(UiEvent.DropRequestToken)
+            profileUiEvent(ProfileUiEvent.DropRequestToken)
         }
     }
 
@@ -261,7 +261,7 @@ fun SignedOutUser(
                     modifier = Modifier.weight(1f),
                     onClick = {
                         showLoadingDialog = true
-                        uiEvent(UiEvent.CreateRequestToken)
+                        profileUiEvent(ProfileUiEvent.CreateRequestToken)
                     },
                     shape = MaterialTheme.shapes.small,
                     colors = ButtonDefaults.buttonColors(

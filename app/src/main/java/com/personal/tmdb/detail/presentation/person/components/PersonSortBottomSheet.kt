@@ -42,7 +42,6 @@ fun PersonSortModalBottomSheet(
     personUiEvent: (PersonUiEvent) -> Unit
 ) {
     ModalBottomSheet(
-        modifier = modifier.padding(bottom = 12.dp),
         onDismissRequest = onDismissRequest,
         dragHandle = { CustomDragHandle() },
         containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -52,7 +51,7 @@ fun PersonSortModalBottomSheet(
             LocalMinimumInteractiveComponentSize provides Dp.Unspecified
         ) {
             Column(
-                modifier = Modifier.padding(horizontal = 16.dp),
+                modifier = modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
                 Box(

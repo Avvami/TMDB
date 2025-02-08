@@ -3,12 +3,10 @@ package com.personal.tmdb.profile.presentation.profile
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -22,7 +20,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
@@ -34,7 +31,7 @@ import com.personal.tmdb.R
 import com.personal.tmdb.UiEvent
 import com.personal.tmdb.UserState
 import com.personal.tmdb.core.navigation.Route
-import com.personal.tmdb.core.presentation.PreferencesState
+import com.personal.tmdb.core.presentation.components.CustomListItem
 import com.personal.tmdb.profile.presentation.profile.components.ProfileBox
 
 @Composable
@@ -42,7 +39,6 @@ fun ProfileScreenRoot(
     bottomPadding: Dp,
     lazyListState: LazyListState = rememberLazyListState(),
     onNavigateTo: (route: Route) -> Unit,
-    preferencesState: () -> PreferencesState,
     userState: () -> UserState,
     uiEvent: (UiEvent) -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
@@ -50,10 +46,14 @@ fun ProfileScreenRoot(
     ProfileScreen(
         modifier = Modifier.padding(bottom = bottomPadding),
         lazyListState = lazyListState,
-        onNavigateTo = onNavigateTo,
-        preferencesState = preferencesState,
         userState = userState,
-        uiEvent = uiEvent
+        profileUiEvent = { event ->
+            when (event) {
+                is ProfileUiEvent.OnNavigateTo -> onNavigateTo(event.route)
+                ProfileUiEvent.CreateRequestToken -> uiEvent(UiEvent.CreateRequestToken)
+                ProfileUiEvent.DropRequestToken -> uiEvent(UiEvent.DropRequestToken)
+            }
+        }
     )
 }
 
@@ -61,10 +61,8 @@ fun ProfileScreenRoot(
 private fun ProfileScreen(
     modifier: Modifier = Modifier,
     lazyListState: LazyListState,
-    onNavigateTo: (route: Route) -> Unit,
-    preferencesState: () -> PreferencesState,
     userState: () -> UserState,
-    uiEvent: (UiEvent) -> Unit
+    profileUiEvent: (ProfileUiEvent) -> Unit,
 ) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surface,
@@ -92,7 +90,7 @@ private fun ProfileScreen(
                 ) {
                     ProfileBox(
                         userState = userState,
-                        uiEvent = uiEvent
+                        profileUiEvent = profileUiEvent
                     )
                 }
             }
@@ -102,120 +100,80 @@ private fun ProfileScreen(
                 Column {
                     AnimatedVisibility(visible = !userState().sessionId.isNullOrEmpty()) {
                         Column {
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { /*TODO: Navigate to watchlist*/ }
-                                    .padding(16.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                                ) {
+                            CustomListItem(
+                                onClick = { profileUiEvent(ProfileUiEvent.OnNavigateTo(Route.MyLists)) },
+                                leadingContent = {
                                     Icon(
                                         painter = painterResource(id = R.drawable.icon_bookmarks_fill0_wght400),
-                                        contentDescription = stringResource(id = R.string.watchlist),
-                                        tint = MaterialTheme.colorScheme.surfaceVariant
+                                        contentDescription = stringResource(id = R.string.watchlist)
                                     )
-                                    Text(
-                                        text = stringResource(id = R.string.watchlist),
-                                        style = MaterialTheme.typography.titleMedium
+                                },
+                                headlineContent = {
+                                    Text(text =   stringResource(id = R.string.watchlist))
+                                },
+                                trailingContent = {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
+                                        contentDescription = null
                                     )
                                 }
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.surfaceVariant
-                                )
-                            }
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { /*TODO: Navigate to lists*/ }
-                                    .padding(16.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                                ) {
+                            )
+                            CustomListItem(
+                                onClick = { profileUiEvent(ProfileUiEvent.OnNavigateTo(Route.MyLists)) },
+                                leadingContent = {
                                     Icon(
                                         painter = painterResource(id = R.drawable.icon_event_list_fill0_wght400),
-                                        contentDescription = stringResource(id = R.string.lists),
-                                        tint = MaterialTheme.colorScheme.surfaceVariant
+                                        contentDescription = stringResource(id = R.string.my_lists)
                                     )
-                                    Text(
-                                        text = stringResource(id = R.string.lists),
-                                        style = MaterialTheme.typography.titleMedium
+                                },
+                                headlineContent = {
+                                    Text(text =  stringResource(id = R.string.my_lists))
+                                },
+                                trailingContent = {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
+                                        contentDescription = null
                                     )
                                 }
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.surfaceVariant
-                                )
-                            }
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { /*TODO: Navigate to favorite*/ }
-                                    .padding(16.dp),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.SpaceBetween
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(12.dp)
-                                ) {
+                            )
+                            CustomListItem(
+                                onClick = { profileUiEvent(ProfileUiEvent.OnNavigateTo(Route.Favorite)) },
+                                leadingContent = {
                                     Icon(
                                         painter = painterResource(id = R.drawable.icon_favorite_fill0_wght400),
-                                        contentDescription = stringResource(id = R.string.favorite),
-                                        tint = MaterialTheme.colorScheme.surfaceVariant
+                                        contentDescription = stringResource(id = R.string.favorite)
                                     )
-                                    Text(
-                                        text = stringResource(id = R.string.favorite),
-                                        style = MaterialTheme.typography.titleMedium
+                                },
+                                headlineContent = {
+                                    Text(text = stringResource(id = R.string.favorite))
+                                },
+                                trailingContent = {
+                                    Icon(
+                                        imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
+                                        contentDescription = null
                                     )
                                 }
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.surfaceVariant
-                                )
-                            }
+                            )
                         }
                     }
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clickable { /*TODO: Navigation*/ }
-                            .padding(16.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(12.dp)
-                        ) {
+                    CustomListItem(
+                        onClick = { profileUiEvent(ProfileUiEvent.OnNavigateTo(Route.Settings)) },
+                        leadingContent = {
                             Icon(
                                 painter = painterResource(id = R.drawable.icon_settings_fill0_wght400),
-                                contentDescription = stringResource(id = R.string.settings),
-                                tint = MaterialTheme.colorScheme.surfaceVariant
+                                contentDescription = stringResource(id = R.string.settings)
                             )
-                            Text(
-                                text = stringResource(id = R.string.settings),
-                                style = MaterialTheme.typography.titleMedium
+                        },
+                        headlineContent = {
+                            Text(text = stringResource(id = R.string.settings))
+                        },
+                        trailingContent = {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
+                                contentDescription = null
                             )
                         }
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
-                            contentDescription = null,
-                            tint = MaterialTheme.colorScheme.surfaceVariant
-                        )
-                    }
+                    )
                 }
             }
         }

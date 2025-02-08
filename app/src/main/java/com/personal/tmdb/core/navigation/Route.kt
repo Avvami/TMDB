@@ -42,4 +42,16 @@ sealed interface Route {
 
     @Serializable
     data object Appearance: Route
+
+    @Serializable
+    data object Language: Route
+
+    @Serializable
+    data object Watchlist: Route
+
+    @Serializable
+    data object MyLists: Route
+
+    @Serializable
+    data object Favorite: Route
 }

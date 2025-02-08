@@ -200,20 +200,6 @@ class MainViewModel @Inject constructor(
                     localRepository.setTheme(event.darkTheme)
                 }
             }
-            UiEvent.CreateRequestToken -> {
-                createRequestToken()
-            }
-            UiEvent.DropRequestToken -> {
-                _userState.update { it.copy(requestToken = null) }
-            }
-            UiEvent.SignInUser -> {
-                signInUser()
-            }
-            is UiEvent.SetUseCards -> {
-                viewModelScope.launch {
-                    localRepository.setUseCards(event.userCards)
-                }
-            }
             is UiEvent.SetShowTitle -> {
                 viewModelScope.launch {
                     localRepository.setShowTitle(event.showTitle)
@@ -224,11 +210,17 @@ class MainViewModel @Inject constructor(
                     localRepository.setShowVoteAverage(event.showVoteAverage)
                 }
             }
-            is UiEvent.SetCorners -> {
-                cornersJob?.cancel()
-                cornersJob = viewModelScope.launch {
-                    localRepository.setCorners(event.corners)
-                }
+            UiEvent.CreateRequestToken -> {
+                createRequestToken()
+            }
+            UiEvent.DropRequestToken -> {
+                _userState.update { it.copy(requestToken = null) }
+            }
+            UiEvent.SignInUser -> {
+                signInUser()
+            }
+            UiEvent.SignOut -> {
+
             }
         }
     }

@@ -47,4 +47,8 @@ object C {
 
     const val MEDIA_IMAGES = "%s/%d/images"
     const val EPISODE_MEDIA_IMAGES = "tv/%d/season/%d/episode/%d/images"
+
+    const val GITHUB_PROJECT = "https://github.com/Avvami/TMDB"
+    const val TMDB_SUPPORT_FORUMS = "https://www.themoviedb.org/talk"
+    const val TMDB_PRIVACY_POLICY = "https://www.themoviedb.org/privacy-policy"
 }
