@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.personal.tmdb.R
-import com.personal.tmdb.core.util.C
+import com.personal.tmdb.core.domain.util.C
 import com.personal.tmdb.detail.presentation.reviews.components.Review
 import com.personal.tmdb.detail.presentation.reviews.components.ReviewsScreenShimmer
 import com.personal.tmdb.detail.presentation.reviews.components.ReviewsSelected

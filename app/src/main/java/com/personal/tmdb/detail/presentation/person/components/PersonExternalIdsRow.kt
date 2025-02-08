@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.MainActivity
 import com.personal.tmdb.R
-import com.personal.tmdb.core.util.C
-import com.personal.tmdb.core.util.findActivity
+import com.personal.tmdb.core.domain.util.C
+import com.personal.tmdb.core.domain.util.findActivity
 import com.personal.tmdb.detail.data.models.ExternalIds
 
 @OptIn(ExperimentalFoundationApi::class)

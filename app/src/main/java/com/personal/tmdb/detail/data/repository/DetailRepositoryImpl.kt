@@ -1,7 +1,7 @@
 package com.personal.tmdb.detail.data.repository
 
 import com.personal.tmdb.core.data.remote.TmdbApi
-import com.personal.tmdb.core.util.Resource
+import com.personal.tmdb.core.domain.util.Resource
 import com.personal.tmdb.detail.data.mappers.toCollectionInfo
 import com.personal.tmdb.detail.data.mappers.toCreditsInfo
 import com.personal.tmdb.detail.data.mappers.toEpisodeDetailsInfo

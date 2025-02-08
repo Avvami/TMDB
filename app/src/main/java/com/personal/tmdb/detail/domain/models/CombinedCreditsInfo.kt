@@ -2,7 +2,7 @@ package com.personal.tmdb.detail.domain.models
 
 import androidx.compose.runtime.Stable
 import com.personal.tmdb.core.domain.models.MediaInfo
-import com.personal.tmdb.core.util.MediaType
+import com.personal.tmdb.core.domain.util.MediaType
 import java.time.LocalDate
 import java.util.UUID
 

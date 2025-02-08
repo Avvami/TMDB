@@ -26,8 +26,8 @@ import androidx.compose.ui.util.lerp
 import coil3.compose.AsyncImage
 import com.personal.tmdb.R
 import com.personal.tmdb.core.navigation.Route
-import com.personal.tmdb.core.util.C
-import com.personal.tmdb.core.util.MediaType
+import com.personal.tmdb.core.domain.util.C
+import com.personal.tmdb.core.domain.util.MediaType
 import com.personal.tmdb.detail.domain.models.PersonInfo
 import com.personal.tmdb.detail.domain.util.ImageType
 import kotlin.math.absoluteValue

@@ -24,7 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
 import com.personal.tmdb.UserState
-import com.personal.tmdb.core.util.shimmerEffect
+import com.personal.tmdb.core.domain.util.shimmerEffect
 
 @Composable
 fun EpisodeDetailsShimmer(

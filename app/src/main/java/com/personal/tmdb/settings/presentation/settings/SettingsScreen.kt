@@ -32,7 +32,7 @@ import com.personal.tmdb.UiEvent
 import com.personal.tmdb.UserState
 import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.presentation.PreferencesState
-import com.personal.tmdb.core.util.findActivity
+import com.personal.tmdb.core.domain.util.findActivity
 import com.personal.tmdb.settings.presentation.settings.components.About
 import com.personal.tmdb.settings.presentation.settings.components.AppSettings
 

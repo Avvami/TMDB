@@ -1,11 +1,10 @@
-package com.personal.tmdb.core.util
+package com.personal.tmdb.core.domain.util
 
 object C {
     const val TMDB_BASE_URL = "https://api.themoviedb.org/"
     const val TMDB_IMAGES_BASE_URL = "https://image.tmdb.org/t/p/"
     const val GRAVATAR_IMAGES_BASE_URL = "https://gravatar.com/avatar/%s?s=185"
     const val FLAG_ICONS_URL = "https://flagicons.lipis.dev/flags/4x3/%s.svg"
-    const val PRIMARY_LANG = "af,ar,be,bg,bn,br,ca,ch,cs,cy,da,de,el,en,eo,es,et,eu,fa,fi,fr,ga,gd,gl,he,hi,hr,hu,id,it,ja,ka,kk,kn,ko,ku,ky,lt,lv,ml,mr,ms,nb,nl,no,pa,pl,pt,ro,ru,si,sk,sl,so,sq,sr,sv,sw,ta,te,th,tl,tr,uk,ur,uz,vi,zh,zu"
     const val REDIRECT_URL = "tmdb://auth/approved"
     const val ORIGINAL = "original"
     const val BACKDROP_W1280 = "w1280"
@@ -16,18 +15,9 @@ object C {
     const val LOGO_W92 = "w92"
     const val PROFILE_W185 = "w185"
     const val LOGO_W500 = "w500"
-    const val MEDIA_ID = "mediaId"
-    const val COLLECTION_ID = "collectionId"
-    const val MEDIA_TYPE = "mediaType"
-    const val MEDIA_NAME = "contentName"
-    const val PERSON_ID = "personId"
-    const val PERSON_NAME = "personName"
-    const val SEASON_NUMBER = "seasonNumber"
-    const val EPISODE_NUMBER = "episodeNumber"
-    const val IMAGES_PATH = "imagesPath"
-    const val IMAGE_INDEX = "imageIndex"
-    const val IMAGE_TYPE = "imageType"
+
     const val REVIEW = "review%d"
+    const val PRIMARY_TRANSLATIONS = "af,ar,be,bg,bn,br,ca,ch,cs,cy,da,de,el,en,eo,es,et,eu,fa,fi,fr,ga,gd,gl,he,hi,hr,hu,id,it,ja,ka,kk,kn,ko,ku,ky,lt,lv,ml,mr,ms,nb,nl,no,pa,pl,pt,ro,ru,si,sk,sl,so,sq,sr,sv,sw,ta,te,th,tl,tr,uk,ur,uz,vi,zh,zu"
 
     const val FACEBOOK = "https://www.facebook.com/%s"
     const val INSTAGRAM = "https://www.instagram.com/%s"

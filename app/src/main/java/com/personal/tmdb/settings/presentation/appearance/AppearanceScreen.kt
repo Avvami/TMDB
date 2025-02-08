@@ -1,8 +1,5 @@
 package com.personal.tmdb.settings.presentation.appearance
 
-import androidx.compose.animation.AnimatedContent
-import androidx.compose.animation.ExperimentalSharedTransitionApi
-import androidx.compose.animation.SharedTransitionLayout
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -29,14 +26,10 @@ import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
 import com.personal.tmdb.UiEvent
 import com.personal.tmdb.core.presentation.PreferencesState
-import com.personal.tmdb.core.presentation.components.MediaCardPreview
-import com.personal.tmdb.core.presentation.components.MediaPosterPreview
-import com.personal.tmdb.settings.presentation.appearance.components.Corners
-import com.personal.tmdb.settings.presentation.appearance.components.ListView
 import com.personal.tmdb.settings.presentation.appearance.components.ShowAdditionalInfo
 import com.personal.tmdb.settings.presentation.appearance.components.Theme
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalSharedTransitionApi::class)
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppearanceScreen(
     navigateBack: () -> Unit,
@@ -86,42 +79,7 @@ fun AppearanceScreen(
                         .padding(horizontal = 16.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    SharedTransitionLayout {
-                        AnimatedContent(
-                            targetState = preferencesState.value.useCards,
-                            label = "Media animation"
-                        ) { targetState ->
-                            if (targetState) {
-                                MediaCardPreview(
-                                    showVoteAverage = preferencesState.value.showVoteAverage,
-                                    corners = preferencesState.value.corners,
-                                    sharedTransitionScope = this@SharedTransitionLayout,
-                                    animatedVisibilityScope = this@AnimatedContent
-                                )
-                            } else {
-                                MediaPosterPreview(
-                                    showTitle = preferencesState.value.showTitle,
-                                    showVoteAverage = preferencesState.value.showVoteAverage,
-                                    corners = preferencesState.value.corners,
-                                    sharedTransitionScope = this@SharedTransitionLayout,
-                                    animatedVisibilityScope = this@AnimatedContent
-                                )
-                            }
-                        }
-                    }
                 }
-            }
-            item {
-                ListView(
-                    preferencesState = preferencesState,
-                    uiEvent = uiEvent
-                )
-            }
-            item {
-                Corners(
-                    preferencesState = preferencesState,
-                    uiEvent = uiEvent
-                )
             }
             item {
                 ShowAdditionalInfo(

@@ -18,9 +18,9 @@ import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
 import com.personal.tmdb.UserState
 import com.personal.tmdb.core.presentation.components.ProvideContentColorTextStyle
-import com.personal.tmdb.core.util.formatDate
-import com.personal.tmdb.core.util.formatRuntime
-import com.personal.tmdb.core.util.formatTvShowRuntime
+import com.personal.tmdb.core.domain.util.formatDate
+import com.personal.tmdb.core.domain.util.formatRuntime
+import com.personal.tmdb.core.domain.util.formatTvShowRuntime
 import com.personal.tmdb.detail.domain.models.MediaDetailInfo
 
 @OptIn(ExperimentalLayoutApi::class)

@@ -54,8 +54,8 @@ import coil3.compose.AsyncImage
 import coil3.svg.SvgDecoder
 import com.personal.tmdb.MainActivity
 import com.personal.tmdb.R
-import com.personal.tmdb.core.util.C
-import com.personal.tmdb.core.util.findActivity
+import com.personal.tmdb.core.domain.util.C
+import com.personal.tmdb.core.domain.util.findActivity
 import com.personal.tmdb.detail.data.models.Available
 import com.personal.tmdb.detail.data.models.Provider
 import com.personal.tmdb.detail.presentation.detail.AvailableState

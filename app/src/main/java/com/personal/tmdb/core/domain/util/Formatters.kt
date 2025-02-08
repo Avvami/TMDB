@@ -1,4 +1,4 @@
-package com.personal.tmdb.core.util
+package com.personal.tmdb.core.domain.util
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -10,7 +10,6 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import com.personal.tmdb.R
-import com.personal.tmdb.core.domain.util.UiText
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.NavigableMap

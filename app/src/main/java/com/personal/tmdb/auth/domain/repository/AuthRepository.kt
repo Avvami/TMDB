@@ -7,7 +7,7 @@ import com.personal.tmdb.auth.data.models.RequestTokenBody
 import com.personal.tmdb.auth.data.models.RequestTokenDto
 import com.personal.tmdb.auth.data.models.SessionDto
 import com.personal.tmdb.auth.domain.models.UserInfo
-import com.personal.tmdb.core.util.Resource
+import com.personal.tmdb.core.domain.util.Resource
 
 interface AuthRepository {
 

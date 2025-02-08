@@ -9,7 +9,7 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.personal.tmdb.core.data.local.AppDatabase
 import com.personal.tmdb.core.data.remote.TmdbApi
-import com.personal.tmdb.core.util.C
+import com.personal.tmdb.core.domain.util.C
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import dagger.Module

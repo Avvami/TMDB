@@ -1,6 +1,6 @@
 package com.personal.tmdb.detail.presentation.person
 
-import com.personal.tmdb.core.util.MediaType
+import com.personal.tmdb.core.domain.util.MediaType
 import com.personal.tmdb.detail.domain.models.CombinedCastCrewInfo
 import com.personal.tmdb.detail.domain.models.CombinedCreditsInfo
 

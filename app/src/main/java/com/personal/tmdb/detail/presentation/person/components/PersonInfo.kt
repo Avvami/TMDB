@@ -10,8 +10,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
-import com.personal.tmdb.core.util.formatDate
-import com.personal.tmdb.core.util.formatGender
+import com.personal.tmdb.core.domain.util.formatDate
+import com.personal.tmdb.core.domain.util.formatGender
 import com.personal.tmdb.detail.domain.models.PersonInfo
 import java.time.LocalDate
 

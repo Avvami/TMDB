@@ -12,7 +12,7 @@ import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.MediaCarousel
 import com.personal.tmdb.core.presentation.components.MediaPoster
 import com.personal.tmdb.core.presentation.components.MediaPosterShimmer
-import com.personal.tmdb.core.util.MediaType
+import com.personal.tmdb.core.domain.util.MediaType
 import com.personal.tmdb.search.presentation.search.SearchUiEvent
 
 @Composable

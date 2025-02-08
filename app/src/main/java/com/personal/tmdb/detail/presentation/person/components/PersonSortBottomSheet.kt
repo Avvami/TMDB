@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
 import com.personal.tmdb.core.presentation.components.CustomDragHandle
-import com.personal.tmdb.core.util.MediaType
+import com.personal.tmdb.core.domain.util.MediaType
 import com.personal.tmdb.detail.presentation.person.PersonCreditsState
 import com.personal.tmdb.detail.presentation.person.PersonUiEvent
 

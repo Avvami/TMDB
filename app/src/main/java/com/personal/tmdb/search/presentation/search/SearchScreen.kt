@@ -17,7 +17,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.presentation.MediaState
 import com.personal.tmdb.core.presentation.PreferencesState
-import com.personal.tmdb.core.util.convertMediaType
+import com.personal.tmdb.core.domain.util.convertMediaType
 import com.personal.tmdb.search.presentation.search.components.SearchField
 import com.personal.tmdb.search.presentation.search.components.SearchResults
 import com.personal.tmdb.search.presentation.search.components.SearchSuggestion

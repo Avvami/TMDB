@@ -14,7 +14,7 @@ import androidx.compose.ui.unit.dp
 import com.personal.tmdb.BuildConfig
 import com.personal.tmdb.R
 import com.personal.tmdb.core.presentation.components.CustomListItem
-import com.personal.tmdb.core.util.C
+import com.personal.tmdb.core.domain.util.C
 import com.personal.tmdb.settings.presentation.settings.SettingsUiEvent
 
 @Composable

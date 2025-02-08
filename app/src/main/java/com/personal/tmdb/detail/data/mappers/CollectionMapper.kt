@@ -2,7 +2,7 @@ package com.personal.tmdb.detail.data.mappers
 
 import androidx.compose.ui.util.fastFlatMap
 import com.personal.tmdb.core.domain.models.MediaInfo
-import com.personal.tmdb.core.util.convertMediaType
+import com.personal.tmdb.core.domain.util.convertMediaType
 import com.personal.tmdb.detail.data.models.CollectionDto
 import com.personal.tmdb.detail.data.models.Part
 import com.personal.tmdb.detail.domain.models.CollectionInfo

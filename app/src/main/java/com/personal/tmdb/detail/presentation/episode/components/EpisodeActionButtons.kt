@@ -21,7 +21,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
 import com.personal.tmdb.UserState
-import com.personal.tmdb.core.util.formatVoteAverage
+import com.personal.tmdb.core.domain.util.formatVoteAverage
 import com.personal.tmdb.detail.domain.models.EpisodeDetailsInfo
 
 @Composable

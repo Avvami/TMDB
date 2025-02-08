@@ -1,4 +1,4 @@
-package com.personal.tmdb.core.util
+package com.personal.tmdb.core.domain.util
 
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter

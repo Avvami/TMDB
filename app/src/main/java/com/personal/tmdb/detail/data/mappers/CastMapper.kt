@@ -1,8 +1,8 @@
 package com.personal.tmdb.detail.data.mappers
 
 import com.personal.tmdb.core.domain.models.MediaInfo
-import com.personal.tmdb.core.util.convertMediaType
-import com.personal.tmdb.core.util.convertStringToDate
+import com.personal.tmdb.core.domain.util.convertMediaType
+import com.personal.tmdb.core.domain.util.convertStringToDate
 import com.personal.tmdb.detail.data.models.CombinedCastCrew
 import com.personal.tmdb.detail.data.models.CombinedCredits
 import com.personal.tmdb.detail.domain.models.CombinedCastCrewInfo

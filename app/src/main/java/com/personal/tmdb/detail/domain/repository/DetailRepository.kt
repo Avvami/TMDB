@@ -1,6 +1,6 @@
 package com.personal.tmdb.detail.domain.repository
 
-import com.personal.tmdb.core.util.Resource
+import com.personal.tmdb.core.domain.util.Resource
 import com.personal.tmdb.detail.data.models.Images
 import com.personal.tmdb.detail.domain.models.CollectionInfo
 import com.personal.tmdb.detail.domain.models.CreditsInfo

@@ -1,4 +1,4 @@
-package com.personal.tmdb.core.util
+package com.personal.tmdb.core.domain.util
 
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
@@ -34,7 +34,7 @@ fun Modifier.shimmerEffect(
     val startOffsetX by transition.animateFloat(
         initialValue = -2 * size.width.toFloat(),
         targetValue = 2 * size.width.toFloat(),
-        animationSpec = infiniteRepeatable(tween(1500)), label = "Transition"
+        animationSpec = infiniteRepeatable(tween(2000)), label = "Transition"
     )
 
     background(
@@ -48,8 +48,6 @@ fun Modifier.shimmerEffect(
             size = it.size
         }
 }
-
-/*TODO: Make fadeEdge modifier*/
 
 fun Modifier.negativeHorizontalPadding(
     padding: Dp

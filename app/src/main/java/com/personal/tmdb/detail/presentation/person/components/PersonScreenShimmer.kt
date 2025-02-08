@@ -31,7 +31,7 @@ import androidx.compose.ui.util.lerp
 import com.personal.tmdb.R
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.MediaPosterShimmer
-import com.personal.tmdb.core.util.shimmerEffect
+import com.personal.tmdb.core.domain.util.shimmerEffect
 import kotlin.math.absoluteValue
 
 @Composable

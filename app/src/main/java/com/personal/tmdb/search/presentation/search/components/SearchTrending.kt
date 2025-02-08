@@ -22,8 +22,8 @@ import com.personal.tmdb.R
 import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.presentation.MediaState
 import com.personal.tmdb.core.presentation.components.CustomListItem
-import com.personal.tmdb.core.util.MediaType
-import com.personal.tmdb.core.util.shimmerEffect
+import com.personal.tmdb.core.domain.util.MediaType
+import com.personal.tmdb.core.domain.util.shimmerEffect
 import com.personal.tmdb.search.presentation.search.SearchUiEvent
 
 @Composable

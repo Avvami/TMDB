@@ -44,9 +44,9 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import androidx.compose.ui.window.DialogWindowProvider
 import com.personal.tmdb.R
-import com.personal.tmdb.core.util.formatEpisodesCount
-import com.personal.tmdb.core.util.formatVoteAverage
-import com.personal.tmdb.core.util.shimmerEffect
+import com.personal.tmdb.core.domain.util.formatEpisodesCount
+import com.personal.tmdb.core.domain.util.formatVoteAverage
+import com.personal.tmdb.core.domain.util.shimmerEffect
 import com.personal.tmdb.detail.presentation.episodes.EpisodesUiEvent
 import com.personal.tmdb.detail.presentation.episodes.SeasonState
 import com.personal.tmdb.ui.theme.onSurfaceLight

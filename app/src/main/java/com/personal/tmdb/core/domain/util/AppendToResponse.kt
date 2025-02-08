@@ -1,8 +1,5 @@
 package com.personal.tmdb.core.domain.util
 
-import com.personal.tmdb.core.util.MediaType
-import com.personal.tmdb.core.util.convertMediaType
-
 fun appendToResponse(mediaType: String): String {
     val media = convertMediaType(mediaType)
     return when (media) {

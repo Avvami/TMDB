@@ -1,8 +1,8 @@
 package com.personal.tmdb.search.domain.repository
 
 import com.personal.tmdb.core.domain.models.MediaResponseInfo
-import com.personal.tmdb.core.util.Resource
-import com.personal.tmdb.core.util.TimeWindow
+import com.personal.tmdb.core.domain.util.Resource
+import com.personal.tmdb.core.domain.util.TimeWindow
 
 interface SearchRepository {
 

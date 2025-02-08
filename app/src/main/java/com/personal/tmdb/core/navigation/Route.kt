@@ -54,4 +54,7 @@ sealed interface Route {
 
     @Serializable
     data object Favorite: Route
+
+    @Serializable
+    data object Lost: Route
 }

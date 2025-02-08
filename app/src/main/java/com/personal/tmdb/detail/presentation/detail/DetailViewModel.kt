@@ -10,8 +10,8 @@ import androidx.navigation.toRoute
 import com.personal.tmdb.core.domain.util.UiText
 import com.personal.tmdb.core.domain.util.appendToResponse
 import com.personal.tmdb.core.navigation.Route
-import com.personal.tmdb.core.util.Resource
-import com.personal.tmdb.core.util.convertMediaType
+import com.personal.tmdb.core.domain.util.Resource
+import com.personal.tmdb.core.domain.util.convertMediaType
 import com.personal.tmdb.detail.domain.repository.DetailRepository
 import com.personal.tmdb.detail.presentation.collection.CollectionState
 import dagger.hilt.android.lifecycle.HiltViewModel

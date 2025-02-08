@@ -1,4 +1,4 @@
-package com.personal.tmdb.core.util
+package com.personal.tmdb.core.domain.util
 
 enum class MediaType {
     MULTI,

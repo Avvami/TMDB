@@ -16,8 +16,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
-import com.personal.tmdb.core.util.formatDate
-import com.personal.tmdb.core.util.formatRuntime
+import com.personal.tmdb.core.domain.util.formatDate
+import com.personal.tmdb.core.domain.util.formatRuntime
 import com.personal.tmdb.detail.domain.models.EpisodeDetailsInfo
 
 @OptIn(ExperimentalLayoutApi::class)

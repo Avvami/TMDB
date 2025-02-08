@@ -1,6 +1,6 @@
 package com.personal.tmdb.detail.data.mappers
 
-import com.personal.tmdb.core.util.convertStringToDate
+import com.personal.tmdb.core.domain.util.convertStringToDate
 import com.personal.tmdb.detail.data.models.PersonDto
 import com.personal.tmdb.detail.domain.models.PersonInfo
 

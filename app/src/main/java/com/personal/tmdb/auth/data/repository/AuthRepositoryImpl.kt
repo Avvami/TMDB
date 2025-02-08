@@ -10,7 +10,7 @@ import com.personal.tmdb.auth.data.models.SessionDto
 import com.personal.tmdb.auth.domain.models.UserInfo
 import com.personal.tmdb.auth.domain.repository.AuthRepository
 import com.personal.tmdb.core.data.remote.TmdbApi
-import com.personal.tmdb.core.util.Resource
+import com.personal.tmdb.core.domain.util.Resource
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(

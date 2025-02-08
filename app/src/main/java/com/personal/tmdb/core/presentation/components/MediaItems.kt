@@ -36,10 +36,10 @@ import coil3.compose.AsyncImage
 import com.personal.tmdb.R
 import com.personal.tmdb.core.domain.models.MediaInfo
 import com.personal.tmdb.core.navigation.Route
-import com.personal.tmdb.core.util.C
-import com.personal.tmdb.core.util.MediaType
-import com.personal.tmdb.core.util.formatVoteAverage
-import com.personal.tmdb.core.util.shimmerEffect
+import com.personal.tmdb.core.domain.util.C
+import com.personal.tmdb.core.domain.util.MediaType
+import com.personal.tmdb.core.domain.util.formatVoteAverage
+import com.personal.tmdb.core.domain.util.shimmerEffect
 import com.personal.tmdb.ui.theme.onSurfaceLight
 import com.personal.tmdb.ui.theme.surfaceLight
 
@@ -85,7 +85,7 @@ fun MediaBanner(
                         }
 
                         else -> {
-                            /*TODO: Navigate to lost your way screen*/
+                            onNavigateTo(Route.Lost)
                         }
                     }
                 }
@@ -263,7 +263,7 @@ fun MediaPoster(
                             }
 
                             else -> {
-                                /*TODO: Navigate to lost your way screen*/
+                                onNavigateTo(Route.Lost)
                             }
                         }
                     }

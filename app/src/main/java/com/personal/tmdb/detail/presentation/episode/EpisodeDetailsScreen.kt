@@ -41,9 +41,9 @@ import com.personal.tmdb.R
 import com.personal.tmdb.UserState
 import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.presentation.components.MediaCarousel
-import com.personal.tmdb.core.util.C
-import com.personal.tmdb.core.util.MediaType
-import com.personal.tmdb.core.util.shareText
+import com.personal.tmdb.core.domain.util.C
+import com.personal.tmdb.core.domain.util.MediaType
+import com.personal.tmdb.core.domain.util.shareText
 import com.personal.tmdb.detail.domain.util.ImageType
 import com.personal.tmdb.detail.presentation.detail.components.AnnotatedItem
 import com.personal.tmdb.detail.presentation.detail.components.AnnotatedOverflowListText

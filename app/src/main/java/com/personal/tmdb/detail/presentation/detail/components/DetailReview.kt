@@ -28,8 +28,8 @@ import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
 import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.presentation.components.HtmlTextContainer
-import com.personal.tmdb.core.util.MediaType
-import com.personal.tmdb.core.util.formatDate
+import com.personal.tmdb.core.domain.util.MediaType
+import com.personal.tmdb.core.domain.util.formatDate
 import com.personal.tmdb.detail.domain.models.ReviewInfo
 import com.personal.tmdb.detail.presentation.detail.DetailUiEvent
 

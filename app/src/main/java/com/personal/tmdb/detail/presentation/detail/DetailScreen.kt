@@ -37,8 +37,8 @@ import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.MediaCarousel
 import com.personal.tmdb.core.presentation.components.MediaPoster
-import com.personal.tmdb.core.util.C
-import com.personal.tmdb.core.util.shareText
+import com.personal.tmdb.core.domain.util.C
+import com.personal.tmdb.core.domain.util.shareText
 import com.personal.tmdb.detail.presentation.detail.components.DetailActionButtons
 import com.personal.tmdb.detail.presentation.detail.components.DetailBanner
 import com.personal.tmdb.detail.presentation.detail.components.DetailCollection

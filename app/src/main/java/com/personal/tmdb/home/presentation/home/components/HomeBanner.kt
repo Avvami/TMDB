@@ -27,9 +27,9 @@ import coil3.compose.AsyncImage
 import coil3.request.ImageRequest
 import coil3.request.crossfade
 import com.personal.tmdb.core.navigation.Route
-import com.personal.tmdb.core.util.C
-import com.personal.tmdb.core.util.MediaType
-import com.personal.tmdb.core.util.shimmerEffect
+import com.personal.tmdb.core.domain.util.C
+import com.personal.tmdb.core.domain.util.MediaType
+import com.personal.tmdb.core.domain.util.shimmerEffect
 import com.personal.tmdb.home.presentation.home.HomeState
 import com.personal.tmdb.home.presentation.home.HomeUiEvent
 
@@ -68,7 +68,7 @@ fun HomeBanner(
                             )
                         }
                         else -> {
-                            /*TODO: Navigate to lost your way screen*/
+                            homeUiEvent(HomeUiEvent.OnNavigateTo(Route.Lost))
                         }
                     }
                 }

@@ -51,8 +51,8 @@ import com.personal.tmdb.MainActivity
 import com.personal.tmdb.R
 import com.personal.tmdb.UserState
 import com.personal.tmdb.core.presentation.components.AutoResizedText
-import com.personal.tmdb.core.util.C
-import com.personal.tmdb.core.util.findActivity
+import com.personal.tmdb.core.domain.util.C
+import com.personal.tmdb.core.domain.util.findActivity
 import com.personal.tmdb.profile.presentation.profile.ProfileUiEvent
 import com.personal.tmdb.ui.theme.surfaceLight
 import com.personal.tmdb.ui.theme.surfaceVariantLight

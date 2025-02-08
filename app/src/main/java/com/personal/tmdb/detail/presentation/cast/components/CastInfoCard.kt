@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.personal.tmdb.R
 import com.personal.tmdb.core.navigation.Route
-import com.personal.tmdb.core.util.C
-import com.personal.tmdb.core.util.shimmerEffect
+import com.personal.tmdb.core.domain.util.C
+import com.personal.tmdb.core.domain.util.shimmerEffect
 
 @Composable
 fun CastInfoCard(

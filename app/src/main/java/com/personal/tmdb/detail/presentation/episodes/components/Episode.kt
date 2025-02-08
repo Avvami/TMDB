@@ -25,10 +25,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.personal.tmdb.R
-import com.personal.tmdb.core.util.C
-import com.personal.tmdb.core.util.formatDate
-import com.personal.tmdb.core.util.formatRuntime
-import com.personal.tmdb.core.util.shimmerEffect
+import com.personal.tmdb.core.domain.util.C
+import com.personal.tmdb.core.domain.util.formatDate
+import com.personal.tmdb.core.domain.util.formatRuntime
+import com.personal.tmdb.core.domain.util.shimmerEffect
 import com.personal.tmdb.detail.domain.models.EpisodeInfo
 
 @OptIn(ExperimentalLayoutApi::class)

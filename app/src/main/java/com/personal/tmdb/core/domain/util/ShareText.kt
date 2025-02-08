@@ -1,4 +1,4 @@
-package com.personal.tmdb.core.util
+package com.personal.tmdb.core.domain.util
 
 import android.content.Context
 import android.content.Intent

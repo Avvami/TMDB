@@ -23,9 +23,9 @@ import androidx.compose.ui.util.fastForEach
 import coil3.compose.AsyncImage
 import com.personal.tmdb.R
 import com.personal.tmdb.core.navigation.Route
-import com.personal.tmdb.core.util.C
-import com.personal.tmdb.core.util.MediaType
-import com.personal.tmdb.core.util.formatPersonActing
+import com.personal.tmdb.core.domain.util.C
+import com.personal.tmdb.core.domain.util.MediaType
+import com.personal.tmdb.core.domain.util.formatPersonActing
 import com.personal.tmdb.detail.domain.models.CombinedCastCrewInfo
 
 @Composable

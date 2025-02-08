@@ -27,8 +27,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.personal.tmdb.R
 import com.personal.tmdb.core.navigation.Route
-import com.personal.tmdb.core.util.C
-import com.personal.tmdb.core.util.shareText
+import com.personal.tmdb.core.domain.util.C
+import com.personal.tmdb.core.domain.util.shareText
 import com.personal.tmdb.detail.presentation.episodes.components.seasonInfo
 import com.personal.tmdb.detail.presentation.episodes.components.seasonSelect
 

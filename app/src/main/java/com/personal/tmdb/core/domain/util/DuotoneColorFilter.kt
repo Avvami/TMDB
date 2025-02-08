@@ -1,4 +1,4 @@
-package com.personal.tmdb.core.util
+package com.personal.tmdb.core.domain.util
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter

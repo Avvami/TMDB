@@ -11,7 +11,7 @@ import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.util.fastForEachIndexed
-import com.personal.tmdb.core.util.formatEpisodesCount
+import com.personal.tmdb.core.domain.util.formatEpisodesCount
 
 data class AnnotatedCastItem(
     val id: String,

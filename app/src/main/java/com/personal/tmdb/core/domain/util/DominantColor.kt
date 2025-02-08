@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.personal.tmdb.core.util
+package com.personal.tmdb.core.domain.util
 
 import android.content.Context
 import androidx.collection.LruCache
@@ -116,12 +116,7 @@ class DominantColorState(
         }
 
         // Otherwise we calculate the swatches in the image, and return the first valid color
-        return calculateSwatchesInImage(context, url)
-            // First we want to sort the list by the color's population
-            .sortedByDescending { swatch -> swatch.population }
-            // Then we want to find the first valid color
-            .firstOrNull { swatch -> isColorValid(Color(swatch.rgb)) }
-            // If we found a valid swatch, wrap it in a [DominantColors]
+        return calculateVibrantInImage(context, url)
             ?.let { swatch ->
                 DominantColors(
                     color = Color(swatch.rgb),
@@ -180,4 +175,42 @@ private suspend fun calculateSwatchesInImage(
             palette.swatches
         }
     } ?: emptyList()
+}
+
+/**
+ * Fetches the given [imageUrl] with [Coil], then uses [Palette] to calculate the dominant color.
+ */
+private suspend fun calculateVibrantInImage(
+    context: Context,
+    imageUrl: String
+): Palette.Swatch? {
+    val imageRequest = ImageRequest.Builder(context)
+        .data(imageUrl)
+        // We scale the image to cover 128px x 128px (i.e. min dimension == 128px)
+        .size(128).scale(Scale.FILL)
+        // Disable hardware bitmaps, since Palette uses Bitmap.getPixels()
+        .allowHardware(false)
+        .build()
+
+    val imageLoader = ImageLoader.Builder(context).build()
+    val bitmap = when (val result = imageLoader.execute(imageRequest)) {
+        is SuccessResult -> result.image.toBitmap()
+        else -> null
+    }
+
+    return bitmap?.let {
+        withContext(Dispatchers.Default) {
+            val palette = Palette.Builder(bitmap)
+                // Disable any bitmap resizing in Palette. We've already loaded an appropriately
+                // sized bitmap through Coil
+                .resizeBitmapArea(0)
+                // Clear any built-in filters. We want the unfiltered dominant color
+                .clearFilters()
+                // We reduce the maximum color count down to 8
+                .maximumColorCount(8)
+                .generate()
+
+            palette.vibrantSwatch
+        }
+    }
 }

@@ -21,7 +21,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
-import com.personal.tmdb.core.util.formatVoteAverage
+import com.personal.tmdb.core.domain.util.formatVoteAverage
 import com.personal.tmdb.detail.domain.models.CollectionInfo
 
 @Composable

@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
-import com.personal.tmdb.core.util.shimmerEffect
+import com.personal.tmdb.core.domain.util.shimmerEffect
 
 @Composable
 fun ReviewsScreenShimmer(

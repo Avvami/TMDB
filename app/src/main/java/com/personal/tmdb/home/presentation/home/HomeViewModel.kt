@@ -3,9 +3,9 @@ package com.personal.tmdb.home.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.personal.tmdb.core.domain.models.MediaInfo
-import com.personal.tmdb.core.util.C
-import com.personal.tmdb.core.util.Resource
-import com.personal.tmdb.core.util.TimeWindow
+import com.personal.tmdb.core.domain.util.C
+import com.personal.tmdb.core.domain.util.Resource
+import com.personal.tmdb.core.domain.util.TimeWindow
 import com.personal.tmdb.detail.domain.repository.DetailRepository
 import com.personal.tmdb.home.domain.repository.HomeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel

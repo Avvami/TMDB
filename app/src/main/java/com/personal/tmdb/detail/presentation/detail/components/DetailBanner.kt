@@ -27,7 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.personal.tmdb.R
-import com.personal.tmdb.core.util.C
+import com.personal.tmdb.core.domain.util.C
 import com.personal.tmdb.detail.data.models.Provider
 import com.personal.tmdb.detail.domain.models.MediaDetailInfo
 import com.personal.tmdb.detail.presentation.detail.DetailUiEvent

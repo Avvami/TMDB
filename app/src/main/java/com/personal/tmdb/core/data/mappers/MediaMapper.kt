@@ -4,8 +4,8 @@ import com.personal.tmdb.core.data.models.MediaResponseDto
 import com.personal.tmdb.core.data.models.Result
 import com.personal.tmdb.core.domain.models.MediaInfo
 import com.personal.tmdb.core.domain.models.MediaResponseInfo
-import com.personal.tmdb.core.util.convertMediaType
-import com.personal.tmdb.core.util.convertStringToDate
+import com.personal.tmdb.core.domain.util.convertMediaType
+import com.personal.tmdb.core.domain.util.convertStringToDate
 
 fun MediaResponseDto.toMediaResponseInfo(): MediaResponseInfo {
     return MediaResponseInfo(

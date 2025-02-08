@@ -1,7 +1,7 @@
 package com.personal.tmdb.core.domain.models
 
 import androidx.compose.runtime.Stable
-import com.personal.tmdb.core.util.MediaType
+import com.personal.tmdb.core.domain.util.MediaType
 import java.time.LocalDate
 
 @Stable

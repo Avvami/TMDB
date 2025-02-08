@@ -1,7 +1,7 @@
 package com.personal.tmdb.detail.presentation.person
 
 import com.personal.tmdb.core.navigation.Route
-import com.personal.tmdb.core.util.MediaType
+import com.personal.tmdb.core.domain.util.MediaType
 
 sealed interface PersonUiEvent {
     data object OnNavigateBack: PersonUiEvent

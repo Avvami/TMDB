@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.util.fastForEach
 import com.personal.tmdb.R
 import com.personal.tmdb.core.navigation.Route
-import com.personal.tmdb.core.util.MediaType
+import com.personal.tmdb.core.domain.util.MediaType
 import com.personal.tmdb.detail.domain.models.MediaDetailInfo
 import com.personal.tmdb.detail.presentation.detail.DetailUiEvent
 

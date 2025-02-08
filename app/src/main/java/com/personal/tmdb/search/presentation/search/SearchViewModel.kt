@@ -6,9 +6,9 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.personal.tmdb.core.presentation.MediaState
-import com.personal.tmdb.core.util.MediaType
-import com.personal.tmdb.core.util.Resource
-import com.personal.tmdb.core.util.TimeWindow
+import com.personal.tmdb.core.domain.util.MediaType
+import com.personal.tmdb.core.domain.util.Resource
+import com.personal.tmdb.core.domain.util.TimeWindow
 import com.personal.tmdb.search.domain.repository.SearchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
