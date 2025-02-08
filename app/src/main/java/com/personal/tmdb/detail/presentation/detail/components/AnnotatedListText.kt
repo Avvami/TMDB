@@ -23,6 +23,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withLink
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.util.fastForEachIndexed
 import com.personal.tmdb.R
 import com.personal.tmdb.core.navigation.Route
 
@@ -53,7 +54,7 @@ fun AnnotatedListText(
                         append("$titlePrefix ")
                     }
                 }
-                items.forEachIndexed { index, item ->
+                items.fastForEachIndexed { index, item ->
                     withLink(
                         LinkAnnotation.Clickable(
                             tag = annotationTag.name,
@@ -74,7 +75,7 @@ fun AnnotatedListText(
                     ) {
                         append(item.name)
                     }
-                    if (index < items.size - 1) {
+                    if (index != items.lastIndex) {
                         withStyle(style = itemsStyle) {
                             append(", ")
                         }

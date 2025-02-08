@@ -12,39 +12,48 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.personal.tmdb.R
-import com.personal.tmdb.core.navigation.RootNavGraph
+import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.util.C
 import com.personal.tmdb.core.util.shimmerEffect
 
 @Composable
 fun CastInfoCard(
-    onNavigateTo: (route: String) -> Unit,
+    onNavigateTo: (route: Route) -> Unit,
     profileId: Int,
     profilePath: String?,
     name: String,
     character: String? = null,
     department: String? = null,
-    activity: String?
+    activity: AnnotatedString?
 ) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .clickable {
-                onNavigateTo(RootNavGraph.PERSON + "/${name}/${profileId}")
+                onNavigateTo(
+                    Route.Person(
+                        personName = name,
+                        personId = profileId
+                    )
+                )
             }
             .padding(horizontal = 16.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
             modifier = Modifier
+                .align(Alignment.Top)
                 .size(52.dp)
                 .clip(CircleShape),
             model = C.TMDB_IMAGES_BASE_URL + C.PROFILE_W185 + profilePath,
@@ -63,20 +72,17 @@ fun CastInfoCard(
             character?.let { character ->
                 Text(
                     text = "as $character",
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
             department?.let { department ->
                 Text(
                     text = department,
-                    style = MaterialTheme.typography.bodySmall
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
             if (!activity.isNullOrEmpty()) {
-                Text(
-                    text = activity,
-                    style = MaterialTheme.typography.bodySmall
-                )
+                Text(text = activity)
             }
         }
     }
@@ -88,7 +94,8 @@ fun CastInfoCardShimmer() {
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp, vertical = 8.dp),
-        horizontalArrangement = Arrangement.spacedBy(12.dp)
+        horizontalArrangement = Arrangement.spacedBy(12.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
         Box(
             modifier = Modifier
@@ -102,19 +109,19 @@ fun CastInfoCardShimmer() {
         ) {
             Text(
                 modifier = Modifier
-                    .clip(MaterialTheme.shapes.small)
+                    .clip(MaterialTheme.shapes.extraSmall)
                     .shimmerEffect(),
-                text = "Person's name",
+                text = "Elon Mask",
                 style = MaterialTheme.typography.titleMedium,
                 color = Color.Transparent
             )
             Text(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clip(MaterialTheme.shapes.small)
+                    .clip(MaterialTheme.shapes.extraSmall)
                     .shimmerEffect(),
                 text = "",
-                style = MaterialTheme.typography.bodySmall
+                style = MaterialTheme.typography.displayMedium
             )
         }
     }

@@ -1,17 +1,19 @@
 package com.personal.tmdb.detail.presentation.cast
 
-import android.net.Uri
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.personal.tmdb.core.util.C
+import androidx.navigation.toRoute
+import com.personal.tmdb.core.domain.util.UiText
+import com.personal.tmdb.core.navigation.Route
+import com.personal.tmdb.core.util.MediaType
 import com.personal.tmdb.core.util.Resource
-import com.personal.tmdb.detail.domain.models.CreditsInfo
+import com.personal.tmdb.core.util.convertMediaType
 import com.personal.tmdb.detail.domain.repository.DetailRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,88 +23,87 @@ class CastViewModel @Inject constructor(
     private val detailRepository: DetailRepository
 ): ViewModel() {
 
-    var castState by mutableStateOf(CastState())
-        private set
+    private val routeData = savedStateHandle.toRoute<Route.Cast>()
 
-    val mediaName: String = Uri.decode(savedStateHandle[C.MEDIA_NAME] ?: "") ?: ""
-
-    val mediaType: String = savedStateHandle[C.MEDIA_TYPE] ?: ""
-
-    val mediaId: Int = savedStateHandle[C.MEDIA_ID] ?: 0
-
-    val seasonNumber = savedStateHandle.get<String>(C.SEASON_NUMBER)?.toIntOrNull()
-
-    val episodeNumber = savedStateHandle.get<String>(C.EPISODE_NUMBER)?.toIntOrNull()
+    private val _castState = MutableStateFlow(
+        CastState(
+            mediaId = routeData.mediaId,
+            mediaName = routeData.mediaName,
+            mediaType = convertMediaType(routeData.mediaType),
+            seasonNumber = routeData.seasonNumber,
+            episodeNumber = routeData.episodeNumber
+        )
+    )
+    val castState = _castState.asStateFlow()
 
     init {
-        if (seasonNumber != null && episodeNumber != null) {
+        if (routeData.seasonNumber != null && routeData.episodeNumber != null) {
             getEpisodeCast(
-                mediaId = mediaId,
-                seasonNumber = seasonNumber,
-                episodeNumber = episodeNumber
+                mediaId = routeData.mediaId,
+                seasonNumber = routeData.seasonNumber,
+                episodeNumber = routeData.episodeNumber
             )
         } else {
             getCast(
-                mediaType = mediaType,
-                mediaId = mediaId
+                mediaType = convertMediaType(routeData.mediaType),
+                mediaId = routeData.mediaId
             )
         }
     }
 
-    private fun getCast(mediaType: String, mediaId: Int, language: String? = null) {
+    private fun getCast(mediaType: MediaType, mediaId: Int, language: String? = null) {
         viewModelScope.launch {
-            castState = castState.copy(
-                isLoading = true
-            )
+            _castState.update { it.copy(loading = true) }
 
-            val method = if (mediaType == "tv") "aggregate_credits" else "credits"
-            var credits: CreditsInfo? = null
-            var error: String? = null
+            val method = if (mediaType == MediaType.TV) "aggregate_credits" else "credits"
 
-            detailRepository.getCast(mediaType, mediaId, method, language).let { result ->
+            detailRepository.getCast(mediaType.name.lowercase(), mediaId, method, language).let { result ->
                 when (result) {
                     is Resource.Error -> {
-                        error = result.message
+                        _castState.update {
+                            it.copy(
+                                loading = false,
+                                errorMessage = UiText.DynamicString(result.message ?: "")
+                            )
+                        }
                     }
                     is Resource.Success -> {
-                        credits = result.data
+                        _castState.update {
+                            it.copy(
+                                loading = false,
+                                credits = result.data
+                            )
+                        }
                     }
                 }
             }
-
-            castState = castState.copy(
-                credits = credits,
-                isLoading = false,
-                error = error
-            )
         }
     }
 
     private fun getEpisodeCast(mediaId: Int, seasonNumber: Int, episodeNumber: Int, language: String? = null) {
         viewModelScope.launch {
-            castState = castState.copy(
-                isLoading = true
-            )
-
-            var credits: CreditsInfo? = null
-            var error: String? = null
+            _castState.update { it.copy(loading = true) }
 
             detailRepository.getEpisodeCast(mediaId, seasonNumber, episodeNumber, language).let { result ->
                 when (result) {
                     is Resource.Error -> {
-                        error = result.message
+                        _castState.update {
+                            it.copy(
+                                loading = false,
+                                errorMessage = UiText.DynamicString(result.message ?: "")
+                            )
+                        }
                     }
                     is Resource.Success -> {
-                        credits = result.data
+                        _castState.update {
+                            it.copy(
+                                loading = false,
+                                credits = result.data
+                            )
+                        }
                     }
                 }
             }
-
-            castState = castState.copy(
-                credits = credits,
-                isLoading = false,
-                error = error
-            )
         }
     }
 }

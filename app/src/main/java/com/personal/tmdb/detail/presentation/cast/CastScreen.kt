@@ -2,7 +2,6 @@ package com.personal.tmdb.detail.presentation.cast
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
@@ -19,50 +18,72 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.personal.tmdb.R
-import com.personal.tmdb.core.presentation.components.CustomIconButton
+import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.util.C
-import com.personal.tmdb.core.util.formatEpisodesCount
 import com.personal.tmdb.core.util.shareText
+import com.personal.tmdb.detail.presentation.cast.components.AnnotatedCastItem
 import com.personal.tmdb.detail.presentation.cast.components.CastInfoCard
 import com.personal.tmdb.detail.presentation.cast.components.CastScreenShimmer
+import com.personal.tmdb.detail.presentation.cast.components.annotatedCastText
+
+@Composable
+fun CastScreenRoot(
+    bottomPadding: Dp,
+    onNavigateBack: () -> Unit,
+    onNavigateTo: (route: Route) -> Unit,
+    viewModel: CastViewModel = hiltViewModel()
+) {
+    val castState by viewModel.castState.collectAsStateWithLifecycle()
+    CastScreen(
+        modifier = Modifier.padding(bottom = bottomPadding),
+        castState = { castState },
+        castUiEvent = { event ->
+            when (event) {
+                CastUiEvent.OnNavigateBack -> onNavigateBack()
+                is CastUiEvent.OnNavigateTo -> onNavigateTo(event.route)
+            }
+        }
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
 fun CastScreen(
-    navigateBack: () -> Unit,
-    onNavigateTo: (route: String) -> Unit,
-    navigateToHome: () -> Unit,
-    castViewModel: CastViewModel = hiltViewModel()
+    modifier: Modifier = Modifier,
+    castState: () -> CastState,
+    castUiEvent: (CastUiEvent) -> Unit
 ) {
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
                     Text(
-                        text = castViewModel.mediaName,
+                        text = castState().mediaName,
                         fontWeight = FontWeight.Medium,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    titleContentColor = MaterialTheme.colorScheme.onBackground,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
-                    actionIconContentColor = MaterialTheme.colorScheme.onBackground
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                    actionIconContentColor = MaterialTheme.colorScheme.onSurface
                 ),
                 navigationIcon = {
-                    CustomIconButton(
-                        onClick = navigateBack,
-                        onLongClick = navigateToHome
+                    IconButton(
+                        onClick = { castUiEvent(CastUiEvent.OnNavigateBack) },
                     )  {
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
@@ -74,19 +95,19 @@ fun CastScreen(
                     val context = LocalContext.current
                     IconButton(
                         onClick = {
-                            if (castViewModel.episodeNumber != null && castViewModel.seasonNumber != null) {
+                            if (castState().episodeNumber != null && castState().seasonNumber != null) {
                                 context.shareText(
                                     C.SHARE_EPISODE_CAST.format(
-                                        castViewModel.mediaId,
-                                        castViewModel.seasonNumber,
-                                        castViewModel.episodeNumber
+                                        castState().mediaId,
+                                        castState().seasonNumber,
+                                        castState().episodeNumber
                                     )
                                 )
                             } else {
                                 context.shareText(
                                     C.SHARE_CAST.format(
-                                        castViewModel.mediaType,
-                                        castViewModel.mediaId
+                                        castState().mediaType.name.lowercase(),
+                                        castState().mediaId
                                     )
                                 )
                             }
@@ -100,54 +121,44 @@ fun CastScreen(
                 }
             )
         },
-        containerColor = MaterialTheme.colorScheme.background,
-        contentColor = MaterialTheme.colorScheme.onBackground
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface
     ) { innerPadding ->
         LazyColumn(
-            modifier = Modifier.padding(innerPadding)
+            modifier = modifier.padding(top = innerPadding.calculateTopPadding())
         ) {
-            if (castViewModel.castState.isLoading) {
+            if (castState().loading) {
                 item {
                     CastScreenShimmer()
                 }
             } else {
-                castViewModel.castState.error?.let { error ->
-                    item {
-                        Text(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 8.dp),
-                            text = error,
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-                castViewModel.castState.credits?.let { credits ->
+                castState().credits?.let { credits ->
                     if (!credits.cast.isNullOrEmpty()) {
                         stickyHeader(
                             contentType = "mainHeader"
                         ) {
-                            Column(
+                            Text(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .background(MaterialTheme.colorScheme.surfaceContainer)
                                     .padding(horizontal = 16.dp, vertical = 4.dp),
-                            ) {
-                                Text(
-                                    text = stringResource(id = R.string.cast),
-                                    style = MaterialTheme.typography.titleMedium
-                                )
-                            }
+                                text = stringResource(id = R.string.cast),
+                                style = MaterialTheme.typography.titleMedium
+                            )
                         }
                         items(credits.cast) { cast ->
                             CastInfoCard(
-                                onNavigateTo = onNavigateTo,
+                                onNavigateTo = { castUiEvent(CastUiEvent.OnNavigateTo(it)) },
                                 profileId = cast.id,
                                 profilePath = cast.profilePath,
                                 name = cast.name,
                                 character = cast.character,
-                                activity = cast.roles?.joinToString(", ") { "${it.character} (${formatEpisodesCount(it.episodeCount)})" }
+                                activity = cast.roles?.let { role ->
+                                    annotatedCastText(
+                                        items = role.map { AnnotatedCastItem(it.creditId, it.character, it.episodeCount) },
+                                        onNavigateTo = { castUiEvent(CastUiEvent.OnNavigateTo(it)) }
+                                    )
+                                }
                             )
                         }
                     }
@@ -155,26 +166,28 @@ fun CastScreen(
                         stickyHeader(
                             contentType = "mainHeader"
                         ) {
-                            Column(
+                            Text(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .background(MaterialTheme.colorScheme.surfaceContainer)
                                     .padding(horizontal = 16.dp, vertical = 4.dp),
-                            ) {
-                                Text(
-                                    text = stringResource(id = R.string.guest_stars),
-                                    style = MaterialTheme.typography.titleMedium
-                                )
-                            }
+                                text = stringResource(id = R.string.guest_stars),
+                                style = MaterialTheme.typography.titleMedium
+                            )
                         }
                         items(credits.guestStars) { cast ->
                             CastInfoCard(
-                                onNavigateTo = onNavigateTo,
+                                onNavigateTo = { castUiEvent(CastUiEvent.OnNavigateTo(it)) },
                                 profileId = cast.id,
                                 profilePath = cast.profilePath,
                                 name = cast.name,
                                 character = cast.character,
-                                activity = cast.roles?.joinToString(", ") { "${it.character} (${formatEpisodesCount(it.episodeCount)})" }
+                                activity = cast.roles?.let { role ->
+                                    annotatedCastText(
+                                        items = role.map { AnnotatedCastItem(it.creditId, it.character, it.episodeCount) },
+                                        onNavigateTo = { castUiEvent(CastUiEvent.OnNavigateTo(it)) }
+                                    )
+                                }
                             )
                         }
                     }
@@ -182,45 +195,44 @@ fun CastScreen(
                         stickyHeader(
                             contentType = "mainHeader"
                         ) {
-                            Column(
+                            Text(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .background(MaterialTheme.colorScheme.surfaceContainer)
                                     .padding(horizontal = 16.dp, vertical = 4.dp),
-                            ) {
-                                Text(
-                                    text = stringResource(id = R.string.crew),
-                                    style = MaterialTheme.typography.titleMedium
-                                )
-                            }
+                                text = stringResource(id = R.string.crew),
+                                style = MaterialTheme.typography.titleMedium
+                            )
                         }
                         credits.crew.forEach { (department, crewList) ->
                             if (!department.isNullOrEmpty()) {
                                 stickyHeader(
                                     contentType = "subHeader"
                                 ) {
-                                    Column(
+                                    Text(
                                         modifier = Modifier
                                             .fillMaxWidth()
-                                            .background(MaterialTheme.colorScheme.surfaceContainerLow)
+                                            .background(MaterialTheme.colorScheme.surfaceContainer)
                                             .padding(horizontal = 16.dp, vertical = 4.dp),
-                                    ) {
-                                        Text(
-                                            text = department,
-                                            style = MaterialTheme.typography.titleSmall
-                                        )
-                                    }
+                                        text = department,
+                                        style = MaterialTheme.typography.titleSmall
+                                    )
                                 }
                             }
                             if (!crewList.isNullOrEmpty()) {
                                 items(crewList) { crew ->
                                     CastInfoCard(
-                                        onNavigateTo = onNavigateTo,
+                                        onNavigateTo = { castUiEvent(CastUiEvent.OnNavigateTo(it)) },
                                         profileId = crew.id,
                                         profilePath = crew.profilePath,
                                         name = crew.name,
                                         department = department,
-                                        activity = crew.jobs?.joinToString(", ") { "${it.job} (${formatEpisodesCount(it.episodeCount)})" }
+                                        activity = crew.jobs?.let { jobs ->
+                                            annotatedCastText(
+                                                items = jobs.map { AnnotatedCastItem(it.creditId, it.job, it.episodeCount) },
+                                                onNavigateTo = { castUiEvent(CastUiEvent.OnNavigateTo(it)) }
+                                            )
+                                        }
                                     )
                                 }
                             }

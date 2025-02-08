@@ -108,7 +108,7 @@ private fun DetailScreen(
                     val context = LocalContext.current
                     IconButton(
                         onClick = {
-                            context.shareText(C.SHARE_MEDIA.format(detailState().mediaType, detailState().mediaId))
+                            context.shareText(C.SHARE_MEDIA.format(detailState().mediaType.name.lowercase(), detailState().mediaId))
                         }
                     ) {
                         Icon(
