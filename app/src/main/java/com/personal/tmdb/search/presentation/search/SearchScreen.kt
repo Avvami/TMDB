@@ -78,7 +78,7 @@ private fun SearchScreen(
                 searchUiEvent = searchUiEvent
             )
             AnimatedContent(
-                targetState = searchState().mediaResponseInfo == null && !searchState().isLoading && searchState().error == null,
+                targetState = searchState().mediaResponseInfo == null && !searchState().loading && searchState().errorMessage == null,
                 label = "Search screen content animation"
             ) { targetState ->
                 if (targetState) {

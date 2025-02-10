@@ -8,18 +8,18 @@ import androidx.lifecycle.viewModelScope
 import com.personal.tmdb.auth.data.models.AccessTokenBody
 import com.personal.tmdb.auth.data.models.RedirectToBody
 import com.personal.tmdb.auth.data.models.RequestTokenBody
-import com.personal.tmdb.auth.domain.models.UserInfo
 import com.personal.tmdb.auth.domain.repository.AuthRepository
 import com.personal.tmdb.core.domain.repository.LocalCache
 import com.personal.tmdb.core.domain.repository.LocalRepository
+import com.personal.tmdb.core.domain.util.C
 import com.personal.tmdb.core.domain.util.SnackbarController
 import com.personal.tmdb.core.domain.util.SnackbarEvent
 import com.personal.tmdb.core.domain.util.UiText
+import com.personal.tmdb.core.domain.util.onError
+import com.personal.tmdb.core.domain.util.onSuccess
+import com.personal.tmdb.core.domain.util.toUiText
 import com.personal.tmdb.core.presentation.PreferencesState
-import com.personal.tmdb.core.domain.util.C
-import com.personal.tmdb.core.domain.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -45,8 +45,6 @@ class MainViewModel @Inject constructor(
 
     private val _userState = MutableStateFlow(UserState())
     val userState: StateFlow<UserState> = _userState.asStateFlow()
-
-    private var cornersJob: Job? = null
 
     init {
         val preferencesFlow = localRepository.getPreferences().shareIn(
@@ -89,24 +87,21 @@ class MainViewModel @Inject constructor(
     private fun createRequestToken() {
         viewModelScope.launch {
             var requestToken: String? = null
-            _userState.update { it.copy(isLoading = true) }
+            _userState.update { it.copy(loading = true) }
 
-            authRepository.createRequestToken(RedirectToBody("${C.REDIRECT_URL}/true")).let { result ->
-                when(result) {
-                    is Resource.Error -> {
-                        _userState.update { it.copy(error = result.message) }
-                    }
-                    is Resource.Success -> {
-                        if (result.data?.success == true) {
-                            requestToken = result.data.requestToken
-                        } else {
-                            _userState.update { it.copy(error = result.data?.statusMessage) }
-                        }
+            authRepository.createRequestToken(RedirectToBody("${C.REDIRECT_URL}/true"))
+                .onError { error ->
+                    _userState.update { it.copy(errorMessage = error.toUiText()) }
+                }
+                .onSuccess { result ->
+                    if (result.success) {
+                        requestToken = result.requestToken
+                    } else {
+                        _userState.update { it.copy(errorMessage = UiText.DynamicString(result.statusMessage)) }
                     }
                 }
-            }
 
-            _userState.update { it.copy(isLoading = false) }
+            _userState.update { it.copy(loading = false) }
             requestToken?.let { token ->
                 _userState.update { it.copy(requestToken = token) }
                 localCache.saveRequestToken(token)
@@ -116,80 +111,69 @@ class MainViewModel @Inject constructor(
 
     private fun signInUser() {
         viewModelScope.launch {
-            authRepository.createAccessToken(RequestTokenBody(localCache.getRequestToken())).let { result ->
-                when(result) {
-                    is Resource.Error -> {
-                        _userState.update { it.copy(error = result.message) }
-                    }
-                    is Resource.Success -> {
-                        if (result.data?.success == true && result.data.accessToken != null && result.data.accountId != null) {
-                            authRepository.createSession(AccessTokenBody(result.data.accessToken)).let { sessionResult ->
-                                when(sessionResult) {
-                                    is Resource.Error -> {
-                                        _userState.update { it.copy(error = result.message) }
-                                    }
-                                    is Resource.Success -> {
-                                        if (sessionResult.data?.success == true && sessionResult.data.sessionId != null) {
-                                            localRepository.setAccessInfo(
-                                                accessToken = result.data.accessToken,
-                                                sessionId = sessionResult.data.sessionId,
-                                                accountId = result.data.accountId
-                                            )
-                                            localCache.clearRequestToken()
-                                            SnackbarController.sendEvent(
-                                                event = SnackbarEvent(
-                                                    message = UiText.StringResource(R.string.signed_in_successfully)
-                                                )
-                                            )
-                                        } else {
-                                            SnackbarController.sendEvent(
-                                                event = SnackbarEvent(
-                                                    message = UiText.DynamicString("Error obtaining session ID")
-                                                )
-                                            )
-                                        }
-                                    }
-                                }
-                            }
-                        } else {
-                            result.data?.statusMessage?.let {
+            authRepository.createAccessToken(RequestTokenBody(localCache.getRequestToken()))
+                .onError { error ->
+                    _userState.update { it.copy(errorMessage = error.toUiText()) }
+                }
+                .onSuccess { accessToken ->
+                    if (accessToken.success && accessToken.accessToken != null && accessToken.accountId != null) {
+                        authRepository.createSession(AccessTokenBody(accessToken.accessToken))
+                            .onError { error ->
                                 SnackbarController.sendEvent(
                                     event = SnackbarEvent(
-                                        message = UiText.DynamicString(it)
+                                        message = error.toUiText()
                                     )
                                 )
                             }
-                        }
+                            .onSuccess { session ->
+                                if (session.success && session.sessionId != null) {
+                                    localRepository.setAccessInfo(
+                                        accessToken = accessToken.accessToken,
+                                        sessionId = session.sessionId,
+                                        accountId = accessToken.accountId
+                                    )
+                                    localCache.clearRequestToken()
+                                    SnackbarController.sendEvent(
+                                        event = SnackbarEvent(
+                                            message = UiText.StringResource(R.string.signed_in_successfully)
+                                        )
+                                    )
+                                } else {
+                                    SnackbarController.sendEvent(
+                                        event = SnackbarEvent(
+                                            message = UiText.StringResource(R.string.error_session_id)
+                                        )
+                                    )
+                                }
+                            }
+                    } else {
+                        SnackbarController.sendEvent(
+                            event = SnackbarEvent(
+                                message = UiText.DynamicString(accessToken.statusMessage)
+                            )
+                        )
                     }
                 }
-            }
         }
     }
 
     private fun getUserDetails(sessionId: String) {
         if (sessionId.isBlank()) return
         viewModelScope.launch {
-            _userState.update { it.copy(isLoading = true) }
+            _userState.update { it.copy(loading = true) }
 
-            var userInfo: UserInfo? = null
-
-            authRepository.getUserDetails(sessionId).let { result ->
-                when (result) {
-                    is Resource.Error -> {
-                        /*TODO: Something about it?*/
-                    }
-                    is Resource.Success -> {
-                        userInfo = result.data
+            authRepository.getUserDetails(sessionId)
+                .onError { error ->
+                    println(error.name)
+                }
+                .onSuccess { result ->
+                    _userState.update {
+                        it.copy(
+                            loading = false,
+                            userInfo = result
+                        )
                     }
                 }
-            }
-
-            _userState.update {
-                it.copy(
-                    isLoading = false,
-                    userInfo = userInfo
-                )
-            }
         }
     }
 

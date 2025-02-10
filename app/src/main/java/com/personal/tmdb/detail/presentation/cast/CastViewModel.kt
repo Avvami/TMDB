@@ -4,11 +4,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.personal.tmdb.core.domain.util.UiText
-import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.domain.util.MediaType
-import com.personal.tmdb.core.domain.util.Resource
 import com.personal.tmdb.core.domain.util.convertMediaType
+import com.personal.tmdb.core.domain.util.onError
+import com.personal.tmdb.core.domain.util.onSuccess
+import com.personal.tmdb.core.domain.util.toUiText
+import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.detail.domain.repository.DetailRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -57,26 +58,23 @@ class CastViewModel @Inject constructor(
 
             val method = if (mediaType == MediaType.TV) "aggregate_credits" else "credits"
 
-            detailRepository.getCast(mediaType.name.lowercase(), mediaId, method, language).let { result ->
-                when (result) {
-                    is Resource.Error -> {
-                        _castState.update {
-                            it.copy(
-                                loading = false,
-                                errorMessage = UiText.DynamicString(result.message ?: "")
-                            )
-                        }
-                    }
-                    is Resource.Success -> {
-                        _castState.update {
-                            it.copy(
-                                loading = false,
-                                credits = result.data
-                            )
-                        }
+            detailRepository.getCast(mediaType.name.lowercase(), mediaId, method, language)
+                .onError { error ->
+                    _castState.update {
+                        it.copy(
+                            loading = false,
+                            errorMessage = error.toUiText()
+                        )
                     }
                 }
-            }
+                .onSuccess { result ->
+                    _castState.update {
+                        it.copy(
+                            loading = false,
+                            credits = result
+                        )
+                    }
+                }
         }
     }
 
@@ -84,26 +82,23 @@ class CastViewModel @Inject constructor(
         viewModelScope.launch {
             _castState.update { it.copy(loading = true) }
 
-            detailRepository.getEpisodeCast(mediaId, seasonNumber, episodeNumber, language).let { result ->
-                when (result) {
-                    is Resource.Error -> {
-                        _castState.update {
-                            it.copy(
-                                loading = false,
-                                errorMessage = UiText.DynamicString(result.message ?: "")
-                            )
-                        }
-                    }
-                    is Resource.Success -> {
-                        _castState.update {
-                            it.copy(
-                                loading = false,
-                                credits = result.data
-                            )
-                        }
+            detailRepository.getEpisodeCast(mediaId, seasonNumber, episodeNumber, language)
+                .onError { error ->
+                    _castState.update {
+                        it.copy(
+                            loading = false,
+                            errorMessage = error.toUiText()
+                        )
                     }
                 }
-            }
+                .onSuccess { result ->
+                    _castState.update {
+                        it.copy(
+                            loading = false,
+                            credits = result
+                        )
+                    }
+                }
         }
     }
 }

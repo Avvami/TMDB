@@ -168,7 +168,7 @@ private fun DetailScreen(
                                         interactionSource = null,
                                         indication = null
                                     ) {
-                                        detailUiEvent(DetailUiEvent.ChangeCollapsedOverview)
+                                        /*TODO: Show more info*/
                                     },
                                 overview = overview
                             )

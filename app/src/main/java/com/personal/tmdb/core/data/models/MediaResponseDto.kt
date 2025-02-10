@@ -31,6 +31,8 @@ data class Result(
     val mediaType: String?,
     @Json(name = "name")
     val name: String?,
+    @Json(name = "original_language")
+    val originalLanguage: String?,
     @Json(name = "overview")
     val overview: String?,
     @Json(name = "poster_path")

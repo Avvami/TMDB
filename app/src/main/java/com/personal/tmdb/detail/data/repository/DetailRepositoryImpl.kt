@@ -1,7 +1,9 @@
 package com.personal.tmdb.detail.data.repository
 
 import com.personal.tmdb.core.data.remote.TmdbApi
-import com.personal.tmdb.core.domain.util.Resource
+import com.personal.tmdb.core.data.remote.safeApiCall
+import com.personal.tmdb.core.domain.util.DataError
+import com.personal.tmdb.core.domain.util.Result
 import com.personal.tmdb.detail.data.mappers.toCollectionInfo
 import com.personal.tmdb.detail.data.mappers.toCreditsInfo
 import com.personal.tmdb.detail.data.mappers.toEpisodeDetailsInfo
@@ -31,37 +33,27 @@ class DetailRepositoryImpl @Inject constructor(
         language: String?,
         appendToResponse: String?,
         includeImageLanguage: String?
-    ): Resource<MediaDetailInfo> {
-        return try {
-            Resource.Success(
-                data = tmdbApi.getMovieTvDetail(
-                    mediaType = mediaType,
-                    mediaId = mediaId,
-                    language = language,
-                    appendToResponse = appendToResponse,
-                    includeImageLanguage = includeImageLanguage
-                ).toMediaDetailInfo()
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Resource.Error(e.message ?: "Unknown")
+    ): Result<MediaDetailInfo, DataError.Remote> {
+        return safeApiCall {
+            tmdbApi.getMovieTvDetail(
+                mediaType = mediaType,
+                mediaId = mediaId,
+                language = language,
+                appendToResponse = appendToResponse,
+                includeImageLanguage = includeImageLanguage
+            ).toMediaDetailInfo()
         }
     }
 
     override suspend fun getCollection(
         collectionId: Int,
         language: String?
-    ): Resource<CollectionInfo> {
-        return try {
-            Resource.Success(
-                data = tmdbApi.getCollection(
-                    collectionId = collectionId,
-                    language = language
-                ).toCollectionInfo()
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Resource.Error(e.message ?: "Unknown")
+    ): Result<CollectionInfo, DataError.Remote> {
+        return safeApiCall {
+            tmdbApi.getCollection(
+                collectionId = collectionId,
+                language = language
+            ).toCollectionInfo()
         }
     }
 
@@ -69,14 +61,9 @@ class DetailRepositoryImpl @Inject constructor(
         seriesId: Int,
         seasonNumber: Int,
         language: String?
-    ): Resource<SeasonInfo> {
-        return try {
-            Resource.Success(
-                data = tmdbApi.getSeasonDetails(seriesId, seasonNumber, language).toSeasonInfo()
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Resource.Error(e.message ?: "Unknown")
+    ): Result<SeasonInfo, DataError.Remote> {
+        return safeApiCall {
+            tmdbApi.getSeasonDetails(seriesId, seasonNumber, language).toSeasonInfo()
         }
     }
 
@@ -85,14 +72,9 @@ class DetailRepositoryImpl @Inject constructor(
         mediaId: Int,
         method: String,
         language: String?
-    ): Resource<CreditsInfo> {
-        return try {
-            Resource.Success(
-                data = tmdbApi.getCredits(mediaType, mediaId, method, language).toCreditsInfo()
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Resource.Error(e.message ?: "Unknown")
+    ): Result<CreditsInfo, DataError.Remote> {
+        return safeApiCall {
+            tmdbApi.getCredits(mediaType, mediaId, method, language).toCreditsInfo()
         }
     }
 
@@ -101,14 +83,9 @@ class DetailRepositoryImpl @Inject constructor(
         seasonNumber: Int,
         episodeNumber: Int,
         language: String?
-    ): Resource<CreditsInfo> {
-        return try {
-            Resource.Success(
-                data = tmdbApi.getEpisodeCredits(mediaId, seasonNumber, episodeNumber, language).toCreditsInfo()
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Resource.Error(e.message ?: "Unknown")
+    ): Result<CreditsInfo, DataError.Remote> {
+        return safeApiCall {
+            tmdbApi.getEpisodeCredits(mediaId, seasonNumber, episodeNumber, language).toCreditsInfo()
         }
     }
 
@@ -116,14 +93,9 @@ class DetailRepositoryImpl @Inject constructor(
         personId: Int,
         language: String?,
         appendToResponse: String?
-    ): Resource<PersonInfo> {
-        return try {
-            Resource.Success(
-                data = tmdbApi.getPerson(personId, language, appendToResponse).toPersonInfo()
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Resource.Error(e.message ?: "Unknown")
+    ): Result<PersonInfo, DataError.Remote> {
+        return safeApiCall {
+            tmdbApi.getPerson(personId, language, appendToResponse).toPersonInfo()
         }
     }
 
@@ -134,21 +106,16 @@ class DetailRepositoryImpl @Inject constructor(
         language: String?,
         appendToResponse: String?,
         includeImageLanguage: String?
-    ): Resource<EpisodeDetailsInfo> {
-        return try {
-            Resource.Success(
-                data = tmdbApi.getEpisodeDetails(
-                    mediaId,
-                    seasonNumber,
-                    episodeNumber,
-                    language,
-                    appendToResponse,
-                    includeImageLanguage
-                ).toEpisodeDetailsInfo()
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Resource.Error(e.message ?: "Unknown")
+    ): Result<EpisodeDetailsInfo, DataError.Remote> {
+        return safeApiCall {
+            tmdbApi.getEpisodeDetails(
+                mediaId,
+                seasonNumber,
+                episodeNumber,
+                language,
+                appendToResponse,
+                includeImageLanguage
+            ).toEpisodeDetailsInfo()
         }
     }
 
@@ -156,18 +123,9 @@ class DetailRepositoryImpl @Inject constructor(
         path: String,
         language: String?,
         includeImageLanguage: String?
-    ): Resource<Images> {
-        return try {
-            Resource.Success(
-                data = tmdbApi.getImages(
-                    path,
-                    language,
-                    includeImageLanguage
-                )
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Resource.Error(e.message ?: "Unknown")
+    ): Result<Images, DataError.Remote> {
+        return safeApiCall {
+            tmdbApi.getImages(path, language, includeImageLanguage)
         }
     }
 
@@ -176,32 +134,18 @@ class DetailRepositoryImpl @Inject constructor(
         mediaId: Int,
         page: Int,
         language: String?
-    ): Resource<ReviewsResponseInfo> {
-        return try {
-            Resource.Success(
-                data = tmdbApi.getReviews(
-                    mediaType, mediaId, page, language
-                ).toReviewsResponseInfo()
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Resource.Error(e.message ?: "Unknown")
+    ): Result<ReviewsResponseInfo, DataError.Remote> {
+        return safeApiCall {
+            tmdbApi.getReviews(mediaType, mediaId, page, language).toReviewsResponseInfo()
         }
     }
 
     override suspend fun getGenres(
         mediaType: String,
         language: String?
-    ): Resource<GenresInfo> {
-        return try {
-            Resource.Success(
-                data = tmdbApi.getGenres(
-                    mediaType, language
-                ).toGenresInfo()
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Resource.Error(e.message ?: "Unknown")
+    ): Result<GenresInfo, DataError.Remote> {
+        return safeApiCall {
+            tmdbApi.getGenres(mediaType, language).toGenresInfo()
         }
     }
 }

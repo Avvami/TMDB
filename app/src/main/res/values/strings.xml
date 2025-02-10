@@ -140,4 +140,18 @@
     <string name="version">Version</string>
     <string name="not_certified">The app uses the TMDB API but is not endorsed or certified by TMDB.</string>
     <string name="github">Project on GitHub</string>
+    
+    <string name="error_disk_full">It seems like your disk is full</string>
+    <string name="error_unknown">Something went wrong</string>
+    <string name="error_request_timeout">The request timed out</string>
+    <string name="error_no_internet">Can\'t connect to TMDB</string>
+    <string name="error_too_many_requests">Your quota seems to be exceeded</string>
+    <string name="error_serialization">Couldn\'t parse data</string>
+    <string name="error_invalid_service">Invalid service: this service does not exist</string>
+    <string name="error_internal_error">Internal error: Something went wrong, contact TMDB</string>
+    <string name="error_invalid_header">Invalid accept header</string>
+    <string name="error_api_maintenance">The API is undergoing maintenance. Try again later</string>
+    <string name="error_backend_timeout">Your request to the backend server timed out. Try again</string>
+    <string name="error_backend_connection">Couldn\'t connect to the backend server</string>
+    <string name="error_session_id">Error obtaining session ID</string>
 </resources>

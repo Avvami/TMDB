@@ -44,7 +44,7 @@ fun SearchResults(
             item(
                 span = { GridItemSpan(maxLineSpan) }
             ) {
-                if (searchState().isLoading && searchState().mediaResponseInfo == null) {
+                if (searchState().loading && searchState().mediaResponseInfo == null) {
                     SearchFilterChipsShimmer(
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
@@ -62,7 +62,7 @@ fun SearchResults(
             }
         },
         items = {
-            if (searchState().isLoading) {
+            if (searchState().loading) {
                 items(count = 15) {
                     MediaPosterShimmer(
                         modifier = Modifier.fillMaxWidth(),

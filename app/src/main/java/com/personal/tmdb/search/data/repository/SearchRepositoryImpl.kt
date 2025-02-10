@@ -2,8 +2,10 @@ package com.personal.tmdb.search.data.repository
 
 import com.personal.tmdb.core.data.mappers.toMediaResponseInfo
 import com.personal.tmdb.core.data.remote.TmdbApi
+import com.personal.tmdb.core.data.remote.safeApiCall
 import com.personal.tmdb.core.domain.models.MediaResponseInfo
-import com.personal.tmdb.core.domain.util.Resource
+import com.personal.tmdb.core.domain.util.DataError
+import com.personal.tmdb.core.domain.util.Result
 import com.personal.tmdb.core.domain.util.TimeWindow
 import com.personal.tmdb.search.domain.repository.SearchRepository
 import javax.inject.Inject
@@ -17,48 +19,27 @@ class SearchRepositoryImpl @Inject constructor(
         includeAdult: Boolean?,
         language: String?,
         page: Int
-    ): Resource<MediaResponseInfo> {
-        return try {
-            Resource.Success(
-                data = tmdbApi.searchFor(
-                    searchType = searchType,
-                    query = query,
-                    includeAdult,
-                    language,
-                    page
-                ).toMediaResponseInfo()
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Resource.Error(e.message ?: "Unknown")
+    ): Result<MediaResponseInfo, DataError.Remote> {
+        return safeApiCall {
+            tmdbApi.searchFor(searchType, query, includeAdult, language, page).toMediaResponseInfo()
         }
     }
 
     override suspend fun getTrendingList(
         timeWindow: TimeWindow,
         language: String?
-    ): Resource<MediaResponseInfo> {
-        return try {
-            Resource.Success(
-                data = tmdbApi.getTrendingList(timeWindow.name.lowercase(), language).toMediaResponseInfo()
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Resource.Error(e.message ?: "Unknown")
+    ): Result<MediaResponseInfo, DataError.Remote> {
+        return safeApiCall {
+            tmdbApi.getTrendingList(timeWindow.name.lowercase(), language).toMediaResponseInfo()
         }
     }
 
     override suspend fun getPopularPeopleList(
         mediaType: String,
         language: String?
-    ): Resource<MediaResponseInfo> {
-        return try {
-            Resource.Success(
-                data = tmdbApi.getPopularList(mediaType, language, 1).toMediaResponseInfo()
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Resource.Error(e.message ?: "Unknown")
+    ): Result<MediaResponseInfo, DataError.Remote> {
+        return safeApiCall {
+            tmdbApi.getPopularList(mediaType, language, 1).toMediaResponseInfo()
         }
     }
 }

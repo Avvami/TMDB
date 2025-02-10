@@ -7,11 +7,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.personal.tmdb.core.domain.util.UiText
 import com.personal.tmdb.core.domain.util.appendToResponse
-import com.personal.tmdb.core.navigation.Route
-import com.personal.tmdb.core.domain.util.Resource
 import com.personal.tmdb.core.domain.util.convertMediaType
+import com.personal.tmdb.core.domain.util.onError
+import com.personal.tmdb.core.domain.util.onSuccess
+import com.personal.tmdb.core.domain.util.toUiText
+import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.detail.domain.repository.DetailRepository
 import com.personal.tmdb.detail.presentation.collection.CollectionState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -83,65 +84,52 @@ class DetailViewModel @Inject constructor(
         viewModelScope.launch {
             _detailState.update { it.copy(loading = true) }
 
-            detailRepository.getMediaDetail(mediaType, mediaId, language, appendToResponse, includeImageLanguage).let { result ->
-                when (result) {
-                    is Resource.Error -> {
-                        _detailState.update { it.copy(errorMessage = UiText.DynamicString(result.message ?: "")) }
-                    }
-                    is Resource.Success -> {
-                        val details = result.data
-                        details?.belongsToCollection?.let { collection ->
-                            getCollection(collectionId = collection.id)
-                        }
-                        details?.let {
-                            if (it.watchProviders != null) {
-                                _availableCountries.value = it.watchProviders.keys
-                                availableState = availableState.copy(
-                                    selectedCountry = "United States"
-                                )
-                            }
-                        }
-                        _detailState.update {
-                            it.copy(
-                                details = details,
-                                watchCountry = "United States",
-                                loading = false
-                            )
-                        }
+            detailRepository.getMediaDetail(mediaType, mediaId, language, appendToResponse, includeImageLanguage)
+                .onError { error ->
+                    _detailState.update {
+                        it.copy(
+                            loading = false,
+                            errorMessage = error.toUiText()
+                        )
                     }
                 }
-            }
+                .onSuccess { result ->
+                    result.belongsToCollection?.let { collection ->
+                        getCollection(collectionId = collection.id)
+                    }
+                    if (result.watchProviders != null) {
+                        _availableCountries.value = result.watchProviders.keys
+                        availableState = availableState.copy(
+                            selectedCountry = "United States"
+                        )
+                    }
+                    _detailState.update {
+                        it.copy(
+                            details = result,
+                            watchCountry = "United States",
+                            loading = false
+                        )
+                    }
+                }
         }
     }
 
     private fun getCollection(collectionId: Int, language: String? = null) {
         viewModelScope.launch {
-            detailRepository.getCollection(collectionId, language).let { result ->
-                when (result) {
-                    is Resource.Error -> {
-                        println(result.message)
-                    }
-                    is Resource.Success -> {
-                        _detailState.update { it.copy(collection = result.data) }
-                    }
+            detailRepository.getCollection(collectionId, language)
+                .onError { error ->
+                    println(error.name)
                 }
-            }
+                .onSuccess { result ->
+                    _detailState.update { it.copy(collection = result) }
+                }
         }
     }
-
-    var isOverviewCollapsed by mutableStateOf(true)
-        private set
-
-    var showMore by mutableStateOf(false)
-        private set
 
     fun detailUiEvent(event: DetailUiEvent) {
         when (event) {
             DetailUiEvent.OnNavigateBack -> {}
             is DetailUiEvent.OnNavigateTo -> {}
-            DetailUiEvent.ChangeCollapsedOverview -> {
-                isOverviewCollapsed = !isOverviewCollapsed
-            }
             is DetailUiEvent.SetSelectedCountry -> {
                 availableState = availableState.copy(
                     selectedCountry = event.country,
@@ -161,9 +149,6 @@ class DetailViewModel @Inject constructor(
                 availableState = availableState.copy(
                     isDialogShown = !availableState.isDialogShown
                 )
-            }
-            DetailUiEvent.ChangeShowMoreState -> {
-                showMore = true
             }
         }
     }

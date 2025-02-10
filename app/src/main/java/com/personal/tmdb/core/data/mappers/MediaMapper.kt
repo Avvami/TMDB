@@ -23,6 +23,7 @@ fun Result.toMediaInfo(): MediaInfo {
         knownFor = knownFor?.map { it.toMediaInfo() },
         mediaType = mediaType?.let { convertMediaType(it) },
         name = title ?: name,
+        originalLanguage = originalLanguage,
         overview = if (overview.isNullOrEmpty()) null else overview,
         posterPath = posterPath ?: profilePath,
         releaseDate = convertStringToDate(

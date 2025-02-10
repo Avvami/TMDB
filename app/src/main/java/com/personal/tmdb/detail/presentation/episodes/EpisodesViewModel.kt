@@ -4,10 +4,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.personal.tmdb.core.domain.util.UiText
-import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.domain.util.MediaType
-import com.personal.tmdb.core.domain.util.Resource
+import com.personal.tmdb.core.domain.util.onError
+import com.personal.tmdb.core.domain.util.onSuccess
+import com.personal.tmdb.core.domain.util.toUiText
+import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.detail.domain.repository.DetailRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,22 +44,19 @@ class EpisodesViewModel @Inject constructor(
         viewModelScope.launch {
             _seasonState.update { it.copy(loading = true) }
 
-            detailRepository.getMediaDetail(MediaType.TV.name.lowercase(), mediaId, language).let { result ->
-                when (result) {
-                    is Resource.Error -> {
-                        _seasonState.update {
-                            it.copy(
-                                loading = false,
-                                errorMessage = UiText.DynamicString(result.message ?: "")
-                            )
-                        }
-                    }
-                    is Resource.Success -> {
-                        _seasonState.update { it.copy(mediaDetail = result.data) }
-                        getSeasonDetails(mediaId, seasonNumber, language)
+            detailRepository.getMediaDetail(MediaType.TV.name.lowercase(), mediaId, language)
+                .onSuccess { result ->
+                    _seasonState.update { it.copy(mediaDetail = result) }
+                    getSeasonDetails(mediaId, seasonNumber, language)
+                }
+                .onError { error ->
+                    _seasonState.update {
+                        it.copy(
+                            loading = false,
+                            errorMessage = error.toUiText()
+                        )
                     }
                 }
-            }
         }
     }
 
@@ -72,27 +70,23 @@ class EpisodesViewModel @Inject constructor(
                 )
             }
 
-            detailRepository.getSeasonDetails(mediaId, seasonNumber, language).let { result ->
-                when (result) {
-                    is Resource.Error -> {
-                        _seasonState.update {
-                            it.copy(
-                                loading = false,
-                                errorMessage = UiText.DynamicString(result.message ?: "")
-                            )
-                        }
-                    }
-                    is Resource.Success -> {
-                        _seasonState.update {
-                            it.copy(
-                                seasonInfo = result.data,
-                                loading = false,
-                                errorMessage = UiText.DynamicString(result.message ?: "")
-                            )
-                        }
+            detailRepository.getSeasonDetails(mediaId, seasonNumber, language)
+                .onError { error ->
+                    _seasonState.update {
+                        it.copy(
+                            loading = false,
+                            errorMessage = error.toUiText()
+                        )
                     }
                 }
-            }
+                .onSuccess { result ->
+                    _seasonState.update {
+                        it.copy(
+                            seasonInfo = result,
+                            loading = false
+                        )
+                    }
+                }
         }
     }
 

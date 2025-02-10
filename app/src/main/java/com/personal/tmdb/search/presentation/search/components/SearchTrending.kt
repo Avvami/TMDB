@@ -32,7 +32,7 @@ fun SearchTrending(
     trendingState: () -> MediaState,
     searchUiEvent: (SearchUiEvent) -> Unit
 ) {
-    if (trendingState().isLoading) {
+    if (trendingState().loading) {
         SearchTrendingShimmer(modifier)
     } else {
         trendingState().mediaResponseInfo?.results?.take(10)?.let { mediaInfoList ->

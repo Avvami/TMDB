@@ -11,6 +11,7 @@ data class MediaInfo(
     val knownFor: List<MediaInfo>? = null,
     val mediaType: MediaType?,
     val name: String?,
+    val originalLanguage: String?,
     val overview: String?,
     val posterPath: String?,
     val releaseDate: LocalDate?,

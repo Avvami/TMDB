@@ -75,6 +75,7 @@ fun CombinedCastCrew.toMediaInfo(): MediaInfo {
         id = id,
         mediaType = convertMediaType(mediaType),
         name = title ?: name,
+        originalLanguage = originalLanguage,
         overview = if (overview.isNullOrEmpty()) null else overview,
         posterPath = posterPath,
         releaseDate = convertStringToDate(

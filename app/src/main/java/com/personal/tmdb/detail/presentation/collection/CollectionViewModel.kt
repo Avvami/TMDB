@@ -5,10 +5,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.personal.tmdb.core.domain.util.UiText
-import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.domain.util.MediaType
-import com.personal.tmdb.core.domain.util.Resource
+import com.personal.tmdb.core.domain.util.onError
+import com.personal.tmdb.core.domain.util.onSuccess
+import com.personal.tmdb.core.domain.util.toUiText
+import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.detail.domain.repository.DetailRepository
 import com.personal.tmdb.detail.domain.util.CollectionSortType
 import com.personal.tmdb.detail.domain.util.convertCollectionSortType
@@ -44,51 +45,42 @@ class CollectionViewModel @Inject constructor(
         viewModelScope.launch {
             _collectionState.update { it.copy(loading = true) }
 
-            detailRepository.getCollection(collectionId, language).let { result ->
-                when (result) {
-                    is Resource.Error -> {
-                        _collectionState.update {
-                            it.copy(
-                                loading = false,
-                                errorMessage = UiText.DynamicString(result.message ?: "")
-                            )
-                        }
-                    }
-                    is Resource.Success -> {
-                        val collectionInfo = result.data
-                        _collectionState.update {
-                            it.copy(
-                                loading = false,
-                                collectionInfo = collectionInfo,
-                                originalParts = collectionInfo?.parts
-                            )
-                        }
-                        getGenres()
+            detailRepository.getCollection(collectionId, language)
+                .onError { error ->
+                    _collectionState.update {
+                        it.copy(
+                            loading = false,
+                            errorMessage = error.toUiText()
+                        )
                     }
                 }
-            }
+                .onSuccess { result ->
+                    _collectionState.update {
+                        it.copy(
+                            loading = false,
+                            collectionInfo = result,
+                            originalParts = result.parts
+                        )
+                    }
+                    getGenres()
+                }
         }
     }
 
     private fun getGenres(language: String? = null) {
         viewModelScope.launch {
-            detailRepository.getGenres(MediaType.MOVIE.name.lowercase(), language).let { result ->
-                when (result) {
-                    is Resource.Error -> {
-                        println(result.message)
-                    }
-                    is Resource.Success -> {
-                        _collectionState.update { state ->
-                            val genres = result.data?.genres
-                                ?.fastFilter { genre -> state.collectionInfo?.genresIds?.contains(genre.id) == true }
-                                ?: emptyList()
-                            state.copy(
-                                genres = genres
-                            )
-                        }
+            detailRepository.getGenres(MediaType.MOVIE.name.lowercase(), language)
+                .onError { error ->
+                    println(error.name)
+                }
+                .onSuccess { result ->
+                    _collectionState.update { state ->
+                        val genres = result.genres.fastFilter { genre -> state.collectionInfo?.genresIds?.contains(genre.id) == true }
+                        state.copy(
+                            genres = genres
+                        )
                     }
                 }
-            }
         }
     }
 

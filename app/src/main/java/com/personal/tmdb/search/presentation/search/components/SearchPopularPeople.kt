@@ -28,7 +28,7 @@ fun SearchPopularPeople(
             Text(text = stringResource(id = R.string.popular_people))
         },
         items = {
-            if (popularState().isLoading) {
+            if (popularState().loading) {
                 items(15) {
                     MediaPosterShimmer(showTitle = preferencesState.value.showTitle)
                 }

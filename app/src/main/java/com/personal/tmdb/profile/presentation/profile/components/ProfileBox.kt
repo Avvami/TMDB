@@ -152,8 +152,8 @@ fun SignedOutUser(
     if (showLoadingDialog) {
         Dialog(
             properties = DialogProperties(
-                dismissOnClickOutside = !userState().isLoading,
-                dismissOnBackPress = !userState().isLoading
+                dismissOnClickOutside = !userState().loading,
+                dismissOnBackPress = !userState().loading
             ),
             onDismissRequest = { showLoadingDialog = false }
         ) {
@@ -166,7 +166,7 @@ fun SignedOutUser(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (userState().error == null) {
+                if (userState().errorMessage == null) {
                     CircularProgressIndicator(
                         modifier = Modifier.size(48.dp),
                         color = tmdbRed,
@@ -180,9 +180,9 @@ fun SignedOutUser(
                         tint = MaterialTheme.colorScheme.onSurface
                     )
                 }
-                userState().error?.let {
+                userState().errorMessage?.let { message ->
                     Text(
-                        text = userState().error ?: "Something went wrong -_-",
+                        text = message.asString(),
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onSurface
                     )
@@ -191,8 +191,8 @@ fun SignedOutUser(
         }
     }
 
-    LaunchedEffect(key1 = userState().requestToken, key2 = userState().isLoading) {
-        if (userState().requestToken != null && !userState().isLoading) {
+    LaunchedEffect(key1 = userState().requestToken, key2 = userState().loading) {
+        if (userState().requestToken != null && !userState().loading) {
             showLoadingDialog = false
             activity.openCustomChromeTab(
                 url = "https://www.themoviedb.org/auth/access?request_token=${userState().requestToken}"

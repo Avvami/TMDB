@@ -5,10 +5,12 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.personal.tmdb.core.presentation.MediaState
 import com.personal.tmdb.core.domain.util.MediaType
-import com.personal.tmdb.core.domain.util.Resource
 import com.personal.tmdb.core.domain.util.TimeWindow
+import com.personal.tmdb.core.domain.util.onError
+import com.personal.tmdb.core.domain.util.onSuccess
+import com.personal.tmdb.core.domain.util.toUiText
+import com.personal.tmdb.core.presentation.MediaState
 import com.personal.tmdb.search.domain.repository.SearchRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -50,32 +52,23 @@ class SearchViewModel @Inject constructor(
         } else {
             viewModelScope.launch {
                 searchState = searchState.copy(
-                    isLoading = true,
-                    error = null
+                    loading = true,
+                    errorMessage = null
                 )
 
-                searchRepository.searchFor(
-                    searchType = searchType,
-                    query = query.trim(),
-                    includeAdult = false,
-                    page = page
-                ).let { result ->
-                    searchState = when (result) {
-                        is Resource.Error -> {
-                            searchState.copy(
-                                isLoading = false,
-                                error = result.message
-                            )
-                        }
-
-                        is Resource.Success -> {
-                            searchState.copy(
-                                mediaResponseInfo = result.data,
-                                isLoading = false
-                            )
-                        }
+                searchRepository.searchFor(searchType = searchType, query = query.trim(), includeAdult = false, page = page)
+                    .onError { error ->
+                        searchState = searchState.copy(
+                            loading = false,
+                            errorMessage = error.toUiText()
+                        )
                     }
-                }
+                    .onSuccess { result ->
+                        searchState = searchState.copy(
+                            mediaResponseInfo = result,
+                            loading = false
+                        )
+                    }
             }
         }
     }
@@ -83,54 +76,46 @@ class SearchViewModel @Inject constructor(
     private fun getTrendingList(language: String? = null) {
         viewModelScope.launch {
             trendingState = trendingState.copy(
-                isLoading = true,
-                error = null
+                loading = true,
+                errorMessage = null
             )
 
-            searchRepository.getTrendingList(TimeWindow.WEEK, language).let { result ->
-                trendingState = when (result) {
-                    is Resource.Error -> {
-                        trendingState.copy(
-                            isLoading = false,
-                            error = result.message
-                        )
-                    }
-                    is Resource.Success -> {
-                        trendingState.copy(
-                            mediaResponseInfo = result.data,
-                            isLoading = false,
-                            error = result.message
-                        )
-                    }
+            searchRepository.getTrendingList(TimeWindow.WEEK, language)
+                .onError { error ->
+                    trendingState = trendingState.copy(
+                        loading = false,
+                        errorMessage = error.toUiText()
+                    )
                 }
-            }
+                .onSuccess { result ->
+                    trendingState = trendingState.copy(
+                        mediaResponseInfo = result,
+                        loading = false
+                    )
+                }
         }
     }
 
     private fun getPopularPeopleList(mediaType: String, language: String? = null) {
         viewModelScope.launch {
             popularState = popularState.copy(
-                isLoading = true,
-                error = null
+                loading = true,
+                errorMessage = null
             )
 
-            searchRepository.getPopularPeopleList(mediaType, language).let { result ->
-                popularState = when (result) {
-                    is Resource.Error -> {
-                        popularState.copy(
-                            isLoading = false,
-                            error = result.message
-                        )
-                    }
-
-                    is Resource.Success -> {
-                        popularState.copy(
-                            mediaResponseInfo = result.data,
-                            isLoading = false
-                        )
-                    }
+            searchRepository.getPopularPeopleList(mediaType, language)
+                .onError { error ->
+                    popularState = popularState.copy(
+                        loading = false,
+                        errorMessage = error.toUiText()
+                    )
                 }
-            }
+                .onSuccess { result ->
+                    popularState = popularState.copy(
+                        mediaResponseInfo = result,
+                        loading = false
+                    )
+                }
         }
     }
 

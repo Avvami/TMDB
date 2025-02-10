@@ -4,11 +4,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.personal.tmdb.core.domain.util.UiText
-import com.personal.tmdb.core.domain.util.appendToResponse
-import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.domain.util.MediaType
-import com.personal.tmdb.core.domain.util.Resource
+import com.personal.tmdb.core.domain.util.appendToResponse
+import com.personal.tmdb.core.domain.util.onError
+import com.personal.tmdb.core.domain.util.onSuccess
+import com.personal.tmdb.core.domain.util.toUiText
+import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.detail.domain.repository.DetailRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -55,26 +56,23 @@ class EpisodeDetailsViewModel@Inject constructor(
         viewModelScope.launch {
             _episodeDetailsState.update { it.copy(loading = true) }
 
-            detailRepository.getEpisodeDetails(mediaId, seasonNumber, episodeNumber, language, appendToResponse, includeImageLanguage).let { result ->
-                when(result) {
-                    is Resource.Error -> {
-                        _episodeDetailsState.update {
-                            it.copy(
-                                loading = false,
-                                errorMessage = UiText.DynamicString(result.message ?: "")
-                            )
-                        }
-                    }
-                    is Resource.Success -> {
-                        _episodeDetailsState.update {
-                            it.copy(
-                                episodeDetails = result.data,
-                                loading = false
-                            )
-                        }
+            detailRepository.getEpisodeDetails(mediaId, seasonNumber, episodeNumber, language, appendToResponse, includeImageLanguage)
+                .onError { error ->
+                    _episodeDetailsState.update {
+                        it.copy(
+                            loading = false,
+                            errorMessage = error.toUiText()
+                        )
                     }
                 }
-            }
+                .onSuccess { result ->
+                    _episodeDetailsState.update {
+                        it.copy(
+                            episodeDetails = result,
+                            loading = false
+                        )
+                    }
+                }
         }
     }
 

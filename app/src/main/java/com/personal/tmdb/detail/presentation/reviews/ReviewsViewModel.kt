@@ -4,9 +4,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.personal.tmdb.core.domain.util.UiText
+import com.personal.tmdb.core.domain.util.onError
+import com.personal.tmdb.core.domain.util.onSuccess
+import com.personal.tmdb.core.domain.util.toUiText
 import com.personal.tmdb.core.navigation.Route
-import com.personal.tmdb.core.domain.util.Resource
 import com.personal.tmdb.detail.domain.repository.DetailRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -47,26 +48,23 @@ class ReviewsViewModel @Inject constructor(
         viewModelScope.launch {
             _reviewsState.update { it.copy(loading = true) }
 
-            detailRepository.getReviews(mediaType, mediaId, page, language).let { result ->
-                when(result) {
-                    is Resource.Error -> {
-                        _reviewsState.update {
-                            it.copy(
-                                loading = false,
-                                errorMessage = UiText.DynamicString(result.message ?: "")
-                            )
-                        }
-                    }
-                    is Resource.Success -> {
-                        _reviewsState.update {
-                            it.copy(
-                                loading = false,
-                                reviews = result.data
-                            )
-                        }
+            detailRepository.getReviews(mediaType, mediaId, page, language)
+                .onError { error ->
+                    _reviewsState.update {
+                        it.copy(
+                            loading = false,
+                            errorMessage = error.toUiText()
+                        )
                     }
                 }
-            }
+                .onSuccess { result ->
+                    _reviewsState.update {
+                        it.copy(
+                            loading = false,
+                            reviews = result
+                        )
+                    }
+                }
         }
     }
 

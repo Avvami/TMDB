@@ -33,6 +33,7 @@ fun Part.toMediaInfo(): MediaInfo {
         id = id,
         mediaType = convertMediaType(mediaType),
         name = title,
+        originalLanguage = originalLanguage,
         overview = if (overview.isNullOrEmpty()) null else overview,
         posterPath = posterPath,
         releaseDate = try {

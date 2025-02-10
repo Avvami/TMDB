@@ -4,9 +4,10 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.personal.tmdb.core.domain.util.UiText
 import com.personal.tmdb.core.navigation.Route
-import com.personal.tmdb.core.domain.util.Resource
+import com.personal.tmdb.core.domain.util.onError
+import com.personal.tmdb.core.domain.util.onSuccess
+import com.personal.tmdb.core.domain.util.toUiText
 import com.personal.tmdb.detail.data.models.Image
 import com.personal.tmdb.detail.domain.repository.DetailRepository
 import com.personal.tmdb.detail.domain.util.ImageType
@@ -49,37 +50,32 @@ class ImageViewerViewModel @Inject constructor(
         viewModelScope.launch {
             _imagesState.update { it.copy(loading = true) }
 
-            detailRepository.getImages(path, language, includeImageLanguage).let { result ->
-                when(result) {
-                    is Resource.Error -> {
-                        _imagesState.update {
-                            it.copy(
-                                loading = false,
-                                errorMessage = UiText.DynamicString(result.message ?: "")
-                            )
-                        }
-                    }
-                    is Resource.Success -> {
-                        val state = result.data
-                        val images: List<Image?>? = when (imagesState.value.imageType) {
-                            ImageType.PROFILES -> state?.profiles
-                            ImageType.STILLS -> state?.stills
-                            ImageType.BACKDROPS -> state?.backdrops
-                            ImageType.POSTERS -> state?.posters
-                            ImageType.UNKNOWN -> null
-                        }
-
-                        _imagesState.update {
-                            it.copy(
-                                loading = false,
-                                state = state,
-                                imagesByType = images,
-                                errorMessage = UiText.DynamicString(result.message ?: "")
-                            )
-                        }
+            detailRepository.getImages(path, language, includeImageLanguage)
+                .onError { error ->
+                    _imagesState.update {
+                        it.copy(
+                            loading = false,
+                            errorMessage = error.toUiText()
+                        )
                     }
                 }
-            }
+                .onSuccess { result ->
+                    val images: List<Image?>? = when (imagesState.value.imageType) {
+                        ImageType.PROFILES -> result.profiles
+                        ImageType.STILLS -> result.stills
+                        ImageType.BACKDROPS -> result.backdrops
+                        ImageType.POSTERS -> result.posters
+                        ImageType.UNKNOWN -> null
+                    }
+
+                    _imagesState.update {
+                        it.copy(
+                            loading = false,
+                            state = result,
+                            imagesByType = images
+                        )
+                    }
+                }
         }
     }
 

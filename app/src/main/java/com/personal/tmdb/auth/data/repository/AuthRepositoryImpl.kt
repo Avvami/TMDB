@@ -10,53 +10,35 @@ import com.personal.tmdb.auth.data.models.SessionDto
 import com.personal.tmdb.auth.domain.models.UserInfo
 import com.personal.tmdb.auth.domain.repository.AuthRepository
 import com.personal.tmdb.core.data.remote.TmdbApi
-import com.personal.tmdb.core.domain.util.Resource
+import com.personal.tmdb.core.data.remote.safeApiCall
+import com.personal.tmdb.core.domain.util.DataError
+import com.personal.tmdb.core.domain.util.Result
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
     private val tmdbApi: TmdbApi
 ): AuthRepository {
-    override suspend fun createRequestToken(redirectToBody: RedirectToBody): Resource<RequestTokenDto> {
-        return try {
-            Resource.Success(
-                data = tmdbApi.createRequestToken(redirectTo = redirectToBody)
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Resource.Error(e.message ?: "Unknown")
+    override suspend fun createRequestToken(redirectToBody: RedirectToBody): Result<RequestTokenDto, DataError.Remote> {
+        return safeApiCall {
+            tmdbApi.createRequestToken(redirectTo = redirectToBody)
         }
     }
 
-    override suspend fun createAccessToken(requestTokenBody: RequestTokenBody): Resource<AccessTokenDto> {
-        return try {
-            Resource.Success(
-                data = tmdbApi.createAccessToken(requestToken = requestTokenBody)
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Resource.Error(e.message ?: "Unknown")
+    override suspend fun createAccessToken(requestTokenBody: RequestTokenBody): Result<AccessTokenDto, DataError.Remote> {
+        return safeApiCall {
+            tmdbApi.createAccessToken(requestToken = requestTokenBody)
         }
     }
 
-    override suspend fun createSession(accessTokenBody: AccessTokenBody): Resource<SessionDto> {
-        return try {
-            Resource.Success(
-                data = tmdbApi.createSession(accessToken = accessTokenBody)
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Resource.Error(e.message ?: "Unknown")
+    override suspend fun createSession(accessTokenBody: AccessTokenBody): Result<SessionDto, DataError.Remote> {
+        return safeApiCall {
+            tmdbApi.createSession(accessToken = accessTokenBody)
         }
     }
 
-    override suspend fun getUserDetails(sessionId: String): Resource<UserInfo> {
-        return try {
-            Resource.Success(
-                data = tmdbApi.getUserDetails(sessionId).toUserInfo()
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Resource.Error(e.message ?: "Unknown")
+    override suspend fun getUserDetails(sessionId: String): Result<UserInfo, DataError.Remote> {
+        return safeApiCall {
+            tmdbApi.getUserDetails(sessionId).toUserInfo()
         }
     }
 }

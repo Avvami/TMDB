@@ -4,11 +4,12 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
-import com.personal.tmdb.core.domain.util.UiText
-import com.personal.tmdb.core.domain.util.appendToResponse
-import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.domain.util.MediaType
-import com.personal.tmdb.core.domain.util.Resource
+import com.personal.tmdb.core.domain.util.appendToResponse
+import com.personal.tmdb.core.domain.util.onError
+import com.personal.tmdb.core.domain.util.onSuccess
+import com.personal.tmdb.core.domain.util.toUiText
+import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.detail.domain.repository.DetailRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -51,33 +52,29 @@ class PersonViewModel @Inject constructor(
         viewModelScope.launch {
             _personState.update { it.copy(loading = true) }
 
-            detailRepository.getPerson(personId, language, appendToResponse).let { result ->
-                when (result) {
-                    is Resource.Error -> {
-                        _personState.update {
-                            it.copy(
-                                loading = false,
-                                errorMessage = UiText.DynamicString(result.message ?: "")
-                            )
-                        }
-                    }
-                    is Resource.Success -> {
-                        val personInfo = result.data
-                        _personCreditsState.update {
-                            it.copy(
-                                personCredits = personInfo?.combinedCreditsInfo,
-                                filteredPersonCredits = personInfo?.combinedCreditsInfo?.credits
-                            )
-                        }
-                        _personState.update {
-                            it.copy(
-                                loading = false,
-                                personInfo = personInfo
-                            )
-                        }
+            detailRepository.getPerson(personId, language, appendToResponse)
+                .onError { error ->
+                    _personState.update {
+                        it.copy(
+                            loading = false,
+                            errorMessage = error.toUiText()
+                        )
                     }
                 }
-            }
+                .onSuccess { result ->
+                    _personCreditsState.update {
+                        it.copy(
+                            personCredits = result.combinedCreditsInfo,
+                            filteredPersonCredits = result.combinedCreditsInfo?.credits
+                        )
+                    }
+                    _personState.update {
+                        it.copy(
+                            loading = false,
+                            personInfo = result
+                        )
+                    }
+                }
         }
     }
 
