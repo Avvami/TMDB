@@ -17,12 +17,14 @@ import androidx.compose.material.icons.rounded.Share
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -168,28 +170,32 @@ private fun EpisodeDetailsScreen(
                     }
                     episodeDetails.guestStars?.takeIf { it.isNotEmpty() }?.let { guestStars ->
                         item {
-                            AnnotatedOverflowListText(
-                                modifier = Modifier
-                                    .padding(horizontal = 16.dp)
-                                    .clickable(
-                                        interactionSource = null,
-                                        indication = null
-                                    ) {
-                                        episodeDetailsUiEvent(
-                                            EpisodeDetailsUiEvent.OnNavigateTo(
-                                                Route.Cast(
-                                                    mediaName = episodeDetails.name ?: "",
-                                                    mediaType = MediaType.TV.name.lowercase(),
-                                                    mediaId = episodeDetailsState().mediaId,
-                                                    seasonNumber = episodeDetailsState().seasonNumber,
-                                                    episodeNumber = episodeDetailsState().episodeNumber
+                            CompositionLocalProvider(
+                                LocalContentColor provides MaterialTheme.colorScheme.surfaceVariant
+                            ) {
+                                AnnotatedOverflowListText(
+                                    modifier = Modifier
+                                        .padding(horizontal = 16.dp)
+                                        .clickable(
+                                            interactionSource = null,
+                                            indication = null
+                                        ) {
+                                            episodeDetailsUiEvent(
+                                                EpisodeDetailsUiEvent.OnNavigateTo(
+                                                    Route.Cast(
+                                                        mediaName = episodeDetails.name ?: "",
+                                                        mediaType = MediaType.TV.name.lowercase(),
+                                                        mediaId = episodeDetailsState().mediaId,
+                                                        seasonNumber = episodeDetailsState().seasonNumber,
+                                                        episodeNumber = episodeDetailsState().episodeNumber
+                                                    )
                                                 )
                                             )
-                                        )
-                                    },
-                                titlePrefix = stringResource(id = R.string.guest_stars_list),
-                                items = guestStars.map { AnnotatedItem(id = it.id, name = it.name) }
-                            )
+                                        },
+                                    titlePrefix = stringResource(id = R.string.guest_stars_list),
+                                    items = guestStars.map { AnnotatedItem(id = it.id, name = it.name) }
+                                )
+                            }
                         }
                     }
                     if (!userState().sessionId.isNullOrEmpty() || episodeDetails.voteAverage != null) {

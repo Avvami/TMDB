@@ -132,30 +132,6 @@ private fun CastScreen(
                 }
             } else {
                 castState().credits?.let { credits ->
-                    if (!credits.cast.isNullOrEmpty()) {
-                        stickyHeader(
-                            contentType = "mainHeader"
-                        ) {
-                            Text(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .background(MaterialTheme.colorScheme.surfaceContainer)
-                                    .padding(horizontal = 16.dp, vertical = 4.dp),
-                                text = stringResource(id = R.string.cast),
-                                style = MaterialTheme.typography.titleMedium
-                            )
-                        }
-                        items(credits.cast) { cast ->
-                            CastInfoCard(
-                                onNavigateTo = { castUiEvent(CastUiEvent.OnNavigateTo(it)) },
-                                profileId = cast.id,
-                                profilePath = cast.profilePath,
-                                name = cast.name,
-                                character = cast.character,
-                                activity = cast.roles?.map { AnnotatedCastItem(it.creditId, it.character, it.episodeCount) }
-                            )
-                        }
-                    }
                     if (!credits.guestStars.isNullOrEmpty()) {
                         stickyHeader(
                             contentType = "mainHeader"
@@ -170,6 +146,30 @@ private fun CastScreen(
                             )
                         }
                         items(credits.guestStars) { cast ->
+                            CastInfoCard(
+                                onNavigateTo = { castUiEvent(CastUiEvent.OnNavigateTo(it)) },
+                                profileId = cast.id,
+                                profilePath = cast.profilePath,
+                                name = cast.name,
+                                character = cast.character,
+                                activity = cast.roles?.map { AnnotatedCastItem(it.creditId, it.character, it.episodeCount) }
+                            )
+                        }
+                    }
+                    if (!credits.cast.isNullOrEmpty()) {
+                        stickyHeader(
+                            contentType = "mainHeader"
+                        ) {
+                            Text(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .background(MaterialTheme.colorScheme.surfaceContainer)
+                                    .padding(horizontal = 16.dp, vertical = 4.dp),
+                                text = stringResource(id = R.string.cast),
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+                        items(credits.cast) { cast ->
                             CastInfoCard(
                                 onNavigateTo = { castUiEvent(CastUiEvent.OnNavigateTo(it)) },
                                 profileId = cast.id,

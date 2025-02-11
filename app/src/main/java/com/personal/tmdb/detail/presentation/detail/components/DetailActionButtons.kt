@@ -1,32 +1,22 @@
 package com.personal.tmdb.detail.presentation.detail.components
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Add
-import androidx.compose.material.icons.rounded.KeyboardArrowDown
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -40,6 +30,7 @@ import com.personal.tmdb.R
 import com.personal.tmdb.UserState
 import com.personal.tmdb.core.domain.util.compactDecimalFormat
 import com.personal.tmdb.core.domain.util.formatVoteAverage
+import com.personal.tmdb.core.domain.util.shimmerEffect
 import com.personal.tmdb.detail.domain.models.MediaDetailInfo
 import com.personal.tmdb.detail.presentation.detail.DetailUiEvent
 
@@ -80,7 +71,7 @@ fun DetailActionButtons(
             }
             info().voteAverage?.let { voteAverage ->
                 Button(
-                    onClick = { /*TODO*/ },
+                    onClick = {},
                     enabled = false,
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
                     colors = ButtonDefaults.buttonColors(
@@ -137,60 +128,82 @@ fun DetailActionButtons(
     }
 }
 
-@Suppress("unused")
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun WatchlistButton(
-    modifier: Modifier = Modifier,
-    addToWatchlist: () -> Unit,
-    addToList: () -> Unit
+fun DetailActionButtonsShimmer(
+    userState: () -> UserState
 ) {
     CompositionLocalProvider(
         LocalMinimumInteractiveComponentSize provides Dp.Unspecified
     ) {
-        Row(
-            modifier = modifier
-                .clip(MaterialTheme.shapes.small)
-                .background(MaterialTheme.colorScheme.primary),
-            verticalAlignment = Alignment.CenterVertically
+        FlowRow(
+            verticalArrangement = Arrangement.spacedBy(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            TextButton(
-                onClick = addToWatchlist,
-                contentPadding = PaddingValues(start = 16.dp, top = 10.dp, end = 8.dp, bottom = 10.dp),
-                colors = ButtonDefaults.textButtonColors(
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                ),
-                shape = MaterialTheme.shapes.small
+            if (!userState().sessionId.isNullOrEmpty()) {
+                Button(
+                    modifier = Modifier
+                        .clip(MaterialTheme.shapes.small)
+                        .shimmerEffect(),
+                    enabled = false,
+                    onClick = {},
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        disabledContainerColor = Color.Transparent,
+                        disabledContentColor = Color.Transparent
+                    )
+                ) {
+                    Icon(
+                        modifier = Modifier.size(ButtonDefaults.IconSize),
+                        painter = painterResource(id = R.drawable.icon_thumbs_up_down_fill0_wght400),
+                        contentDescription = null
+                    )
+                    Spacer(modifier = Modifier.width(ButtonDefaults.IconSpacing))
+                    Text(text = stringResource(id = R.string.rate))
+                }
+            }
+            Button(
+                modifier = Modifier
+                    .clip(MaterialTheme.shapes.small)
+                    .shimmerEffect(),
+                enabled = false,
+                onClick = {},
+                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
+                colors = ButtonDefaults.buttonColors(
+                    disabledContainerColor = Color.Transparent,
+                    disabledContentColor = Color.Transparent
+                )
             ) {
                 Icon(
                     modifier = Modifier.size(ButtonDefaults.IconSize),
-                    painter = painterResource(id = R.drawable.icon_bookmark_fill0_wght400),
+                    painter = painterResource(id = R.drawable.icon_thumbs_up_down_fill1_wght400),
                     contentDescription = null
                 )
                 Spacer(modifier = Modifier.width(ButtonDefaults.IconSpacing))
-                Text(text = stringResource(id = R.string.watchlist))
+                Text(
+                    text = "10 (10)"
+                )
             }
-            VerticalDivider(
-                modifier = Modifier
-                    .heightIn(max = ButtonDefaults.MinHeight)
-                    .padding(vertical = 10.dp),
-                thickness = 2.dp,
-                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = .1f)
-            )
-            FilledIconButton(
-                onClick = addToList,
-                colors = IconButtonDefaults.iconButtonColors(
-                    contentColor = MaterialTheme.colorScheme.onPrimary,
-                    containerColor = Color.Transparent
-                ),
-                shape = MaterialTheme.shapes.small
-            ) {
-                Row {
+            if (!userState().sessionId.isNullOrEmpty()) {
+                Button(
+                    modifier = Modifier
+                        .clip(MaterialTheme.shapes.small)
+                        .shimmerEffect(),
+                    enabled = false,
+                    onClick = {},
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        disabledContainerColor = Color.Transparent,
+                        disabledContentColor = Color.Transparent
+                    )
+                ) {
                     Icon(
                         modifier = Modifier.size(ButtonDefaults.IconSize),
-                        imageVector = Icons.Rounded.KeyboardArrowDown,
+                        imageVector = Icons.Rounded.Add,
                         contentDescription = null
                     )
-                    Spacer(modifier = Modifier.width(4.dp))
+                    Spacer(modifier = Modifier.width(ButtonDefaults.IconSpacing))
+                    Text(text = stringResource(id = R.string.list))
                 }
             }
         }

@@ -31,6 +31,7 @@ data class MediaDetailInfo(
     val nextEpisodeToAir: EpisodeToAirInfo?,
     val numberOfEpisodes: Int?,
     val numberOfSeasons: Int?,
+    val originalLanguage: String?,
     val originalName: String?,
     val overview: String?,
     val posterPath: String?,

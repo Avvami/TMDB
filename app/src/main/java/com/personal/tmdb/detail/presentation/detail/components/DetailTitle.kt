@@ -12,6 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -21,6 +22,7 @@ import com.personal.tmdb.core.presentation.components.ProvideContentColorTextSty
 import com.personal.tmdb.core.domain.util.formatDate
 import com.personal.tmdb.core.domain.util.formatRuntime
 import com.personal.tmdb.core.domain.util.formatTvShowRuntime
+import com.personal.tmdb.core.domain.util.shimmerEffect
 import com.personal.tmdb.detail.domain.models.MediaDetailInfo
 
 @OptIn(ExperimentalLayoutApi::class)
@@ -121,5 +123,28 @@ private fun metadata(
                 }
             }
         }
+    }
+}
+
+@Composable
+fun DetailTitleShimmer() {
+    Column(
+        verticalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Text(
+            modifier = Modifier
+                .clip(MaterialTheme.shapes.extraSmall)
+                .shimmerEffect(),
+            text = "Arcane",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Medium
+        )
+        Text(
+            modifier = Modifier
+                .clip(MaterialTheme.shapes.extraSmall)
+                .shimmerEffect(),
+            text = "Jan 00, 0000",
+            style = MaterialTheme.typography.bodyLarge
+        )
     }
 }

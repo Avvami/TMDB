@@ -2,6 +2,7 @@ package com.personal.tmdb.detail.presentation.detail.components
 
 import androidx.annotation.StringRes
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -177,4 +178,19 @@ fun WatchNow(
             color = onSurfaceDark
         )
     }
+}
+
+@Composable
+fun DetailBannerShimmer() {
+    Box(
+        modifier = Modifier
+            .aspectRatio(18 / 9f)
+            .fillMaxSize()
+            .clip(MaterialTheme.shapes.large)
+            .border(
+                width = 2.dp,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = .1f),
+                shape = MaterialTheme.shapes.large
+            )
+    )
 }

@@ -32,7 +32,7 @@ fun ReviewsSelected(
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.Top
             ) {
                 ReviewAnnotatedText(
                     modifier = Modifier.weight(1f),
@@ -40,7 +40,6 @@ fun ReviewsSelected(
                 )
                 authorDetails?.rating?.let { rating ->
                     Row(
-                        modifier = Modifier.align(Alignment.CenterVertically),
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -64,7 +63,8 @@ fun ReviewsSelected(
                 ) {
                     Text(
                         text = it,
-                        style = MaterialTheme.typography.bodyLarge
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.onSurface.copy(alpha = .8f)
                     )
                 }
             }

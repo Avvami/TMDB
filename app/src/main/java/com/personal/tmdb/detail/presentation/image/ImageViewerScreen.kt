@@ -135,6 +135,11 @@ private fun ImageViewerScreen(
     val context = LocalContext.current
     val activity = context.findActivity()
     val darkTheme = isSystemInDarkTheme()
+    LaunchedEffect(key1 = true) {
+        if (imagesState().hideUi) {
+            hideSystemBars(activity)
+        }
+    }
     DisposableEffect(Unit) {
         onDispose {
             applySystemBarsTheme(view, context, preferencesState().darkTheme ?: darkTheme)
@@ -247,7 +252,7 @@ private fun ImageViewerScreen(
                                     .graphicsLayer {
                                         val endOffset = (
                                                 (horizontalPagerState.currentPage - page) + horizontalPagerState.currentPageOffsetFraction
-                                        ).coerceAtMost(0f)
+                                                ).coerceAtMost(0f)
                                         alpha = 1f + endOffset
                                         val scale = 1f + (endOffset * .2f)
                                         scaleX = scale

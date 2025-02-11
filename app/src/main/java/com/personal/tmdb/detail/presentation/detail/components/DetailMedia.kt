@@ -28,6 +28,7 @@ import com.personal.tmdb.core.domain.util.MediaType
 import com.personal.tmdb.detail.data.models.Images
 import com.personal.tmdb.detail.domain.util.ImageType
 import com.personal.tmdb.detail.presentation.detail.DetailUiEvent
+import com.personal.tmdb.ui.theme.surfaceContainerDark
 import com.personal.tmdb.ui.theme.surfaceLight
 
 @Composable
@@ -75,7 +76,7 @@ fun DetailMedia(
                                 .fillMaxSize()
                                 .background(
                                     Brush.verticalGradient(
-                                        colors = listOf(Color.Transparent, MaterialTheme.colorScheme.scrim.copy(.7f)),
+                                        colors = listOf(Color.Transparent, surfaceContainerDark.copy(.65f)),
                                         startY = 100f
                                     )
                                 )
@@ -125,7 +126,7 @@ fun DetailMedia(
                                 .fillMaxSize()
                                 .background(
                                     Brush.verticalGradient(
-                                        colors = listOf(Color.Transparent, MaterialTheme.colorScheme.scrim.copy(.7f)),
+                                        colors = listOf(Color.Transparent, surfaceContainerDark.copy(.65f)),
                                         startY = 100f
                                     )
                                 )

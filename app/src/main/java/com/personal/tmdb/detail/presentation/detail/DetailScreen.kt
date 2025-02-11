@@ -129,7 +129,10 @@ private fun DetailScreen(
         ) {
             if (detailState().loading) {
                 item {
-                    DetailScreenShimmer()
+                    DetailScreenShimmer(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        userState = userState
+                    )
                 }
             } else {
                 detailState().errorMessage?.let {

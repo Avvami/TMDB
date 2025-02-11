@@ -32,6 +32,7 @@ import com.personal.tmdb.core.domain.util.MediaType
 import com.personal.tmdb.core.domain.util.shimmerEffect
 import com.personal.tmdb.home.presentation.home.HomeState
 import com.personal.tmdb.home.presentation.home.HomeUiEvent
+import com.personal.tmdb.ui.theme.surfaceContainerDark
 
 @Composable
 fun HomeBanner(
@@ -83,14 +84,14 @@ fun HomeBanner(
                 .build(),
             contentDescription = "Backdrop",
             contentScale = ContentScale.Crop,
-            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.scrim.copy(.2f), BlendMode.Darken)
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.scrim.copy(.1f), BlendMode.Darken)
         )
         Box(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, MaterialTheme.colorScheme.scrim.copy(alpha = .6f)),
+                        colors = listOf(Color.Transparent, surfaceContainerDark.copy(alpha = .65f)),
                         startY = 500f
                     )
                 )

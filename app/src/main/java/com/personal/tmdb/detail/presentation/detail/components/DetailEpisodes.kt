@@ -36,6 +36,7 @@ import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.domain.util.C
 import com.personal.tmdb.core.domain.util.formatDate
 import com.personal.tmdb.core.domain.util.formatRuntime
+import com.personal.tmdb.core.presentation.components.ProvideContentColorTextStyle
 import com.personal.tmdb.detail.data.models.Season
 import com.personal.tmdb.detail.domain.models.EpisodeToAirInfo
 import com.personal.tmdb.detail.domain.models.MediaDetailInfo
@@ -174,8 +175,7 @@ fun EpisodeToAir(
                             add {
                                 Text(
                                     modifier = Modifier.align(Alignment.CenterVertically),
-                                    text = formatDate(airDate),
-                                    style = MaterialTheme.typography.bodySmall
+                                    text = formatDate(airDate)
                                 )
                             }
                         }
@@ -183,28 +183,31 @@ fun EpisodeToAir(
                             add {
                                 Text(
                                     modifier = Modifier.align(Alignment.CenterVertically),
-                                    text = formatRuntime(runtime).asString(),
-                                    style = MaterialTheme.typography.bodySmall
+                                    text = formatRuntime(runtime).asString()
                                 )
                             }
                         }
                     }
                 }.takeIf { it.isNotEmpty() }?.let { components ->
-                    FlowRow(
-                        verticalArrangement = Arrangement.spacedBy(6.dp),
-                        horizontalArrangement = Arrangement.spacedBy(6.dp)
+                    ProvideContentColorTextStyle(
+                        contentColor = MaterialTheme.colorScheme.surfaceVariant,
+                        textStyle = MaterialTheme.typography.bodySmall
                     ) {
-                        components.forEachIndexed { index, component ->
-                            component()
-                            if (index != components.lastIndex) {
-                                Icon(
-                                    modifier = Modifier
-                                        .size(6.dp)
-                                        .align(Alignment.CenterVertically),
-                                    painter = painterResource(id = R.drawable.icon_fiber_manual_record_fill1_wght400),
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.surfaceVariant
-                                )
+                        FlowRow(
+                            verticalArrangement = Arrangement.spacedBy(6.dp),
+                            horizontalArrangement = Arrangement.spacedBy(6.dp)
+                        ) {
+                            components.forEachIndexed { index, component ->
+                                component()
+                                if (index != components.lastIndex) {
+                                    Icon(
+                                        modifier = Modifier
+                                            .size(6.dp)
+                                            .align(Alignment.CenterVertically),
+                                        painter = painterResource(id = R.drawable.icon_fiber_manual_record_fill1_wght400),
+                                        contentDescription = null
+                                    )
+                                }
                             }
                         }
                     }
