@@ -9,8 +9,10 @@ import com.personal.tmdb.auth.data.models.AccessTokenBody
 import com.personal.tmdb.auth.data.models.RedirectToBody
 import com.personal.tmdb.auth.data.models.RequestTokenBody
 import com.personal.tmdb.auth.domain.repository.AuthRepository
+import com.personal.tmdb.core.domain.models.User
 import com.personal.tmdb.core.domain.repository.LocalCache
-import com.personal.tmdb.core.domain.repository.LocalRepository
+import com.personal.tmdb.core.domain.repository.PreferencesRepository
+import com.personal.tmdb.core.domain.repository.UserRepository
 import com.personal.tmdb.core.domain.util.C
 import com.personal.tmdb.core.domain.util.SnackbarController
 import com.personal.tmdb.core.domain.util.SnackbarEvent
@@ -21,18 +23,16 @@ import com.personal.tmdb.core.domain.util.toUiText
 import com.personal.tmdb.core.presentation.PreferencesState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.distinctUntilChangedBy
-import kotlinx.coroutines.flow.shareIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val localRepository: LocalRepository,
+    private val preferencesRepository: PreferencesRepository,
+    private val userRepository: UserRepository,
     private val authRepository: AuthRepository,
     private val localCache: LocalCache
 ): ViewModel() {
@@ -47,65 +47,67 @@ class MainViewModel @Inject constructor(
     val userState: StateFlow<UserState> = _userState.asStateFlow()
 
     init {
-        val preferencesFlow = localRepository.getPreferences().shareIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            replay = 1
-        )
+        observePreferences()
+        getUser()
+    }
 
+    private fun observePreferences() {
         viewModelScope.launch {
-            preferencesFlow.collect { preferencesEntity ->
+            preferencesRepository.getPreferences().collect { preferences ->
                 _preferencesState.update {
                     it.copy(
-                        darkTheme = preferencesEntity.darkTheme,
-                        language = preferencesEntity.language,
-                        corners = preferencesEntity.corners,
-                        useCards = preferencesEntity.useCards,
-                        showTitle = preferencesEntity.showTitle,
-                        showVoteAverage = preferencesEntity.showVoteAverage
+                        darkTheme = preferences.darkTheme,
+                        language = preferences.language,
+                        showTitle = preferences.showTitle,
+                        showVoteAverage = preferences.showVoteAverage,
+                        additionalNavigationItem = preferences.additionalNavigationItem
                     )
                 }
                 holdSplash = false
             }
         }
+    }
+
+    private fun getUser() {
         viewModelScope.launch {
-            preferencesFlow
-                .distinctUntilChangedBy { listOf(it.accessToken, it.accountId, it.sessionId) }
-                .collect { preferencesEntity ->
-                    _userState.update {
-                        it.copy(
-                            accessToken = preferencesEntity.accessToken,
-                            accountId = preferencesEntity.accountId,
-                            sessionId = preferencesEntity.sessionId
-                        )
-                    }
-                    getUserDetails(preferencesEntity.sessionId)
-                }
+            userRepository.getUser()?.let { user ->
+                _userState.update { it.copy(user = user) }
+                getUserDetails(user.sessionId ?: "")
+            }
         }
     }
 
     private fun createRequestToken() {
         viewModelScope.launch {
-            var requestToken: String? = null
             _userState.update { it.copy(loading = true) }
 
             authRepository.createRequestToken(RedirectToBody("${C.REDIRECT_URL}/true"))
                 .onError { error ->
-                    _userState.update { it.copy(errorMessage = error.toUiText()) }
+                    _userState.update {
+                        it.copy(
+                            loading = false,
+                            errorMessage = error.toUiText()
+                        )
+                    }
                 }
                 .onSuccess { result ->
                     if (result.success) {
-                        requestToken = result.requestToken
+                        _userState.update {
+                            it.copy(
+                                loading = false,
+                                requestToken = result.requestToken
+                            )
+                        }
+                        localCache.saveRequestToken(result.requestToken)
                     } else {
-                        _userState.update { it.copy(errorMessage = UiText.DynamicString(result.statusMessage)) }
+                        _userState.update {
+                            it.copy(
+                                loading = false,
+                                errorMessage = UiText.DynamicString(result.statusMessage)
+                            )
+                        }
                     }
                 }
-
-            _userState.update { it.copy(loading = false) }
-            requestToken?.let { token ->
-                _userState.update { it.copy(requestToken = token) }
-                localCache.saveRequestToken(token)
-            }
         }
     }
 
@@ -127,11 +129,16 @@ class MainViewModel @Inject constructor(
                             }
                             .onSuccess { session ->
                                 if (session.success && session.sessionId != null) {
-                                    localRepository.setAccessInfo(
-                                        accessToken = accessToken.accessToken,
-                                        sessionId = session.sessionId,
-                                        accountId = accessToken.accountId
-                                    )
+                                    _userState.update { state ->
+                                        state.copy(
+                                            user = User(
+                                                accessToken = accessToken.accessToken,
+                                                accountObjectId = accessToken.accountId,
+                                                sessionId = session.sessionId
+                                            )
+                                        )
+                                    }
+                                    getUserDetails(session.sessionId)
                                     localCache.clearRequestToken()
                                     SnackbarController.sendEvent(
                                         event = SnackbarEvent(
@@ -165,12 +172,24 @@ class MainViewModel @Inject constructor(
             authRepository.getUserDetails(sessionId)
                 .onError { error ->
                     println(error.name)
+                    _userState.value.user?.let { userRepository.saveUser(it) }
                 }
                 .onSuccess { result ->
-                    _userState.update {
-                        it.copy(
+                    _userState.update { state ->
+                        val user = state.user?.copy(
+                            accountId = result.accountId,
+                            gravatarAvatarPath = result.gravatarAvatarPath,
+                            tmdbAvatarPath = result.tmdbAvatarPath,
+                            iso6391 = result.iso6391,
+                            iso31661 = result.iso31661,
+                            name = result.name,
+                            includeAdult = result.includeAdult,
+                            username = result.username
+                        )
+                        user?.let { userRepository.saveUser(it) }
+                        state.copy(
                             loading = false,
-                            userInfo = result
+                            user = user
                         )
                     }
                 }
@@ -181,17 +200,17 @@ class MainViewModel @Inject constructor(
         when (event) {
             is UiEvent.SetTheme -> {
                 viewModelScope.launch {
-                    localRepository.setTheme(event.darkTheme)
+                    preferencesRepository.setTheme(event.darkTheme)
                 }
             }
             is UiEvent.SetShowTitle -> {
                 viewModelScope.launch {
-                    localRepository.setShowTitle(event.showTitle)
+                    preferencesRepository.setShowTitle(event.showTitle)
                 }
             }
             is UiEvent.SetShowVoteAverage -> {
                 viewModelScope.launch {
-                    localRepository.setShowVoteAverage(event.showVoteAverage)
+                    preferencesRepository.setShowVoteAverage(event.showVoteAverage)
                 }
             }
             UiEvent.CreateRequestToken -> {

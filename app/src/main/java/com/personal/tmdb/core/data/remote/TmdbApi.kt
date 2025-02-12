@@ -167,4 +167,13 @@ interface TmdbApi {
         @Path("media_type") mediaType: String,
         @Query("language") language: String?
     ): Genres
+
+    @Headers("Authorization: Bearer ${BuildConfig.TMDB_API_KEY}")
+    @GET("4/account/{account_id}/{media_type}/watchlist?")
+    suspend fun getWatchlist(
+        @Path("account_id") accountId: Int,
+        @Path("media_type") mediaType: String,
+        @Query("page") page: Int,
+        @Query("language") language: String?
+    ): MediaResponseDto
 }

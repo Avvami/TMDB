@@ -9,6 +9,7 @@ import androidx.room.RoomDatabase
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.personal.tmdb.core.data.local.AppDatabase
 import com.personal.tmdb.core.data.remote.TmdbApi
+import com.personal.tmdb.core.domain.util.AdditionalNavigationItem
 import com.personal.tmdb.core.domain.util.C
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -32,14 +33,10 @@ object AppModule {
             override fun onCreate(db: SupportSQLiteDatabase) {
                 super.onCreate(db)
                 val defaultPreferences = ContentValues().apply {
-                    put("accessToken", "")
-                    put("accountId", "")
-                    put("sessionId", "")
                     put("language", "en")
-                    put("corners", 18)
-                    put("useCards", true)
                     put("showTitle", false)
                     put("showVoteAverage", false)
+                    put("additionalNavigationItem", AdditionalNavigationItem.WATCHLIST.key)
                 }
                 db.insert("preferencesentity", SQLiteDatabase.CONFLICT_REPLACE, defaultPreferences)
             }
@@ -54,6 +51,10 @@ object AppModule {
     @Singleton
     @Provides
     fun providePreferencesDao(db: AppDatabase) = db.getPreferencesDao()
+
+    @Singleton
+    @Provides
+    fun provideUserDao(db: AppDatabase) = db.getUserDao()
 
     @Singleton
     @Provides

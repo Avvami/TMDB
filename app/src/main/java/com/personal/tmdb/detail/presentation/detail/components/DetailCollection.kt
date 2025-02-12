@@ -21,6 +21,7 @@ import coil3.compose.AsyncImage
 import com.personal.tmdb.R
 import com.personal.tmdb.core.domain.util.C
 import com.personal.tmdb.detail.domain.models.CollectionInfo
+import com.personal.tmdb.ui.theme.surfaceContainerDark
 import com.personal.tmdb.ui.theme.surfaceLight
 
 @Composable
@@ -44,7 +45,7 @@ fun DetailCollection(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .background(MaterialTheme.colorScheme.scrim.copy(alpha = .6f))
+                .background(surfaceContainerDark.copy(alpha = .65f))
                 .padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {

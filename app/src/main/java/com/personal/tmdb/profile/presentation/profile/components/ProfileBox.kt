@@ -67,7 +67,7 @@ fun ProfileBox(
 ) {
     AnimatedContent(
         modifier = modifier,
-        targetState = !userState().sessionId.isNullOrEmpty(),
+        targetState = !userState().user?.sessionId.isNullOrEmpty(),
         label = "User box"
     ) { userSignedIn ->
         if (userSignedIn) {
@@ -95,10 +95,10 @@ fun SignedInUser(
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
-            model = if (userState().userInfo?.tmdbAvatarPath == null) {
-                C.GRAVATAR_IMAGES_BASE_URL.format(userState().userInfo?.gravatarAvatarPath)
+            model = if (userState().user?.tmdbAvatarPath == null) {
+                C.GRAVATAR_IMAGES_BASE_URL.format(userState().user?.gravatarAvatarPath)
             } else {
-                C.TMDB_IMAGES_BASE_URL + C.PROFILE_W185 + userState().userInfo?.tmdbAvatarPath
+                C.TMDB_IMAGES_BASE_URL + C.PROFILE_W185 + userState().user?.tmdbAvatarPath
             },
             placeholder = painterResource(R.drawable.placeholder),
             error = painterResource(R.drawable.placeholder),
@@ -112,16 +112,16 @@ fun SignedInUser(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(2.dp)
         ) {
-            if (userState().userInfo?.name.isNullOrEmpty()) {
+            if (userState().user?.name.isNullOrEmpty()) {
                 Text(
-                    text = userState().userInfo?.username ?: "",
+                    text = userState().user?.username ?: "",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Medium,
                     color = surfaceLight
                 )
             } else {
                 Text(
-                    text = userState().userInfo?.name ?: "",
+                    text = userState().user?.name ?: "",
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Medium,
                     maxLines = 1,
@@ -129,7 +129,7 @@ fun SignedInUser(
                     color = surfaceLight
                 )
                 Text(
-                    text = userState().userInfo?.username ?: "",
+                    text = userState().user?.username ?: "",
                     style = MaterialTheme.typography.bodyMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,

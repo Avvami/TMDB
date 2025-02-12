@@ -77,7 +77,7 @@ fun EpisodeDetailsShimmer(
             horizontalArrangement = Arrangement.spacedBy(4.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (!userState().sessionId.isNullOrEmpty()) {
+            if (!userState().user?.sessionId.isNullOrEmpty()) {
                 Button(
                     modifier = Modifier
                         .clip(MaterialTheme.shapes.small)

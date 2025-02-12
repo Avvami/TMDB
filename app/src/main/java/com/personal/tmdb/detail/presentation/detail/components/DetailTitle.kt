@@ -77,7 +77,7 @@ private fun metadata(
     userState: () -> UserState
 ): List<@Composable (FlowRowScope.() -> Unit)> {
     return with(info()) {
-        val userCountryCode = userState().userInfo?.iso31661 ?: "US"
+        val userCountryCode = userState().user?.iso31661 ?: "US"
         val tvShowContentRating = contentRatings?.contentRatingsResults?.find { it.iso31661 == userCountryCode }?.rating?.takeIf { it.isNotEmpty() }
         val movieContentRating = releaseDates?.releaseDatesResults?.find { it.iso31661 == userCountryCode }?.releaseDates
             ?.find { it.certification.isNotEmpty() }?.certification?.takeIf { it.isNotEmpty() }

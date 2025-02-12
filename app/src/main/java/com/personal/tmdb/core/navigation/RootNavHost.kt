@@ -271,7 +271,9 @@ fun ChildNavHost(
             )
         }
         animatedComposable<Route.Language> {}
-        animatedComposable<Route.Watchlist> {}
+        animatedComposable<Route.Watchlist> {
+
+        }
         animatedComposable<Route.MyLists> {}
         animatedComposable<Route.Favorite> {}
         animatedComposable<Route.Lost> {}

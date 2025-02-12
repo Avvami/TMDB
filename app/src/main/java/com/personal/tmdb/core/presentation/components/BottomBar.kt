@@ -47,7 +47,7 @@ fun BottomBar(
     userState: State<UserState>,
     navBarItemReselect: (() -> Unit)?
 ) {
-    val navigationItems = remember(userState.value.sessionId) {
+    val navigationItems = remember(userState.value.user?.sessionId) {
         buildNavigationItems(userState)
     }
     val bottomBarVisibilityState = bottomBarVisibility(navController = rootNavController)
@@ -137,7 +137,7 @@ fun buildNavigationItems(userState: State<UserState>): List<NavigationItem> {
         )
         add(
             NavigationItem(
-                label = if (userState.value.sessionId.isNullOrEmpty()) R.string.profile else R.string.me,
+                label = if (userState.value.user?.sessionId.isNullOrEmpty()) R.string.profile else R.string.me,
                 unselectedIcon = {
                     ProfileIcon(isSelected = false, userState = userState)
                 },
@@ -152,7 +152,7 @@ fun buildNavigationItems(userState: State<UserState>): List<NavigationItem> {
 
 @Composable
 fun ProfileIcon(isSelected: Boolean, userState: State<UserState>) {
-    if (userState.value.sessionId.isNullOrEmpty()) {
+    if (userState.value.user?.sessionId.isNullOrEmpty()) {
         Icon(
             painter = painterResource(
                 if (isSelected) R.drawable.icon_person_fill1_wght400 else R.drawable.icon_person_fill0_wght400
@@ -160,10 +160,10 @@ fun ProfileIcon(isSelected: Boolean, userState: State<UserState>) {
             contentDescription = stringResource(R.string.profile)
         )
     } else {
-        val imageUrl = if (userState.value.userInfo?.tmdbAvatarPath == null) {
-            C.GRAVATAR_IMAGES_BASE_URL.format(userState.value.userInfo?.gravatarAvatarPath)
+        val imageUrl = if (userState.value.user?.tmdbAvatarPath == null) {
+            C.GRAVATAR_IMAGES_BASE_URL.format(userState.value.user?.gravatarAvatarPath)
         } else {
-            C.TMDB_IMAGES_BASE_URL + C.PROFILE_W185 + userState.value.userInfo?.tmdbAvatarPath
+            C.TMDB_IMAGES_BASE_URL + C.PROFILE_W185 + userState.value.user?.tmdbAvatarPath
         }
 
         AsyncImage(

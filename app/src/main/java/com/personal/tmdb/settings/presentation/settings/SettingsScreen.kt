@@ -116,7 +116,7 @@ private fun SettingsScreen(
             ) {
                 About(settingsUiEvent = settingsUiEvent)
             }
-            if (!userState().sessionId.isNullOrEmpty()) {
+            if (!userState().user?.sessionId.isNullOrEmpty()) {
                 item(
                     contentType = { "SignOut" }
                 ) {

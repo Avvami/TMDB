@@ -35,7 +35,7 @@ fun EpisodeActionButtons(
         horizontalArrangement = Arrangement.spacedBy(4.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (!userState().sessionId.isNullOrEmpty()) {
+        if (!userState().user?.sessionId.isNullOrEmpty()) {
             Button(
                 onClick = { /*TODO*/ },
                 contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),

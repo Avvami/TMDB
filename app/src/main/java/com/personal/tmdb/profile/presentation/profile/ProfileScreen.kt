@@ -98,7 +98,7 @@ private fun ProfileScreen(
                 contentType = { "Content" }
             ) {
                 Column {
-                    AnimatedVisibility(visible = !userState().sessionId.isNullOrEmpty()) {
+                    AnimatedVisibility(visible = !userState().user?.sessionId.isNullOrEmpty()) {
                         Column {
                             CustomListItem(
                                 onClick = { profileUiEvent(ProfileUiEvent.OnNavigateTo(Route.MyLists)) },

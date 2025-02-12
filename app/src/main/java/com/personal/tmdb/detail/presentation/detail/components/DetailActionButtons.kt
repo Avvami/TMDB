@@ -50,7 +50,7 @@ fun DetailActionButtons(
             verticalArrangement = Arrangement.spacedBy(4.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            if (!userState().sessionId.isNullOrEmpty()) {
+            if (!userState().user?.sessionId.isNullOrEmpty()) {
                 Button(
                     onClick = { /*TODO*/ },
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
@@ -105,7 +105,7 @@ fun DetailActionButtons(
                     )
                 }
             }
-            if (!userState().sessionId.isNullOrEmpty()) {
+            if (!userState().user?.sessionId.isNullOrEmpty()) {
                 Button(
                     onClick = { /*TODO*/ },
                     contentPadding = PaddingValues(horizontal = 16.dp, vertical = 10.dp),
@@ -140,7 +140,7 @@ fun DetailActionButtonsShimmer(
             verticalArrangement = Arrangement.spacedBy(4.dp),
             horizontalArrangement = Arrangement.spacedBy(4.dp)
         ) {
-            if (!userState().sessionId.isNullOrEmpty()) {
+            if (!userState().user?.sessionId.isNullOrEmpty()) {
                 Button(
                     modifier = Modifier
                         .clip(MaterialTheme.shapes.small)
@@ -184,7 +184,7 @@ fun DetailActionButtonsShimmer(
                     text = "10 (10)"
                 )
             }
-            if (!userState().sessionId.isNullOrEmpty()) {
+            if (!userState().user?.sessionId.isNullOrEmpty()) {
                 Button(
                     modifier = Modifier
                         .clip(MaterialTheme.shapes.small)

@@ -11,6 +11,7 @@ fun UserDto.toUserInfo(): UserInfo {
         iso31661 = iso31661,
         iso6391 = iso6391,
         name = name,
+        includeAdult = includeAdult,
         username = username
     )
 }

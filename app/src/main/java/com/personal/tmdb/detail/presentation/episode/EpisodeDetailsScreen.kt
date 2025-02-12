@@ -198,7 +198,7 @@ private fun EpisodeDetailsScreen(
                             }
                         }
                     }
-                    if (!userState().sessionId.isNullOrEmpty() || episodeDetails.voteAverage != null) {
+                    if (!userState().user?.sessionId.isNullOrEmpty() || episodeDetails.voteAverage != null) {
                         item {
                             EpisodeActionButtons(
                                 modifier = Modifier.padding(horizontal = 16.dp),

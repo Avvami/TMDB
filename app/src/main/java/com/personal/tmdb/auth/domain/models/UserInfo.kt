@@ -7,5 +7,6 @@ data class UserInfo(
     val iso31661: String,
     val iso6391: String,
     val name: String,
+    val includeAdult: Boolean,
     val username: String
 )

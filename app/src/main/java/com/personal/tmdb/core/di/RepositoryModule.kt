@@ -1,9 +1,11 @@
 package com.personal.tmdb.core.di
 
 import com.personal.tmdb.core.data.repository.LocalCacheImpl
-import com.personal.tmdb.core.data.repository.LocalRepositoryImpl
+import com.personal.tmdb.core.data.repository.PreferencesRepositoryImpl
+import com.personal.tmdb.core.data.repository.UserRepositoryImpl
 import com.personal.tmdb.core.domain.repository.LocalCache
-import com.personal.tmdb.core.domain.repository.LocalRepository
+import com.personal.tmdb.core.domain.repository.PreferencesRepository
+import com.personal.tmdb.core.domain.repository.UserRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -17,12 +19,18 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindLocalRepository(
-        localRepositoryImpl: LocalRepositoryImpl
-    ): LocalRepository
+        preferencesRepositoryImpl: PreferencesRepositoryImpl
+    ): PreferencesRepository
 
     @Binds
     @Singleton
     abstract fun bindLocalCache(
         localCacheImpl: LocalCacheImpl
     ): LocalCache
+
+    @Binds
+    @Singleton
+    abstract fun bindUserRepository(
+        userRepositoryImpl: UserRepositoryImpl
+    ): UserRepository
 }
