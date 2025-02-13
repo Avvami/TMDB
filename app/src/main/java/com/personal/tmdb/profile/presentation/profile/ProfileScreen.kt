@@ -101,7 +101,7 @@ private fun ProfileScreen(
                     AnimatedVisibility(visible = !userState().user?.sessionId.isNullOrEmpty()) {
                         Column {
                             CustomListItem(
-                                onClick = { profileUiEvent(ProfileUiEvent.OnNavigateTo(Route.MyLists)) },
+                                onClick = { profileUiEvent(ProfileUiEvent.OnNavigateTo(Route.Watchlist)) },
                                 leadingContent = {
                                     Icon(
                                         painter = painterResource(id = R.drawable.icon_bookmarks_fill0_wght400),

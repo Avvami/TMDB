@@ -14,8 +14,9 @@ interface UserRepository {
     suspend fun removeUser(user: User)
 
     suspend fun getWatchlist(
-        accountId: Int,
+        accountObjectId: String,
         mediaType: String,
+        sessionId: String,
         page: Int,
         language: String? = null
     ): Result<MediaResponseInfo, DataError.Remote>

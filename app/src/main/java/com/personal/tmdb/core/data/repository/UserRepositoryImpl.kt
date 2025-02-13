@@ -25,15 +25,17 @@ class UserRepositoryImpl @Inject constructor(
     override suspend fun removeUser(user: User) = dao.removeUser(user.toUserEntity())
 
     override suspend fun getWatchlist(
-        accountId: Int,
+        accountObjectId: String,
         mediaType: String,
+        sessionId: String,
         page: Int,
         language: String?
     ): Result<MediaResponseInfo, DataError.Remote> {
         return safeApiCall {
             tmdbApi.getWatchlist(
-                accountId = accountId,
+                accountObjectId = accountObjectId,
                 mediaType = mediaType,
+                sessionId = sessionId,
                 page = page,
                 language = language
             ).toMediaResponseInfo()

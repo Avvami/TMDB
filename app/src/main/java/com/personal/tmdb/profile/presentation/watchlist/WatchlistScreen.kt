@@ -2,8 +2,10 @@ package com.personal.tmdb.profile.presentation.watchlist
 
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
@@ -16,14 +18,22 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.personal.tmdb.R
 import com.personal.tmdb.core.domain.util.negativeHorizontalPadding
 import com.personal.tmdb.core.navigation.Route
+import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.MediaGrid
+import com.personal.tmdb.core.presentation.components.MediaPoster
+import com.personal.tmdb.core.presentation.components.MediaPosterShimmer
 import com.personal.tmdb.profile.presentation.watchlist.components.WatchlistFilterChips
 
 @Composable
@@ -31,18 +41,40 @@ fun WatchlistScreenRoot(
     bottomPadding: Dp,
     canNavigateBack: Boolean = true,
     onNavigateBack: () -> Unit,
-    onNavigateTo: (route: Route) -> Unit
+    onNavigateTo: (route: Route) -> Unit,
+    preferencesState: () -> PreferencesState,
+    viewModel: WatchlistViewModel = hiltViewModel()
 ) {
-
+    val watchlistState by viewModel.watchlistState.collectAsStateWithLifecycle()
+    WatchlistScreen(
+        modifier = Modifier.padding(bottom = bottomPadding),
+        canNavigateBack = canNavigateBack,
+        watchlistState = { watchlistState },
+        preferencesState = preferencesState,
+        watchlistUiEvent = { event ->
+            when (event) {
+                WatchlistUiEvent.OnNavigateBack -> onNavigateBack()
+                is WatchlistUiEvent.OnNavigateTo -> onNavigateTo(event.route)
+                else -> Unit
+            }
+            viewModel.watchlistUiEvent(event)
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WatchlistScreen(
+private fun WatchlistScreen(
     modifier: Modifier = Modifier,
     canNavigateBack: Boolean,
+    watchlistState: () -> WatchlistState,
+    preferencesState: () -> PreferencesState,
     watchlistUiEvent: (WatchlistUiEvent) -> Unit
 ) {
+    LaunchedEffect(key1 = true) {
+        /*TODO: Not the best way to update data*/
+        watchlistUiEvent(WatchlistUiEvent.GetWatchlist(watchlistState().mediaType, 1))
+    }
     Scaffold(
         topBar = {
             TopAppBar(
@@ -84,12 +116,60 @@ fun WatchlistScreen(
                             .padding(bottom = 8.dp)
                             .horizontalScroll(rememberScrollState())
                             .padding(horizontal = 16.dp),
+                        watchlistState = watchlistState,
                         watchlistUiEvent = watchlistUiEvent
                     )
                 }
             },
             items = {
-
+                if (watchlistState().loading && watchlistState().watchlist == null) {
+                    items(
+                        count = 4,
+                        contentType = { "Poster" }
+                    ) {
+                        MediaPosterShimmer(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .animateItem(),
+                            height = Dp.Unspecified,
+                            showTitle = preferencesState().showTitle,
+                        )
+                    }
+                } else {
+                    watchlistState().errorMessage?.let {  }
+                    watchlistState().watchlist?.results?.let { watchlist ->
+                        if (watchlist.isEmpty()) {
+                            item(
+                                span = { GridItemSpan(maxLineSpan) }
+                            ) {
+                                Text(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    text = stringResource(id = R.string.empty_watchlist),
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = MaterialTheme.colorScheme.surfaceVariant,
+                                    textAlign = TextAlign.Center
+                                )
+                            }
+                        } else {
+                            items(
+                                items = watchlist,
+                                key = { it.id }
+                            ) { mediaInfo ->
+                                MediaPoster(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .animateItem(),
+                                    onNavigateTo = { watchlistUiEvent(WatchlistUiEvent.OnNavigateTo(it)) },
+                                    height = Dp.Unspecified,
+                                    mediaInfo = mediaInfo,
+                                    mediaType = watchlistState().mediaType,
+                                    showTitle = preferencesState().showTitle,
+                                    showVoteAverage = preferencesState().showVoteAverage
+                                )
+                            }
+                        }
+                    }
+                }
             }
         )
     }

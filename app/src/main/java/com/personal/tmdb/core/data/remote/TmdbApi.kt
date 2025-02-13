@@ -169,10 +169,11 @@ interface TmdbApi {
     ): Genres
 
     @Headers("Authorization: Bearer ${BuildConfig.TMDB_API_KEY}")
-    @GET("4/account/{account_id}/{media_type}/watchlist?")
+    @GET("4/account/{account_object_id}/{media_type}/watchlist?")
     suspend fun getWatchlist(
-        @Path("account_id") accountId: Int,
+        @Path("account_object_id") accountObjectId: String,
         @Path("media_type") mediaType: String,
+        @Query("session_id") sessionId: String,
         @Query("page") page: Int,
         @Query("language") language: String?
     ): MediaResponseDto

@@ -30,6 +30,7 @@ import com.personal.tmdb.detail.presentation.person.PersonScreenRoot
 import com.personal.tmdb.detail.presentation.reviews.ReviewsScreenRoot
 import com.personal.tmdb.home.presentation.home.HomeScreenRoot
 import com.personal.tmdb.profile.presentation.profile.ProfileScreenRoot
+import com.personal.tmdb.profile.presentation.watchlist.WatchlistScreenRoot
 import com.personal.tmdb.search.presentation.search.SearchScreenRoot
 import com.personal.tmdb.settings.presentation.appearance.AppearanceScreen
 import com.personal.tmdb.settings.presentation.settings.SettingsScreenRoot
@@ -272,7 +273,11 @@ fun ChildNavHost(
         }
         animatedComposable<Route.Language> {}
         animatedComposable<Route.Watchlist> {
-
+            WatchlistScreenRoot(
+                bottomPadding = bottomBarPadding,
+                onNavigateBack = onNavigateBack,
+                onNavigateTo = onNavigateTo,
+                preferencesState = { preferencesState.value })
         }
         animatedComposable<Route.MyLists> {}
         animatedComposable<Route.Favorite> {}

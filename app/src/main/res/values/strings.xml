@@ -154,4 +154,5 @@
     <string name="error_backend_timeout">Your request to the backend server timed out. Try again</string>
     <string name="error_backend_connection">Couldn\'t connect to the backend server</string>
     <string name="error_session_id">Error obtaining session ID</string>
+    <string name="empty_watchlist">You haven’t added anything yet. Browse our recommendations below and start building your list!</string>
 </resources>

@@ -15,11 +15,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
+import com.personal.tmdb.core.domain.util.MediaType
+import com.personal.tmdb.profile.presentation.watchlist.WatchlistState
 import com.personal.tmdb.profile.presentation.watchlist.WatchlistUiEvent
 
 @Composable
 fun WatchlistFilterChips(
     modifier: Modifier = Modifier,
+    watchlistState: () -> WatchlistState,
     watchlistUiEvent: (WatchlistUiEvent) -> Unit
 ) {
     CompositionLocalProvider(
@@ -31,8 +34,8 @@ fun WatchlistFilterChips(
             verticalAlignment = Alignment.CenterVertically
         ) {
             FilterChip(
-                selected = true,
-                onClick = {  },
+                selected = watchlistState().mediaType == MediaType.TV,
+                onClick = { watchlistUiEvent(WatchlistUiEvent.SetMediaType(MediaType.TV)) },
                 label = { Text(text = stringResource(id = R.string.tv_shows)) },
                 colors = FilterChipDefaults.filterChipColors(
                     containerColor = MaterialTheme.colorScheme.surfaceContainer,
@@ -43,8 +46,8 @@ fun WatchlistFilterChips(
                 border = null
             )
             FilterChip(
-                selected = false,
-                onClick = {  },
+                selected = watchlistState().mediaType == MediaType.MOVIE,
+                onClick = { watchlistUiEvent(WatchlistUiEvent.SetMediaType(MediaType.MOVIE)) },
                 label = { Text(text = stringResource(id = R.string.movies)) },
                 colors = FilterChipDefaults.filterChipColors(
                     containerColor = MaterialTheme.colorScheme.surfaceContainer,
