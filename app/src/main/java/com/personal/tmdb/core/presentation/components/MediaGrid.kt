@@ -16,12 +16,13 @@ fun MediaGrid(
     modifier: Modifier = Modifier,
     lazyGridState: LazyGridState = rememberLazyGridState(),
     contentPadding: PaddingValues = PaddingValues(16.dp),
+    columns: GridCells = GridCells.Adaptive(100.dp),
     span: (LazyGridScope.() -> Unit)? = null,
     items: LazyGridScope.() -> Unit
 ) {
     LazyVerticalGrid(
         modifier = modifier,
-        columns = GridCells.Adaptive(100.dp),
+        columns = columns,
         contentPadding = contentPadding,
         horizontalArrangement = Arrangement.spacedBy(8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),

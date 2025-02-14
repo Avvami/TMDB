@@ -8,6 +8,7 @@ import com.personal.tmdb.auth.data.models.RequestTokenBody
 import com.personal.tmdb.auth.data.models.RequestTokenDto
 import com.personal.tmdb.auth.data.models.SessionDto
 import com.personal.tmdb.auth.data.models.UserDto
+import com.personal.tmdb.core.data.models.ListsResponseDto
 import com.personal.tmdb.core.data.models.MediaResponseDto
 import com.personal.tmdb.detail.data.models.CollectionDto
 import com.personal.tmdb.detail.data.models.Credits
@@ -177,4 +178,12 @@ interface TmdbApi {
         @Query("page") page: Int,
         @Query("language") language: String?
     ): MediaResponseDto
+
+    @Headers("Authorization: Bearer ${BuildConfig.TMDB_API_KEY}")
+    @GET("4/account/{account_object_id}/lists?")
+    suspend fun getLists(
+        @Path("account_object_id") accountObjectId: String,
+        @Query("session_id") sessionId: String,
+        @Query("page") page: Int
+    ): ListsResponseDto
 }

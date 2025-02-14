@@ -11,6 +11,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import com.personal.tmdb.R
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 import java.util.NavigableMap
 import java.util.TreeMap
@@ -55,6 +56,8 @@ fun formatEpisodesCount(numberOfEpisodes: Int): String {
 }
 
 fun formatDate(localDate: LocalDate): String = localDate.format(DateTimeFormatter.ofPattern("MMM d, yyyy"))
+
+fun formatDateTime(localDateTime: LocalDateTime): String = localDateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
 
 fun formatGender(genderCode: Int): UiText {
     return when (genderCode) {
@@ -122,4 +125,15 @@ fun compactDecimalFormat(value: Long): String {
     val truncated = value / (divideBy / 10)
     val hasDecimal = truncated < 100 && (truncated / 10.0) != (truncated / 10).toDouble()
     return if (hasDecimal) (truncated / 10.0).toString() + suffix else (truncated / 10).toString() + suffix
+}
+
+fun formatNumberOfItems(numberOfItems: Int): String {
+    return when (numberOfItems) {
+        1 -> "$numberOfItems item"
+        else -> "$numberOfItems items"
+    }
+}
+
+fun formatListVisibility(isPublic: Boolean): UiText {
+    return if (isPublic) UiText.StringResource(R.string.list_public) else UiText.StringResource(R.string.list_private)
 }

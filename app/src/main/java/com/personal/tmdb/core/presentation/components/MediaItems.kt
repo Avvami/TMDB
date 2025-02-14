@@ -15,33 +15,48 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.LocalContentColor
+import androidx.compose.material3.LocalMinimumInteractiveComponentSize
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SuggestionChip
+import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.personal.tmdb.R
+import com.personal.tmdb.core.domain.models.ListInfo
 import com.personal.tmdb.core.domain.models.MediaInfo
-import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.domain.util.C
 import com.personal.tmdb.core.domain.util.MediaType
+import com.personal.tmdb.core.domain.util.formatDateTime
+import com.personal.tmdb.core.domain.util.formatListVisibility
+import com.personal.tmdb.core.domain.util.formatNumberOfItems
 import com.personal.tmdb.core.domain.util.formatVoteAverage
 import com.personal.tmdb.core.domain.util.shimmerEffect
+import com.personal.tmdb.core.navigation.Route
+import com.personal.tmdb.ui.theme.onSurfaceDark
 import com.personal.tmdb.ui.theme.onSurfaceLight
 import com.personal.tmdb.ui.theme.surfaceLight
+import com.personal.tmdb.ui.theme.surfaceVariantDark
 
 @Composable
 fun MediaBanner(
@@ -357,6 +372,159 @@ fun MediaPosterShimmer(
                 minLines = 2,
                 maxLines = 2,
             )
+        }
+    }
+}
+
+@Composable
+fun ListItem(
+    modifier: Modifier = Modifier,
+    onNavigateTo: (route: Route) -> Unit,
+    shape: Shape = MaterialTheme.shapes.large,
+    height: Dp = 200.dp,
+    listInfo: ListInfo
+) {
+    Box(
+        modifier = modifier
+            .height(height)
+            .aspectRatio(16 / 9f)
+            .clip(shape)
+            .clickable {
+                onNavigateTo(Route.Lost)
+            }
+            .border(
+                width = 2.dp,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = .1f),
+                shape = shape
+            )
+    ) {
+        AsyncImage(
+            modifier = Modifier.fillMaxSize(),
+            model = C.TMDB_IMAGES_BASE_URL + C.BACKDROP_W780 + listInfo.backdropPath,
+            placeholder = painterResource(id = R.drawable.placeholder),
+            error = painterResource(id = R.drawable.placeholder),
+            contentDescription = "Poster",
+            contentScale = ContentScale.Crop,
+            colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.scrim.copy(.6f), BlendMode.Darken)
+        )
+        CompositionLocalProvider(
+            LocalMinimumInteractiveComponentSize provides Dp.Unspecified,
+            LocalContentColor provides onSurfaceDark
+        ) {
+            Column(
+                modifier = Modifier.align(Alignment.Center),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                listInfo.name?.let { name ->
+                    Text(
+                        text = name,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Medium
+                    )
+                }
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = formatNumberOfItems(listInfo.numberOfItems),
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                    SuggestionChip(
+                        enabled = false,
+                        onClick = {},
+                        label = {
+                            Text(text = formatListVisibility(listInfo.public).asString().uppercase())
+                        },
+                        colors = SuggestionChipDefaults.suggestionChipColors(
+                            disabledLabelColor = onSurfaceDark,
+                            disabledContainerColor = onSurfaceDark.copy(alpha = .1f)
+                        ),
+                        border = null
+                    )
+                }
+                listInfo.updatedAt?.let { updatedAt ->
+                    Text(
+                        text = stringResource(id = R.string.updated_at, formatDateTime(updatedAt)),
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = surfaceVariantDark
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ListItemShimmer(
+    modifier: Modifier = Modifier,
+    shape: Shape = MaterialTheme.shapes.large,
+    height: Dp = 200.dp
+) {
+    Box(
+        modifier = modifier
+            .height(height)
+            .aspectRatio(16 / 9f)
+            .clip(shape)
+            .border(
+                width = 2.dp,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = .1f),
+                shape = shape
+            )
+    ) {
+        CompositionLocalProvider(
+            LocalMinimumInteractiveComponentSize provides Dp.Unspecified,
+            LocalContentColor provides Color.Transparent
+        ) {
+            Column(
+                modifier = Modifier.align(Alignment.Center),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    modifier = Modifier
+                        .clip(MaterialTheme.shapes.extraSmall)
+                        .shimmerEffect(),
+                    text = "List name",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Medium
+                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        modifier = Modifier
+                            .clip(MaterialTheme.shapes.extraSmall)
+                            .shimmerEffect(),
+                        text = "00 items",
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                    SuggestionChip(
+                        modifier = Modifier
+                            .clip(MaterialTheme.shapes.small)
+                            .shimmerEffect(),
+                        enabled = false,
+                        onClick = {},
+                        label = {
+                            Text(text = "PUBLIC")
+                        },
+                        colors = SuggestionChipDefaults.suggestionChipColors(
+                            disabledLabelColor = Color.Transparent,
+                            disabledContainerColor = Color.Transparent
+                        ),
+                        border = null
+                    )
+                }
+                Text(
+                    modifier = Modifier
+                        .clip(MaterialTheme.shapes.extraSmall)
+                        .shimmerEffect(),
+                    text = "Updated at 00.00.0000",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            }
         }
     }
 }

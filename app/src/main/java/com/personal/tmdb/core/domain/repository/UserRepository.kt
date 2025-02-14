@@ -1,5 +1,6 @@
 package com.personal.tmdb.core.domain.repository
 
+import com.personal.tmdb.core.domain.models.ListsResponseInfo
 import com.personal.tmdb.core.domain.models.MediaResponseInfo
 import com.personal.tmdb.core.domain.models.User
 import com.personal.tmdb.core.domain.util.DataError
@@ -20,4 +21,6 @@ interface UserRepository {
         page: Int,
         language: String? = null
     ): Result<MediaResponseInfo, DataError.Remote>
+
+    suspend fun getLists(accountObjectId: String, sessionId: String, page: Int): Result<ListsResponseInfo, DataError.Remote>
 }

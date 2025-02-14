@@ -1,11 +1,13 @@
 package com.personal.tmdb.core.data.repository
 
 import com.personal.tmdb.core.data.local.UserDao
+import com.personal.tmdb.core.data.mappers.toListsResponseInfo
 import com.personal.tmdb.core.data.mappers.toMediaResponseInfo
 import com.personal.tmdb.core.data.mappers.toUser
 import com.personal.tmdb.core.data.mappers.toUserEntity
 import com.personal.tmdb.core.data.remote.TmdbApi
 import com.personal.tmdb.core.data.remote.safeApiCall
+import com.personal.tmdb.core.domain.models.ListsResponseInfo
 import com.personal.tmdb.core.domain.models.MediaResponseInfo
 import com.personal.tmdb.core.domain.models.User
 import com.personal.tmdb.core.domain.repository.UserRepository
@@ -39,6 +41,16 @@ class UserRepositoryImpl @Inject constructor(
                 page = page,
                 language = language
             ).toMediaResponseInfo()
+        }
+    }
+
+    override suspend fun getLists(
+        accountObjectId: String,
+        sessionId: String,
+        page: Int
+    ): Result<ListsResponseInfo, DataError.Remote> {
+        return safeApiCall {
+            tmdbApi.getLists(accountObjectId = accountObjectId, sessionId = sessionId, page = page).toListsResponseInfo()
         }
     }
 }

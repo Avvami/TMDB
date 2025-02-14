@@ -29,6 +29,7 @@ import com.personal.tmdb.detail.presentation.image.ImageViewerScreenRoot
 import com.personal.tmdb.detail.presentation.person.PersonScreenRoot
 import com.personal.tmdb.detail.presentation.reviews.ReviewsScreenRoot
 import com.personal.tmdb.home.presentation.home.HomeScreenRoot
+import com.personal.tmdb.profile.presentation.lists.ListsScreenRoot
 import com.personal.tmdb.profile.presentation.profile.ProfileScreenRoot
 import com.personal.tmdb.profile.presentation.watchlist.WatchlistScreenRoot
 import com.personal.tmdb.search.presentation.search.SearchScreenRoot
@@ -277,9 +278,16 @@ fun ChildNavHost(
                 bottomPadding = bottomBarPadding,
                 onNavigateBack = onNavigateBack,
                 onNavigateTo = onNavigateTo,
-                preferencesState = { preferencesState.value })
+                preferencesState = { preferencesState.value }
+            )
         }
-        animatedComposable<Route.MyLists> {}
+        animatedComposable<Route.MyLists> {
+            ListsScreenRoot(
+                bottomPadding = bottomBarPadding,
+                onNavigateBack = onNavigateBack,
+                onNavigateTo = onNavigateTo
+            )
+        }
         animatedComposable<Route.Favorite> {}
         animatedComposable<Route.Lost> {}
     }
