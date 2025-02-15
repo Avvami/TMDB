@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
@@ -40,6 +42,7 @@ import com.personal.tmdb.profile.presentation.watchlist.components.WatchlistFilt
 fun WatchlistScreenRoot(
     bottomPadding: Dp,
     canNavigateBack: Boolean = true,
+    lazyGridState: LazyGridState = rememberLazyGridState(),
     onNavigateBack: () -> Unit,
     onNavigateTo: (route: Route) -> Unit,
     preferencesState: () -> PreferencesState,
@@ -49,6 +52,7 @@ fun WatchlistScreenRoot(
     WatchlistScreen(
         modifier = Modifier.padding(bottom = bottomPadding),
         canNavigateBack = canNavigateBack,
+        lazyGridState = lazyGridState,
         watchlistState = { watchlistState },
         preferencesState = preferencesState,
         watchlistUiEvent = { event ->
@@ -67,13 +71,15 @@ fun WatchlistScreenRoot(
 private fun WatchlistScreen(
     modifier: Modifier = Modifier,
     canNavigateBack: Boolean,
+    lazyGridState: LazyGridState,
     watchlistState: () -> WatchlistState,
     preferencesState: () -> PreferencesState,
     watchlistUiEvent: (WatchlistUiEvent) -> Unit
 ) {
     LaunchedEffect(key1 = true) {
-        /*TODO: Not the best way to update data*/
-        watchlistUiEvent(WatchlistUiEvent.GetWatchlist(watchlistState().mediaType, 1))
+        if (!lazyGridState.canScrollBackward) {
+            watchlistUiEvent(WatchlistUiEvent.GetWatchlist(watchlistState().mediaType, 1))
+        }
     }
     Scaffold(
         topBar = {

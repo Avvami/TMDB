@@ -8,4 +8,5 @@ sealed interface WatchlistUiEvent {
     data class OnNavigateTo(val route: Route): WatchlistUiEvent
     data class GetWatchlist(val mediaType: MediaType, val page: Int): WatchlistUiEvent
     data class SetMediaType(val mediaType: MediaType): WatchlistUiEvent
+    data object ShowRecommendations: WatchlistUiEvent
 }

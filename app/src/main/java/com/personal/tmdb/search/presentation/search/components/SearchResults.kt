@@ -13,20 +13,19 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.personal.tmdb.R
+import com.personal.tmdb.core.domain.util.MediaType
+import com.personal.tmdb.core.domain.util.negativeHorizontalPadding
 import com.personal.tmdb.core.presentation.MediaState
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.MediaGrid
 import com.personal.tmdb.core.presentation.components.MediaPoster
 import com.personal.tmdb.core.presentation.components.MediaPosterShimmer
-import com.personal.tmdb.core.domain.util.MediaType
-import com.personal.tmdb.core.domain.util.negativeHorizontalPadding
 import com.personal.tmdb.search.presentation.search.SearchUiEvent
 
 @Composable
@@ -34,7 +33,7 @@ fun SearchResults(
     lazyGridState: LazyGridState,
     searchState: () -> MediaState,
     mediaType: () -> MediaType,
-    preferencesState: State<PreferencesState>,
+    preferencesState: () -> PreferencesState,
     searchUiEvent: (SearchUiEvent) -> Unit
 ) {
     MediaGrid(
@@ -67,7 +66,7 @@ fun SearchResults(
                     MediaPosterShimmer(
                         modifier = Modifier.fillMaxWidth(),
                         height = Dp.Unspecified,
-                        showTitle = preferencesState.value.showTitle
+                        showTitle = preferencesState().showTitle
                     )
                 }
             } else {
@@ -108,8 +107,8 @@ fun SearchResults(
                                 height = Dp.Unspecified,
                                 mediaInfo = mediaInfo,
                                 mediaType = mediaInfo.mediaType ?: mediaType(),
-                                showTitle = preferencesState.value.showTitle,
-                                showVoteAverage = preferencesState.value.showVoteAverage
+                                showTitle = preferencesState().showTitle,
+                                showVoteAverage = preferencesState().showVoteAverage
                             )
                         }
                     }

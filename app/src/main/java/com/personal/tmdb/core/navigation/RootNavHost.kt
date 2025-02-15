@@ -6,7 +6,6 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.State
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.unit.Dp
 import androidx.navigation.NavHostController
@@ -16,10 +15,11 @@ import androidx.navigation.navDeepLink
 import androidx.navigation.toRoute
 import com.personal.tmdb.UiEvent
 import com.personal.tmdb.UserState
+import com.personal.tmdb.core.domain.util.AdditionalNavigationItem
+import com.personal.tmdb.core.domain.util.C
 import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.animatedComposable
 import com.personal.tmdb.core.presentation.components.staticComposable
-import com.personal.tmdb.core.domain.util.C
 import com.personal.tmdb.detail.presentation.cast.CastScreenRoot
 import com.personal.tmdb.detail.presentation.collection.CollectionScreenRoot
 import com.personal.tmdb.detail.presentation.detail.DetailScreenRoot
@@ -42,8 +42,8 @@ fun RootNavHost(
     rootNavController: NavHostController,
     navBarItemReselect: ((() -> Unit)?) -> Unit,
     bottomBarPadding: Dp,
-    preferencesState: State<PreferencesState>,
-    userState: State<UserState>,
+    preferencesState: () -> PreferencesState,
+    userState: () -> UserState,
     uiEvent: (UiEvent) -> Unit
 ) {
     val scope = rememberCoroutineScope()
@@ -57,10 +57,10 @@ fun RootNavHost(
     ) {
         staticComposable<Route.Home> {
             val lazyListState = rememberLazyListState()
-            val homeNavController = rememberNavController()
+            val navController = rememberNavController()
             navBarItemReselect {
-                val popped = homeNavController.popBackStack(
-                    destinationId = homeNavController.graph.startDestinationId,
+                val popped = navController.popBackStack(
+                    destinationId = navController.graph.startDestinationId,
                     inclusive = false
                 )
                 if (!popped && lazyListState.canScrollBackward) {
@@ -71,7 +71,7 @@ fun RootNavHost(
             }
             ChildNavHost(
                 rootNavController = rootNavController,
-                navController = homeNavController,
+                navController = navController,
                 scrollState = lazyListState,
                 startDestination = Route.Home,
                 bottomBarPadding = bottomBarPadding,
@@ -82,10 +82,10 @@ fun RootNavHost(
         }
         staticComposable<Route.Search> {
             val lazyGridState = rememberLazyGridState()
-            val searchNavController = rememberNavController()
+            val navController = rememberNavController()
             navBarItemReselect {
-                val popped = searchNavController.popBackStack(
-                    destinationId = searchNavController.graph.startDestinationId,
+                val popped = navController.popBackStack(
+                    destinationId = navController.graph.startDestinationId,
                     inclusive = false
                 )
                 if (!popped && lazyGridState.canScrollBackward) {
@@ -96,7 +96,7 @@ fun RootNavHost(
             }
             ChildNavHost(
                 rootNavController = rootNavController,
-                navController = searchNavController,
+                navController = navController,
                 scrollState = lazyGridState,
                 startDestination = Route.Search,
                 bottomBarPadding = bottomBarPadding,
@@ -104,6 +104,90 @@ fun RootNavHost(
                 userState = userState,
                 uiEvent = uiEvent
             )
+        }
+        when (preferencesState().additionalNavigationItem) {
+            AdditionalNavigationItem.WATCHLIST -> {
+                staticComposable<Route.Watchlist> {
+                    val lazyGridState = rememberLazyGridState()
+                    val navController = rememberNavController()
+                    navBarItemReselect {
+                        val popped = navController.popBackStack(
+                            destinationId = navController.graph.startDestinationId,
+                            inclusive = false
+                        )
+                        if (!popped && lazyGridState.canScrollBackward) {
+                            scope.launch {
+                                lazyGridState.animateScrollToItem(0)
+                            }
+                        }
+                    }
+                    ChildNavHost(
+                        rootNavController = rootNavController,
+                        navController = navController,
+                        scrollState = lazyGridState,
+                        startDestination = Route.Watchlist,
+                        bottomBarPadding = bottomBarPadding,
+                        preferencesState = preferencesState,
+                        userState = userState,
+                        uiEvent = uiEvent
+                    )
+                }
+            }
+            AdditionalNavigationItem.FAVORITE -> {
+                staticComposable<Route.Favorite> {
+                    val lazyGridState = rememberLazyGridState()
+                    val navController = rememberNavController()
+                    navBarItemReselect {
+                        val popped = navController.popBackStack(
+                            destinationId = navController.graph.startDestinationId,
+                            inclusive = false
+                        )
+                        if (!popped && lazyGridState.canScrollBackward) {
+                            scope.launch {
+                                lazyGridState.animateScrollToItem(0)
+                            }
+                        }
+                    }
+                    ChildNavHost(
+                        rootNavController = rootNavController,
+                        navController = navController,
+                        scrollState = lazyGridState,
+                        startDestination = Route.Favorite,
+                        bottomBarPadding = bottomBarPadding,
+                        preferencesState = preferencesState,
+                        userState = userState,
+                        uiEvent = uiEvent
+                    )
+                }
+            }
+            AdditionalNavigationItem.LISTS -> {
+                staticComposable<Route.MyLists> {
+                    val lazyGridState = rememberLazyGridState()
+                    val navController = rememberNavController()
+                    navBarItemReselect {
+                        val popped = navController.popBackStack(
+                            destinationId = navController.graph.startDestinationId,
+                            inclusive = false
+                        )
+                        if (!popped && lazyGridState.canScrollBackward) {
+                            scope.launch {
+                                lazyGridState.animateScrollToItem(0)
+                            }
+                        }
+                    }
+                    ChildNavHost(
+                        rootNavController = rootNavController,
+                        navController = navController,
+                        scrollState = lazyGridState,
+                        startDestination = Route.MyLists,
+                        bottomBarPadding = bottomBarPadding,
+                        preferencesState = preferencesState,
+                        userState = userState,
+                        uiEvent = uiEvent
+                    )
+                }
+            }
+            AdditionalNavigationItem.NONE -> {}
         }
         staticComposable<Route.Profile>(
             deepLinks = listOf(
@@ -114,10 +198,10 @@ fun RootNavHost(
         ) {
             val approved = it.toRoute<Route.Profile>().approved
             val lazyListState = rememberLazyListState()
-            val profileNavController = rememberNavController()
+            val navController = rememberNavController()
             navBarItemReselect {
-                val popped = profileNavController.popBackStack(
-                    destinationId = profileNavController.graph.startDestinationId,
+                val popped = navController.popBackStack(
+                    destinationId = navController.graph.startDestinationId,
                     inclusive = false
                 )
                 if (!popped && lazyListState.canScrollBackward) {
@@ -128,7 +212,7 @@ fun RootNavHost(
             }
             ChildNavHost(
                 rootNavController = rootNavController,
-                navController = profileNavController,
+                navController = navController,
                 scrollState = lazyListState,
                 startDestination = Route.Profile(approved),
                 bottomBarPadding = bottomBarPadding,
@@ -140,7 +224,7 @@ fun RootNavHost(
         animatedComposable<Route.Image> {
             ImageViewerScreenRoot(
                 onNavigateBack = onNavigateBack,
-                preferencesState = { preferencesState.value }
+                preferencesState = preferencesState
             )
         }
     }
@@ -153,8 +237,8 @@ fun ChildNavHost(
     scrollState: Any,
     startDestination: Route,
     bottomBarPadding: Dp,
-    preferencesState: State<PreferencesState>,
-    userState: State<UserState>,
+    preferencesState: () -> PreferencesState,
+    userState: () -> UserState,
     uiEvent: (UiEvent) -> Unit
 ) {
     val onNavigateBack: () -> Unit = {
@@ -175,7 +259,7 @@ fun ChildNavHost(
                 bottomPadding = bottomBarPadding,
                 lazyListState = scrollState as LazyListState,
                 onNavigateTo = onNavigateTo,
-                preferencesState = { preferencesState.value }
+                preferencesState = preferencesState
             )
         }
         animatedComposable<Route.Search> {
@@ -186,6 +270,24 @@ fun ChildNavHost(
                 preferencesState = preferencesState
             )
         }
+        animatedComposable<Route.Watchlist> {
+            WatchlistScreenRoot(
+                bottomPadding = bottomBarPadding,
+                canNavigateBack = preferencesState().additionalNavigationItem != AdditionalNavigationItem.WATCHLIST,
+                onNavigateBack = onNavigateBack,
+                onNavigateTo = onNavigateTo,
+                preferencesState = preferencesState
+            )
+        }
+        animatedComposable<Route.MyLists> {
+            ListsScreenRoot(
+                bottomPadding = bottomBarPadding,
+                canNavigateBack = preferencesState().additionalNavigationItem != AdditionalNavigationItem.LISTS,
+                onNavigateBack = onNavigateBack,
+                onNavigateTo = onNavigateTo
+            )
+        }
+        animatedComposable<Route.Favorite> {}
         animatedComposable<Route.Profile> {
             val approved = it.toRoute<Route.Profile>().approved
             LaunchedEffect(key1 = true) {
@@ -197,7 +299,8 @@ fun ChildNavHost(
                 bottomPadding = bottomBarPadding,
                 lazyListState = scrollState as LazyListState,
                 onNavigateTo = onNavigateTo,
-                userState = { userState.value },
+                preferencesState = preferencesState,
+                userState = userState,
                 uiEvent = uiEvent
             )
         }
@@ -207,8 +310,8 @@ fun ChildNavHost(
                 bottomPadding = bottomBarPadding,
                 onNavigateBack = onNavigateBack,
                 onNavigateTo = onNavigateTo,
-                preferencesState = { preferencesState.value },
-                userState = { userState.value }
+                preferencesState = preferencesState,
+                userState = userState
             )
         }
         animatedComposable<Route.Reviews> {
@@ -229,14 +332,14 @@ fun ChildNavHost(
                 bottomPadding = bottomBarPadding,
                 onNavigateBack = onNavigateBack,
                 onNavigateTo = onNavigateTo,
-                userState = { userState.value }
+                userState = userState
             )
         }
         animatedComposable<Route.Collection> {
             CollectionScreenRoot(
                 bottomPadding = bottomBarPadding,
                 onNavigateBack = onNavigateBack,
-                preferencesState = { preferencesState.value },
+                preferencesState = preferencesState,
                 onNavigateTo = onNavigateTo
             )
         }
@@ -252,7 +355,7 @@ fun ChildNavHost(
                 bottomPadding = bottomBarPadding,
                 onNavigateBack = onNavigateBack,
                 onNavigateTo = onNavigateTo,
-                preferencesState = { preferencesState.value }
+                preferencesState = preferencesState
             )
         }
         animatedComposable<Route.Settings> {
@@ -260,8 +363,8 @@ fun ChildNavHost(
                 bottomPadding = bottomBarPadding,
                 onNavigateBack = onNavigateBack,
                 onNavigateTo = onNavigateTo,
-                preferencesState = { preferencesState.value },
-                userState = { userState.value },
+                preferencesState = preferencesState,
+                userState = userState,
                 uiEvent = uiEvent
             )
         }
@@ -273,22 +376,6 @@ fun ChildNavHost(
             )
         }
         animatedComposable<Route.Language> {}
-        animatedComposable<Route.Watchlist> {
-            WatchlistScreenRoot(
-                bottomPadding = bottomBarPadding,
-                onNavigateBack = onNavigateBack,
-                onNavigateTo = onNavigateTo,
-                preferencesState = { preferencesState.value }
-            )
-        }
-        animatedComposable<Route.MyLists> {
-            ListsScreenRoot(
-                bottomPadding = bottomBarPadding,
-                onNavigateBack = onNavigateBack,
-                onNavigateTo = onNavigateTo
-            )
-        }
-        animatedComposable<Route.Favorite> {}
         animatedComposable<Route.Lost> {}
     }
 }

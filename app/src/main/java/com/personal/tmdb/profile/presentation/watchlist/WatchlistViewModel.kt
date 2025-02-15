@@ -80,6 +80,9 @@ class WatchlistViewModel @Inject constructor(
                 }
                 getWatchlist(mediaType, 1)
             }
+            WatchlistUiEvent.ShowRecommendations -> {
+                _watchlistState.update { it.copy(showRecommendations = !it.showRecommendations) }
+            }
         }
     }
 }

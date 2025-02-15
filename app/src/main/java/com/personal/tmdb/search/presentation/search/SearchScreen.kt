@@ -9,15 +9,14 @@ import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.personal.tmdb.core.domain.util.convertMediaType
 import com.personal.tmdb.core.navigation.Route
 import com.personal.tmdb.core.presentation.MediaState
 import com.personal.tmdb.core.presentation.PreferencesState
-import com.personal.tmdb.core.domain.util.convertMediaType
 import com.personal.tmdb.search.presentation.search.components.SearchField
 import com.personal.tmdb.search.presentation.search.components.SearchResults
 import com.personal.tmdb.search.presentation.search.components.SearchSuggestion
@@ -27,7 +26,7 @@ fun SearchScreenRoot(
     bottomPadding: Dp,
     lazyGridState: LazyGridState = rememberLazyGridState(),
     onNavigateTo: (route: Route) -> Unit,
-    preferencesState: State<PreferencesState>,
+    preferencesState: () -> PreferencesState,
     viewModel: SearchViewModel = hiltViewModel()
 ) {
     SearchScreen(
@@ -55,7 +54,7 @@ fun SearchScreenRoot(
 private fun SearchScreen(
     modifier: Modifier = Modifier,
     lazyGridState: LazyGridState,
-    preferencesState: State<PreferencesState>,
+    preferencesState: () -> PreferencesState,
     searchQuery: () -> String,
     searchType: () -> String,
     searchState: () -> MediaState,

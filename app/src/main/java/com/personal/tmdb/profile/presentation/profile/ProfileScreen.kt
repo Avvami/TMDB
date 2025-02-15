@@ -30,7 +30,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.personal.tmdb.R
 import com.personal.tmdb.UiEvent
 import com.personal.tmdb.UserState
+import com.personal.tmdb.core.domain.util.AdditionalNavigationItem
 import com.personal.tmdb.core.navigation.Route
+import com.personal.tmdb.core.presentation.PreferencesState
 import com.personal.tmdb.core.presentation.components.CustomListItem
 import com.personal.tmdb.profile.presentation.profile.components.ProfileBox
 
@@ -39,6 +41,7 @@ fun ProfileScreenRoot(
     bottomPadding: Dp,
     lazyListState: LazyListState = rememberLazyListState(),
     onNavigateTo: (route: Route) -> Unit,
+    preferencesState: () -> PreferencesState,
     userState: () -> UserState,
     uiEvent: (UiEvent) -> Unit,
     viewModel: ProfileViewModel = hiltViewModel()
@@ -46,6 +49,7 @@ fun ProfileScreenRoot(
     ProfileScreen(
         modifier = Modifier.padding(bottom = bottomPadding),
         lazyListState = lazyListState,
+        preferencesState = preferencesState,
         userState = userState,
         profileUiEvent = { event ->
             when (event) {
@@ -61,6 +65,7 @@ fun ProfileScreenRoot(
 private fun ProfileScreen(
     modifier: Modifier = Modifier,
     lazyListState: LazyListState,
+    preferencesState: () -> PreferencesState,
     userState: () -> UserState,
     profileUiEvent: (ProfileUiEvent) -> Unit,
 ) {
@@ -100,24 +105,26 @@ private fun ProfileScreen(
                 Column {
                     AnimatedVisibility(visible = !userState().user?.sessionId.isNullOrEmpty()) {
                         Column {
-                            CustomListItem(
-                                onClick = { profileUiEvent(ProfileUiEvent.OnNavigateTo(Route.Watchlist)) },
-                                leadingContent = {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.icon_bookmarks_fill0_wght400),
-                                        contentDescription = stringResource(id = R.string.watchlist)
-                                    )
-                                },
-                                headlineContent = {
-                                    Text(text =   stringResource(id = R.string.watchlist))
-                                },
-                                trailingContent = {
-                                    Icon(
-                                        imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
-                                        contentDescription = null
-                                    )
-                                }
-                            )
+                            if (preferencesState().additionalNavigationItem != AdditionalNavigationItem.WATCHLIST) {
+                                CustomListItem(
+                                    onClick = { profileUiEvent(ProfileUiEvent.OnNavigateTo(Route.Watchlist)) },
+                                    leadingContent = {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.icon_bookmarks_fill0_wght400),
+                                            contentDescription = stringResource(id = R.string.watchlist)
+                                        )
+                                    },
+                                    headlineContent = {
+                                        Text(text =   stringResource(id = R.string.watchlist))
+                                    },
+                                    trailingContent = {
+                                        Icon(
+                                            imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
+                                            contentDescription = null
+                                        )
+                                    }
+                                )
+                            }
                             CustomListItem(
                                 onClick = { profileUiEvent(ProfileUiEvent.OnNavigateTo(Route.MyLists)) },
                                 leadingContent = {

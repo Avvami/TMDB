@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -37,6 +39,7 @@ import com.personal.tmdb.core.presentation.components.MediaGrid
 fun ListsScreenRoot(
     bottomPadding: Dp,
     canNavigateBack: Boolean = true,
+    lazyGridState: LazyGridState = rememberLazyGridState(),
     onNavigateBack: () -> Unit,
     onNavigateTo: (route: Route) -> Unit,
     viewModel: ListsViewModel = hiltViewModel()
@@ -45,6 +48,7 @@ fun ListsScreenRoot(
     ListsScreen(
         modifier = Modifier.padding(bottom = bottomPadding),
         canNavigateBack = canNavigateBack,
+        lazyGridState = lazyGridState,
         listsState = { listsState },
         listsUiEvent = { event ->
             when (event) {
@@ -62,12 +66,14 @@ fun ListsScreenRoot(
 private fun ListsScreen(
     modifier: Modifier = Modifier,
     canNavigateBack: Boolean,
+    lazyGridState: LazyGridState,
     listsState: () -> ListsState,
     listsUiEvent: (ListsUiEvent) -> Unit
 ) {
     LaunchedEffect(key1 = true) {
-        /*TODO: Not the best way to update data*/
-        listsUiEvent(ListsUiEvent.GetLists(1))
+        if (!lazyGridState.canScrollBackward) {
+            listsUiEvent(ListsUiEvent.GetLists(1))
+        }
     }
     Scaffold(
         topBar = {

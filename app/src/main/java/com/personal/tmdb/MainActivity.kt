@@ -45,10 +45,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContent {
-            val preferencesState = mainViewModel.preferencesState.collectAsStateWithLifecycle()
-            val userState = mainViewModel.userState.collectAsStateWithLifecycle()
+            val preferencesState by mainViewModel.preferencesState.collectAsStateWithLifecycle()
+            val userState by mainViewModel.userState.collectAsStateWithLifecycle()
             TMDBTheme(
-                darkTheme = preferencesState.value.darkTheme ?: isSystemInDarkTheme()
+                darkTheme = preferencesState.darkTheme ?: isSystemInDarkTheme()
             ) {
                 val rootNavController = rememberNavController()
                 var navBarItemReselect: (() -> Unit)? by remember { mutableStateOf(null) }
@@ -75,7 +75,8 @@ class MainActivity : ComponentActivity() {
                     bottomBar = {
                         BottomBar(
                             rootNavController = rootNavController,
-                            userState = userState,
+                            preferencesState = { preferencesState },
+                            userState = { userState },
                             navBarItemReselect = navBarItemReselect
                         )
                     },
@@ -100,8 +101,8 @@ class MainActivity : ComponentActivity() {
                         rootNavController = rootNavController,
                         navBarItemReselect = { navBarItemReselect = it },
                         bottomBarPadding = innerPadding.calculateBottomPadding(),
-                        preferencesState = preferencesState,
-                        userState = userState,
+                        preferencesState = { preferencesState },
+                        userState = { userState },
                         uiEvent = mainViewModel::uiEvent
                     )
                 }
