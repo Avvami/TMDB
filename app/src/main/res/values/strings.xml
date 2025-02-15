@@ -93,7 +93,6 @@
     <string name="list_view">List view</string>
     <string name="cards">Cards</string>
     <string name="posters">Posters</string>
-    <string name="add_title">Add title to the posters</string>
     <string name="show_user_score">Show user score</string>
     <string name="light">Light</string>
     <string name="system">System</string>
@@ -158,4 +157,7 @@
     <string name="list_public">Public</string>
     <string name="list_private">Private</string>
     <string name="updated_at">Updated %s</string>
+    <string name="show_title">Show title</string>
+    <string name="additional_nav_item">Additional Navigation Bar Item</string>
+    <string name="none">None</string>
 </resources>

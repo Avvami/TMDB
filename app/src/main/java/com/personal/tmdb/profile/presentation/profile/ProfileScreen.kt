@@ -125,42 +125,46 @@ private fun ProfileScreen(
                                     }
                                 )
                             }
-                            CustomListItem(
-                                onClick = { profileUiEvent(ProfileUiEvent.OnNavigateTo(Route.MyLists)) },
-                                leadingContent = {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.icon_event_list_fill0_wght400),
-                                        contentDescription = stringResource(id = R.string.my_lists)
-                                    )
-                                },
-                                headlineContent = {
-                                    Text(text =  stringResource(id = R.string.my_lists))
-                                },
-                                trailingContent = {
-                                    Icon(
-                                        imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
-                                        contentDescription = null
-                                    )
-                                }
-                            )
-                            CustomListItem(
-                                onClick = { profileUiEvent(ProfileUiEvent.OnNavigateTo(Route.Favorite)) },
-                                leadingContent = {
-                                    Icon(
-                                        painter = painterResource(id = R.drawable.icon_favorite_fill0_wght400),
-                                        contentDescription = stringResource(id = R.string.favorite)
-                                    )
-                                },
-                                headlineContent = {
-                                    Text(text = stringResource(id = R.string.favorite))
-                                },
-                                trailingContent = {
-                                    Icon(
-                                        imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
-                                        contentDescription = null
-                                    )
-                                }
-                            )
+                            if (preferencesState().additionalNavigationItem != AdditionalNavigationItem.LISTS) {
+                                CustomListItem(
+                                    onClick = { profileUiEvent(ProfileUiEvent.OnNavigateTo(Route.MyLists)) },
+                                    leadingContent = {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.icon_event_list_fill0_wght400),
+                                            contentDescription = stringResource(id = R.string.my_lists)
+                                        )
+                                    },
+                                    headlineContent = {
+                                        Text(text =  stringResource(id = R.string.my_lists))
+                                    },
+                                    trailingContent = {
+                                        Icon(
+                                            imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
+                                            contentDescription = null
+                                        )
+                                    }
+                                )
+                            }
+                            if (preferencesState().additionalNavigationItem != AdditionalNavigationItem.FAVORITE) {
+                                CustomListItem(
+                                    onClick = { profileUiEvent(ProfileUiEvent.OnNavigateTo(Route.Favorite)) },
+                                    leadingContent = {
+                                        Icon(
+                                            painter = painterResource(id = R.drawable.icon_favorite_fill0_wght400),
+                                            contentDescription = stringResource(id = R.string.favorite)
+                                        )
+                                    },
+                                    headlineContent = {
+                                        Text(text = stringResource(id = R.string.favorite))
+                                    },
+                                    trailingContent = {
+                                        Icon(
+                                            imageVector = Icons.AutoMirrored.Rounded.KeyboardArrowRight,
+                                            contentDescription = null
+                                        )
+                                    }
+                                )
+                            }
                         }
                     }
                     CustomListItem(

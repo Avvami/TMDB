@@ -33,7 +33,7 @@ import com.personal.tmdb.profile.presentation.lists.ListsScreenRoot
 import com.personal.tmdb.profile.presentation.profile.ProfileScreenRoot
 import com.personal.tmdb.profile.presentation.watchlist.WatchlistScreenRoot
 import com.personal.tmdb.search.presentation.search.SearchScreenRoot
-import com.personal.tmdb.settings.presentation.appearance.AppearanceScreen
+import com.personal.tmdb.settings.presentation.appearance.AppearanceScreenRoot
 import com.personal.tmdb.settings.presentation.settings.SettingsScreenRoot
 import kotlinx.coroutines.launch
 
@@ -105,89 +105,80 @@ fun RootNavHost(
                 uiEvent = uiEvent
             )
         }
-        when (preferencesState().additionalNavigationItem) {
-            AdditionalNavigationItem.WATCHLIST -> {
-                staticComposable<Route.Watchlist> {
-                    val lazyGridState = rememberLazyGridState()
-                    val navController = rememberNavController()
-                    navBarItemReselect {
-                        val popped = navController.popBackStack(
-                            destinationId = navController.graph.startDestinationId,
-                            inclusive = false
-                        )
-                        if (!popped && lazyGridState.canScrollBackward) {
-                            scope.launch {
-                                lazyGridState.animateScrollToItem(0)
-                            }
-                        }
+        staticComposable<Route.Watchlist> {
+            val lazyGridState = rememberLazyGridState()
+            val navController = rememberNavController()
+            navBarItemReselect {
+                val popped = navController.popBackStack(
+                    destinationId = navController.graph.startDestinationId,
+                    inclusive = false
+                )
+                if (!popped && lazyGridState.canScrollBackward) {
+                    scope.launch {
+                        lazyGridState.animateScrollToItem(0)
                     }
-                    ChildNavHost(
-                        rootNavController = rootNavController,
-                        navController = navController,
-                        scrollState = lazyGridState,
-                        startDestination = Route.Watchlist,
-                        bottomBarPadding = bottomBarPadding,
-                        preferencesState = preferencesState,
-                        userState = userState,
-                        uiEvent = uiEvent
-                    )
                 }
             }
-            AdditionalNavigationItem.FAVORITE -> {
-                staticComposable<Route.Favorite> {
-                    val lazyGridState = rememberLazyGridState()
-                    val navController = rememberNavController()
-                    navBarItemReselect {
-                        val popped = navController.popBackStack(
-                            destinationId = navController.graph.startDestinationId,
-                            inclusive = false
-                        )
-                        if (!popped && lazyGridState.canScrollBackward) {
-                            scope.launch {
-                                lazyGridState.animateScrollToItem(0)
-                            }
-                        }
+            ChildNavHost(
+                rootNavController = rootNavController,
+                navController = navController,
+                scrollState = lazyGridState,
+                startDestination = Route.Watchlist,
+                bottomBarPadding = bottomBarPadding,
+                preferencesState = preferencesState,
+                userState = userState,
+                uiEvent = uiEvent
+            )
+        }
+        staticComposable<Route.Favorite> {
+            val lazyGridState = rememberLazyGridState()
+            val navController = rememberNavController()
+            navBarItemReselect {
+                val popped = navController.popBackStack(
+                    destinationId = navController.graph.startDestinationId,
+                    inclusive = false
+                )
+                if (!popped && lazyGridState.canScrollBackward) {
+                    scope.launch {
+                        lazyGridState.animateScrollToItem(0)
                     }
-                    ChildNavHost(
-                        rootNavController = rootNavController,
-                        navController = navController,
-                        scrollState = lazyGridState,
-                        startDestination = Route.Favorite,
-                        bottomBarPadding = bottomBarPadding,
-                        preferencesState = preferencesState,
-                        userState = userState,
-                        uiEvent = uiEvent
-                    )
                 }
             }
-            AdditionalNavigationItem.LISTS -> {
-                staticComposable<Route.MyLists> {
-                    val lazyGridState = rememberLazyGridState()
-                    val navController = rememberNavController()
-                    navBarItemReselect {
-                        val popped = navController.popBackStack(
-                            destinationId = navController.graph.startDestinationId,
-                            inclusive = false
-                        )
-                        if (!popped && lazyGridState.canScrollBackward) {
-                            scope.launch {
-                                lazyGridState.animateScrollToItem(0)
-                            }
-                        }
+            ChildNavHost(
+                rootNavController = rootNavController,
+                navController = navController,
+                scrollState = lazyGridState,
+                startDestination = Route.Favorite,
+                bottomBarPadding = bottomBarPadding,
+                preferencesState = preferencesState,
+                userState = userState,
+                uiEvent = uiEvent
+            )
+        }
+        staticComposable<Route.MyLists> {
+            val lazyGridState = rememberLazyGridState()
+            val navController = rememberNavController()
+            navBarItemReselect {
+                val popped = navController.popBackStack(
+                    destinationId = navController.graph.startDestinationId,
+                    inclusive = false
+                )
+                if (!popped && lazyGridState.canScrollBackward) {
+                    scope.launch {
+                        lazyGridState.animateScrollToItem(0)
                     }
-                    ChildNavHost(
-                        rootNavController = rootNavController,
-                        navController = navController,
-                        scrollState = lazyGridState,
-                        startDestination = Route.MyLists,
-                        bottomBarPadding = bottomBarPadding,
-                        preferencesState = preferencesState,
-                        userState = userState,
-                        uiEvent = uiEvent
-                    )
                 }
             }
-            AdditionalNavigationItem.NONE -> {}
+            ChildNavHost(
+                rootNavController = rootNavController,
+                navController = navController,
+                scrollState = lazyGridState,
+                startDestination = Route.MyLists,
+                bottomBarPadding = bottomBarPadding,
+                preferencesState = preferencesState,
+                userState = userState,
+                uiEvent = uiEvent
+            )
         }
         staticComposable<Route.Profile>(
             deepLinks = listOf(
@@ -369,10 +360,10 @@ fun ChildNavHost(
             )
         }
         animatedComposable<Route.Appearance> {
-            AppearanceScreen(
-                navigateBack = onNavigateBack,
-                preferencesState = preferencesState,
-                uiEvent = uiEvent
+            AppearanceScreenRoot(
+                bottomPadding = bottomBarPadding,
+                onNavigateBack = onNavigateBack,
+                preferencesState = preferencesState
             )
         }
         animatedComposable<Route.Language> {}

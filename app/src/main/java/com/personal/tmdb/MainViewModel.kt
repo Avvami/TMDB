@@ -198,21 +198,6 @@ class MainViewModel @Inject constructor(
 
     fun uiEvent(event: UiEvent) {
         when (event) {
-            is UiEvent.SetTheme -> {
-                viewModelScope.launch {
-                    preferencesRepository.setTheme(event.darkTheme)
-                }
-            }
-            is UiEvent.SetShowTitle -> {
-                viewModelScope.launch {
-                    preferencesRepository.setShowTitle(event.showTitle)
-                }
-            }
-            is UiEvent.SetShowVoteAverage -> {
-                viewModelScope.launch {
-                    preferencesRepository.setShowVoteAverage(event.showVoteAverage)
-                }
-            }
             UiEvent.CreateRequestToken -> {
                 createRequestToken()
             }

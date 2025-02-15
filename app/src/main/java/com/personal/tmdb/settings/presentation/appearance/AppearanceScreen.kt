@@ -1,9 +1,6 @@
 package com.personal.tmdb.settings.presentation.appearance
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -17,24 +14,44 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.personal.tmdb.R
-import com.personal.tmdb.UiEvent
 import com.personal.tmdb.core.presentation.PreferencesState
-import com.personal.tmdb.settings.presentation.appearance.components.ShowAdditionalInfo
-import com.personal.tmdb.settings.presentation.appearance.components.Theme
+import com.personal.tmdb.settings.presentation.appearance.components.AppearanceAdditionalNavItem
+import com.personal.tmdb.settings.presentation.appearance.components.AppearancePoster
+import com.personal.tmdb.settings.presentation.appearance.components.AppearanceTheme
+
+@Composable
+fun AppearanceScreenRoot(
+    bottomPadding: Dp,
+    onNavigateBack: () -> Unit,
+    preferencesState: () -> PreferencesState,
+    appearanceViewModel: AppearanceViewModel = hiltViewModel()
+) {
+    AppearanceScreen(
+        modifier = Modifier.padding(bottom = bottomPadding),
+        preferencesState = preferencesState,
+        appearanceUiEvent = { event ->
+            when (event) {
+                AppearanceUiEvent.OnNavigateBack -> onNavigateBack()
+                else -> Unit
+            }
+            appearanceViewModel.appearanceUiEvent(event)
+        }
+    )
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AppearanceScreen(
-    navigateBack: () -> Unit,
-    preferencesState: State<PreferencesState>,
-    uiEvent: (UiEvent) -> Unit
+private fun AppearanceScreen(
+    modifier: Modifier = Modifier,
+    preferencesState: () -> PreferencesState,
+    appearanceUiEvent: (AppearanceUiEvent) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -46,14 +63,14 @@ fun AppearanceScreen(
                     )
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.background,
-                    titleContentColor = MaterialTheme.colorScheme.onBackground,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onBackground,
-                    actionIconContentColor = MaterialTheme.colorScheme.onBackground
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onSurface,
+                    actionIconContentColor = MaterialTheme.colorScheme.onSurface
                 ),
                 navigationIcon = {
                     IconButton(
-                        onClick = navigateBack
+                        onClick = { appearanceUiEvent(AppearanceUiEvent.OnNavigateBack) }
                     )  {
                         Icon(
                             imageVector = Icons.AutoMirrored.Rounded.ArrowBack,
@@ -63,34 +80,37 @@ fun AppearanceScreen(
                 }
             )
         },
-        containerColor = MaterialTheme.colorScheme.background,
-        contentColor = MaterialTheme.colorScheme.onBackground
+        containerColor = MaterialTheme.colorScheme.surface,
+        contentColor = MaterialTheme.colorScheme.onSurface
     ) { innerPadding ->
         LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+            modifier = modifier.padding(top = innerPadding.calculateTopPadding(), bottom = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
-            item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                }
-            }
-            item {
-                ShowAdditionalInfo(
+            item(
+                contentType = { "Posters appearance" }
+            ) {
+                AppearancePoster(
                     preferencesState = preferencesState,
-                    uiEvent = uiEvent
+                    appearanceUiEvent = appearanceUiEvent
                 )
             }
-            item {
-                Theme(
+            item(
+                contentType = { "Additional navigation bar item" }
+            ) {
+                AppearanceAdditionalNavItem(
+                    modifier = Modifier.padding(horizontal = 16.dp),
                     preferencesState = preferencesState,
-                    uiEvent = uiEvent
+                    appearanceUiEvent = appearanceUiEvent
+                )
+            }
+            item(
+                contentType = { "Theme" }
+            ) {
+                AppearanceTheme(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    preferencesState = preferencesState,
+                    appearanceUiEvent = appearanceUiEvent
                 )
             }
         }
