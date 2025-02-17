@@ -45,7 +45,6 @@ class WatchlistViewModel @Inject constructor(
                 page = page,
                 language = language
             ).onError { error ->
-                println(error)
                 _watchlistState.update {
                     it.copy(
                         loading = false,
@@ -57,6 +56,44 @@ class WatchlistViewModel @Inject constructor(
                     it.copy(
                         loading = false,
                         watchlist = result
+                    )
+                }
+            }
+        }
+    }
+
+    private fun getRecommendations(
+        mediaType: MediaType,
+        page: Int
+    ) {
+        viewModelScope.launch {
+            _watchlistState.update {
+                it.copy(
+                    loading = true,
+                    errorMessage = null
+                )
+            }
+            val language = preferencesRepository.getLanguage()
+            val user = userRepository.getUser()
+
+            userRepository.getRecommendations(
+                accountObjectId = user?.accountObjectId ?: "",
+                mediaType = mediaType.name.lowercase(),
+                sessionId = user?.sessionId ?: "",
+                page = page,
+                language = language
+            ).onError { error ->
+                _watchlistState.update {
+                    it.copy(
+                        loading = false,
+                        errorMessage = error.toUiText()
+                    )
+                }
+            }.onSuccess { result ->
+                _watchlistState.update {
+                    it.copy(
+                        loading = false,
+                        recommendations = result
                     )
                 }
             }
@@ -75,13 +112,28 @@ class WatchlistViewModel @Inject constructor(
                 _watchlistState.update {
                     it.copy(
                         watchlist = null,
-                        mediaType = mediaType
+                        mediaType = mediaType,
+                        recommendations = null
                     )
                 }
-                getWatchlist(mediaType, 1)
+                if (_watchlistState.value.showRecommendations) {
+                    getRecommendations(mediaType, 1)
+                } else {
+                    getWatchlist(mediaType, 1)
+                }
             }
             WatchlistUiEvent.ShowRecommendations -> {
-                _watchlistState.update { it.copy(showRecommendations = !it.showRecommendations) }
+                val showRecommendations = !watchlistState.value.showRecommendations
+                if (showRecommendations && watchlistState.value.recommendations == null) {
+                    getRecommendations(watchlistState.value.mediaType, 1)
+                } else if (!showRecommendations && watchlistState.value.watchlist == null) {
+                    getWatchlist(watchlistState.value.mediaType, 1)
+                }
+                _watchlistState.update {
+                    it.copy(
+                        showRecommendations = showRecommendations
+                    )
+                }
             }
         }
     }

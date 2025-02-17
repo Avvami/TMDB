@@ -95,7 +95,8 @@ class MainActivity : ComponentActivity() {
                                 )
                             }
                         )
-                    }
+                    },
+                    containerColor = MaterialTheme.colorScheme.surface
                 ) { innerPadding ->
                     RootNavHost(
                         rootNavController = rootNavController,

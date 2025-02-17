@@ -53,4 +53,22 @@ class UserRepositoryImpl @Inject constructor(
             tmdbApi.getLists(accountObjectId = accountObjectId, sessionId = sessionId, page = page).toListsResponseInfo()
         }
     }
+
+    override suspend fun getRecommendations(
+        accountObjectId: String,
+        mediaType: String,
+        sessionId: String,
+        page: Int,
+        language: String?
+    ): Result<MediaResponseInfo, DataError.Remote> {
+        return safeApiCall {
+            tmdbApi.getRecommendations(
+                accountObjectId = accountObjectId,
+                mediaType = mediaType,
+                sessionId = sessionId,
+                page = page,
+                language = language
+            ).toMediaResponseInfo()
+        }
+    }
 }

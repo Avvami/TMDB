@@ -77,7 +77,7 @@ private fun WatchlistScreen(
     watchlistUiEvent: (WatchlistUiEvent) -> Unit
 ) {
     LaunchedEffect(key1 = true) {
-        if (!lazyGridState.canScrollBackward) {
+        if (!lazyGridState.canScrollBackward && !watchlistState().showRecommendations) {
             watchlistUiEvent(WatchlistUiEvent.GetWatchlist(watchlistState().mediaType, 1))
         }
     }
@@ -128,9 +128,9 @@ private fun WatchlistScreen(
                 }
             },
             items = {
-                if (watchlistState().loading && watchlistState().watchlist == null) {
+                if (watchlistState().loading && (watchlistState().watchlist == null || watchlistState().recommendations == null)) {
                     items(
-                        count = 4,
+                        count = 15,
                         contentType = { "Poster" }
                     ) {
                         MediaPosterShimmer(
@@ -143,35 +143,70 @@ private fun WatchlistScreen(
                     }
                 } else {
                     watchlistState().errorMessage?.let {  }
-                    watchlistState().watchlist?.results?.let { watchlist ->
-                        if (watchlist.isEmpty()) {
-                            item(
-                                span = { GridItemSpan(maxLineSpan) }
-                            ) {
-                                Text(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    text = stringResource(id = R.string.empty_watchlist),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = MaterialTheme.colorScheme.surfaceVariant,
-                                    textAlign = TextAlign.Center
-                                )
+                    if (!watchlistState().showRecommendations) {
+                        watchlistState().watchlist?.results?.let { watchlist ->
+                            if (watchlist.isEmpty()) {
+                                item(
+                                    span = { GridItemSpan(maxLineSpan) }
+                                ) {
+                                    Text(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        text = stringResource(id = R.string.empty_watchlist),
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = MaterialTheme.colorScheme.surfaceVariant,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+                            } else {
+                                items(
+                                    items = watchlist,
+                                    key = { it.id }
+                                ) { mediaInfo ->
+                                    MediaPoster(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .animateItem(),
+                                        onNavigateTo = { watchlistUiEvent(WatchlistUiEvent.OnNavigateTo(it)) },
+                                        height = Dp.Unspecified,
+                                        mediaInfo = mediaInfo,
+                                        mediaType = watchlistState().mediaType,
+                                        showTitle = preferencesState().showTitle,
+                                        showVoteAverage = preferencesState().showVoteAverage
+                                    )
+                                }
                             }
-                        } else {
-                            items(
-                                items = watchlist,
-                                key = { it.id }
-                            ) { mediaInfo ->
-                                MediaPoster(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .animateItem(),
-                                    onNavigateTo = { watchlistUiEvent(WatchlistUiEvent.OnNavigateTo(it)) },
-                                    height = Dp.Unspecified,
-                                    mediaInfo = mediaInfo,
-                                    mediaType = watchlistState().mediaType,
-                                    showTitle = preferencesState().showTitle,
-                                    showVoteAverage = preferencesState().showVoteAverage
-                                )
+                        }
+                    } else {
+                        watchlistState().recommendations?.results?.let { recommendations ->
+                            if (recommendations.isEmpty()) {
+                                item(
+                                    span = { GridItemSpan(maxLineSpan) }
+                                ) {
+                                    Text(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        text = stringResource(id = R.string.empty_recommendations),
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        color = MaterialTheme.colorScheme.surfaceVariant,
+                                        textAlign = TextAlign.Center
+                                    )
+                                }
+                            } else {
+                                items(
+                                    items = recommendations,
+                                    key = { it.id }
+                                ) { mediaInfo ->
+                                    MediaPoster(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .animateItem(),
+                                        onNavigateTo = { watchlistUiEvent(WatchlistUiEvent.OnNavigateTo(it)) },
+                                        height = Dp.Unspecified,
+                                        mediaInfo = mediaInfo,
+                                        mediaType = watchlistState().mediaType,
+                                        showTitle = preferencesState().showTitle,
+                                        showVoteAverage = preferencesState().showVoteAverage
+                                    )
+                                }
                             }
                         }
                     }

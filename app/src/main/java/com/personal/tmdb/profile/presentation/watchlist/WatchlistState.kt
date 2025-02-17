@@ -9,5 +9,6 @@ data class WatchlistState(
     val watchlist: MediaResponseInfo? = null,
     val mediaType: MediaType = MediaType.TV,
     val showRecommendations: Boolean = false,
+    val recommendations: MediaResponseInfo? = null,
     val errorMessage: UiText? = null
 )

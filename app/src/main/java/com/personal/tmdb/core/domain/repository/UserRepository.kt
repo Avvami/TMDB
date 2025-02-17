@@ -23,4 +23,12 @@ interface UserRepository {
     ): Result<MediaResponseInfo, DataError.Remote>
 
     suspend fun getLists(accountObjectId: String, sessionId: String, page: Int): Result<ListsResponseInfo, DataError.Remote>
+
+    suspend fun getRecommendations(
+        accountObjectId: String,
+        mediaType: String,
+        sessionId: String,
+        page: Int,
+        language: String? = null
+    ): Result<MediaResponseInfo, DataError.Remote>
 }
