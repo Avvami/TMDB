@@ -57,7 +57,18 @@ fun formatEpisodesCount(numberOfEpisodes: Int): String {
 
 fun formatDate(localDate: LocalDate): String = localDate.format(DateTimeFormatter.ofPattern("MMM d, yyyy"))
 
-fun formatDateTime(localDateTime: LocalDateTime): String = localDateTime.format(DateTimeFormatter.ofPattern("dd.MM.yyyy"))
+fun formatDateTime(localDateTime: LocalDateTime): UiText {
+    val today = LocalDate.now()
+    val formatter = when {
+        localDateTime.year == today.year -> DateTimeFormatter.ofPattern("MMM d")
+        else -> DateTimeFormatter.ofPattern("MMM d, yyyy")
+    }
+    return when {
+        localDateTime.month == today.month && localDateTime.year == today.year && localDateTime.dayOfMonth == today.dayOfMonth -> UiText.StringResource(R.string.updated_today)
+        localDateTime.month == today.month && localDateTime.year == today.year && today.dayOfMonth - localDateTime.dayOfMonth == 1 -> UiText.StringResource(R.string.updated_yesterday)
+        else -> UiText.StringResource(R.string.updated_at, localDateTime.format(formatter))
+    }
+}
 
 fun formatGender(genderCode: Int): UiText {
     return when (genderCode) {

@@ -71,7 +71,7 @@ class CollectionViewModel @Inject constructor(
         viewModelScope.launch {
             detailRepository.getGenres(MediaType.MOVIE.name.lowercase(), language)
                 .onError { error ->
-                    println(error.name)
+                    println(error.toUiText())
                 }
                 .onSuccess { result ->
                     _collectionState.update { state ->

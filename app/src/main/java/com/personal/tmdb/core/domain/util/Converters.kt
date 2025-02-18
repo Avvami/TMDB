@@ -3,6 +3,8 @@ package com.personal.tmdb.core.domain.util
 import com.personal.tmdb.R
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 
 fun convertStringToDate(dateString: String?): LocalDate? {
@@ -18,7 +20,9 @@ fun convertStringToDate(dateString: String?): LocalDate? {
 fun convertStringToDateTime(dateString: String?): LocalDateTime? {
     return try {
         dateString?.let { string ->
-            LocalDateTime.parse(string, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+            val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z")
+            val zonedDateTime = ZonedDateTime.parse(string, formatter)
+            zonedDateTime.withZoneSameInstant(ZoneId.systemDefault()).toLocalDateTime()
         }
     } catch (e: Exception) {
         null
@@ -26,24 +30,23 @@ fun convertStringToDateTime(dateString: String?): LocalDateTime? {
 }
 
 fun DataError.toUiText(): UiText {
-    val stringRes = when (this) {
-        DataError.Local.DISK_FULL -> R.string.error_disk_full
-        DataError.Local.UNKNOWN -> R.string.error_unknown
-        DataError.Remote.REQUEST_TIMEOUT -> R.string.error_request_timeout
-        DataError.Remote.TOO_MANY_REQUESTS -> R.string.error_request_timeout
-        DataError.Remote.NO_INTERNET -> R.string.error_no_internet
-        DataError.Remote.INVALID_SERVICE -> R.string.error_invalid_service
-        DataError.Remote.INTERNAL_ERROR -> R.string.error_internal_error
-        DataError.Remote.INVALID_HEADER -> R.string.error_invalid_header
-        DataError.Remote.API_MAINTENANCE -> R.string.error_api_maintenance
-        DataError.Remote.BACKEND_CONNECTION -> R.string.error_backend_connection
-        DataError.Remote.BACKEND_TIMEOUT -> R.string.error_backend_timeout
-        DataError.Remote.SERVER -> R.string.error_unknown
-        DataError.Remote.SERIALIZATION -> R.string.error_serialization
-        DataError.Remote.UNKNOWN -> R.string.error_unknown
+    return when (this) {
+        DataError.Local.DiskFull -> UiText.StringResource(R.string.error_disk_full)
+        DataError.Local.Unknown -> UiText.StringResource(R.string.error_unknown)
+        DataError.Remote.RequestTimeout -> UiText.StringResource(R.string.error_request_timeout)
+        DataError.Remote.TooManyRequests -> UiText.StringResource(R.string.error_too_many_requests)
+        DataError.Remote.NoInternet -> UiText.StringResource(R.string.error_no_internet)
+        DataError.Remote.InvalidService -> UiText.StringResource(R.string.error_invalid_service)
+        DataError.Remote.InternalError -> UiText.StringResource(R.string.error_internal_error)
+        DataError.Remote.InvalidHeader -> UiText.StringResource(R.string.error_invalid_header)
+        DataError.Remote.ApiMaintenance -> UiText.StringResource(R.string.error_api_maintenance)
+        DataError.Remote.BackedConnection -> UiText.StringResource(R.string.error_backend_connection)
+        DataError.Remote.BackendTimeout -> UiText.StringResource(R.string.error_backend_timeout)
+        DataError.Remote.Server -> UiText.StringResource(R.string.error_unknown)
+        DataError.Remote.Serialization -> UiText.StringResource(R.string.error_serialization)
+        DataError.Remote.Unknown -> UiText.StringResource(R.string.error_unknown)
+        is DataError.Remote.Custom -> UiText.DynamicString(statusMessage)
     }
-
-    return UiText.StringResource(stringRes)
 }
 
 fun Int?.toBoolean(): Boolean = this == 1

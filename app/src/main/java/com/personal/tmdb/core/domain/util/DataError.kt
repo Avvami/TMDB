@@ -1,23 +1,24 @@
 package com.personal.tmdb.core.domain.util
 
 sealed interface DataError: Error {
-    enum class Remote: DataError {
-        REQUEST_TIMEOUT,
-        TOO_MANY_REQUESTS,
-        NO_INTERNET,
-        INVALID_SERVICE,
-        INTERNAL_ERROR,
-        INVALID_HEADER,
-        API_MAINTENANCE,
-        BACKEND_CONNECTION,
-        BACKEND_TIMEOUT,
-        SERVER,
-        SERIALIZATION,
-        UNKNOWN
+    sealed class Remote: DataError {
+        data object RequestTimeout: Remote()
+        data object TooManyRequests: Remote()
+        data object NoInternet: Remote()
+        data object InvalidService: Remote()
+        data object InternalError: Remote()
+        data object InvalidHeader: Remote()
+        data object ApiMaintenance: Remote()
+        data object BackedConnection: Remote()
+        data object BackendTimeout: Remote()
+        data object Server: Remote()
+        data object Serialization: Remote()
+        data object Unknown: Remote()
+        data class Custom(val statusMessage: String): Remote()
     }
 
-    enum class Local: DataError {
-        DISK_FULL,
-        UNKNOWN
+    sealed class Local: DataError {
+        data object DiskFull: Local()
+        data object Unknown: Local()
     }
 }

@@ -147,7 +147,7 @@
     <string name="error_too_many_requests">Your quota seems to be exceeded</string>
     <string name="error_serialization">Couldn\'t parse data</string>
     <string name="error_invalid_service">Invalid service: this service does not exist</string>
-    <string name="error_internal_error">Internal error: Something went wrong, contact TMDB</string>
+    <string name="error_internal_error">Internal error: something went wrong, contact TMDB</string>
     <string name="error_invalid_header">Invalid accept header</string>
     <string name="error_api_maintenance">The API is undergoing maintenance. Try again later</string>
     <string name="error_backend_timeout">Your request to the backend server timed out. Try again</string>
@@ -156,7 +156,9 @@
     <string name="empty_watchlist">You haven’t added anything yet. Browse our recommendations and start building your list!</string>
     <string name="list_public">Public</string>
     <string name="list_private">Private</string>
-    <string name="updated_at">Updated %s</string>
+    <string name="updated_at">Updated at %s</string>
+    <string name="updated_today">Updated today</string>
+    <string name="updated_yesterday">Updated yesterday</string>
     <string name="show_title">Show title</string>
     <string name="additional_nav_item">Additional Navigation Bar Item</string>
     <string name="none">None</string>

@@ -171,7 +171,7 @@ class MainViewModel @Inject constructor(
 
             authRepository.getUserDetails(sessionId)
                 .onError { error ->
-                    println(error.name)
+                    println(error.toUiText())
                     _userState.value.user?.let { userRepository.saveUser(it) }
                 }
                 .onSuccess { result ->

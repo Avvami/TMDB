@@ -1,4 +1,4 @@
-package com.personal.tmdb.profile.presentation.lists
+package com.personal.tmdb.profile.presentation.lists.presentation.lists
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

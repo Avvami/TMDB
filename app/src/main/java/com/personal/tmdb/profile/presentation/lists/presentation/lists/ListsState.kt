@@ -1,4 +1,4 @@
-package com.personal.tmdb.profile.presentation.lists
+package com.personal.tmdb.profile.presentation.lists.presentation.lists
 
 import com.personal.tmdb.core.domain.models.ListsResponseInfo
 import com.personal.tmdb.core.domain.util.UiText

@@ -29,7 +29,8 @@ import com.personal.tmdb.detail.presentation.image.ImageViewerScreenRoot
 import com.personal.tmdb.detail.presentation.person.PersonScreenRoot
 import com.personal.tmdb.detail.presentation.reviews.ReviewsScreenRoot
 import com.personal.tmdb.home.presentation.home.HomeScreenRoot
-import com.personal.tmdb.profile.presentation.lists.ListsScreenRoot
+import com.personal.tmdb.profile.presentation.lists.presentation.list_details.ListDetailsScreenRoot
+import com.personal.tmdb.profile.presentation.lists.presentation.lists.ListsScreenRoot
 import com.personal.tmdb.profile.presentation.profile.ProfileScreenRoot
 import com.personal.tmdb.profile.presentation.watchlist.WatchlistScreenRoot
 import com.personal.tmdb.search.presentation.search.SearchScreenRoot
@@ -369,5 +370,13 @@ fun ChildNavHost(
         }
         animatedComposable<Route.Language> {}
         animatedComposable<Route.Lost> {}
+        animatedComposable<Route.ListDetails> {
+            ListDetailsScreenRoot(
+                bottomPadding = bottomBarPadding,
+                onNavigateBack = onNavigateBack,
+                onNavigateTo = onNavigateTo,
+                preferencesState = preferencesState
+            )
+        }
     }
 }

@@ -34,7 +34,6 @@ import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -390,7 +389,12 @@ fun ListItem(
             .aspectRatio(16 / 9f)
             .clip(shape)
             .clickable {
-                onNavigateTo(Route.Lost)
+                onNavigateTo(
+                    Route.ListDetails(
+                        listId = listInfo.id,
+                        listName = listInfo.name ?: ""
+                    )
+                )
             }
             .border(
                 width = 2.dp,
@@ -446,7 +450,7 @@ fun ListItem(
                 }
                 listInfo.updatedAt?.let { updatedAt ->
                     Text(
-                        text = stringResource(id = R.string.updated_at, formatDateTime(updatedAt)),
+                        text = formatDateTime(updatedAt).asString(),
                         style = MaterialTheme.typography.bodyMedium,
                         color = surfaceVariantDark
                     )

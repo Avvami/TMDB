@@ -111,6 +111,7 @@ private fun WatchlistScreen(
     ) { innerPadding ->
         MediaGrid(
             modifier = modifier.padding(top = innerPadding.calculateTopPadding()),
+            lazyGridState = lazyGridState,
             contentPadding = PaddingValues(start = 16.dp, top = 0.dp, end = 16.dp, bottom = 16.dp),
             span = {
                 item(
@@ -128,18 +129,21 @@ private fun WatchlistScreen(
                 }
             },
             items = {
-                if (watchlistState().loading && (watchlistState().watchlist == null || watchlistState().recommendations == null)) {
-                    items(
-                        count = 15,
-                        contentType = { "Poster" }
-                    ) {
-                        MediaPosterShimmer(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .animateItem(),
-                            height = Dp.Unspecified,
-                            showTitle = preferencesState().showTitle,
-                        )
+                if (watchlistState().loading) {
+                    if ((watchlistState().showRecommendations && watchlistState().recommendations == null) ||
+                        (!watchlistState().showRecommendations &&  watchlistState().watchlist == null)) {
+                        items(
+                            count = 15,
+                            contentType = { "Poster" }
+                        ) {
+                            MediaPosterShimmer(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .animateItem(),
+                                height = Dp.Unspecified,
+                                showTitle = preferencesState().showTitle,
+                            )
+                        }
                     }
                 } else {
                     watchlistState().errorMessage?.let {  }

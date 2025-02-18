@@ -118,7 +118,7 @@ class DetailViewModel @Inject constructor(
         viewModelScope.launch {
             detailRepository.getCollection(collectionId, language)
                 .onError { error ->
-                    println(error.name)
+                    println(error.toUiText())
                 }
                 .onSuccess { result ->
                     _detailState.update { it.copy(collection = result) }

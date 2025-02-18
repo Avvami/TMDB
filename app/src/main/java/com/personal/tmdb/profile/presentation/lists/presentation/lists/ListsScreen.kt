@@ -1,4 +1,4 @@
-package com.personal.tmdb.profile.presentation.lists
+package com.personal.tmdb.profile.presentation.lists.presentation.lists
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
+import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,7 +23,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
@@ -98,7 +98,7 @@ private fun ListsScreen(
                         onClick = { /*TODO*/ }
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.icon_edit_fill0_wght400),
+                            imageVector = Icons.Rounded.Edit,
                             contentDescription = null
                         )
                     }
