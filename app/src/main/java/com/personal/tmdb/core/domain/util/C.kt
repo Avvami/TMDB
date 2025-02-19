@@ -34,6 +34,7 @@ object C {
     const val SHARE_EPISODE_CAST = "https://www.themoviedb.org/tv/%d/season/%d/episode/%d/cast"
     const val SHARE_PERSON = "https://www.themoviedb.org/person/%d"
     const val SHARE_IMAGE = "https://image.tmdb.org/t/p/original%s"
+    const val SHARE_LIST = "https://www.themoviedb.org/list/%d"
 
     const val MEDIA_IMAGES = "%s/%d/images"
     const val EPISODE_MEDIA_IMAGES = "tv/%d/season/%d/episode/%d/images"

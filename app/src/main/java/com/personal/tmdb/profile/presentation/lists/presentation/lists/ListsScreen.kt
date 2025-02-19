@@ -10,7 +10,6 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Edit
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -24,6 +23,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -79,7 +79,10 @@ private fun ListsScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(text = stringResource(id = R.string.my_lists))
+                    Text(
+                        text = stringResource(id = R.string.my_lists),
+                        fontWeight = FontWeight.Medium
+                    )
                 },
                 navigationIcon = {
                     if (canNavigateBack) {
@@ -91,16 +94,6 @@ private fun ListsScreen(
                                 contentDescription = "Go back"
                             )
                         }
-                    }
-                },
-                actions = {
-                    IconButton(
-                        onClick = { /*TODO*/ }
-                    ) {
-                        Icon(
-                            imageVector = Icons.Rounded.Edit,
-                            contentDescription = null
-                        )
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(

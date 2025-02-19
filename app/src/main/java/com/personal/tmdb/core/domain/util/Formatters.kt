@@ -35,7 +35,7 @@ fun formatRuntime(minutes: Int): UiText {
 fun formatVoteAverage(voteAverage: Float): String {
     val roundedValue = (Math.round(voteAverage * 10) / 10.0).toFloat()
     return when {
-        roundedValue == 0f -> "NR"
+        roundedValue == 0f -> "0"
         roundedValue % 1.0 == 0.0 -> roundedValue.toInt().toString()
         else -> "%.1f".format(voteAverage)
     }

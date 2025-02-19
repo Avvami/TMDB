@@ -77,6 +77,9 @@ class ListDetailsViewModel @Inject constructor(
         when (event) {
             ListDetailsUiEvent.OnNavigateBack -> {}
             is ListDetailsUiEvent.OnNavigateTo -> {}
+            ListDetailsUiEvent.ChangeEditListState -> {
+                _listDetailsState.update { it.copy(editing = !it.editing) }
+            }
         }
     }
 }

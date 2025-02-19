@@ -45,7 +45,7 @@
     <string name="part_of_collection">Part of the %s</string>
     <string name="includes">Includes %s</string>
     <string name="amount_of_movies">%d movies</string>
-    <string name="average_rating">Average rating</string>
+    <string name="average_rating">%s average</string>
     <string name="sort_by">Sort By</string>
     <string name="rating">Rating</string>
     <string name="release_date">Release date</string>
@@ -163,4 +163,6 @@
     <string name="additional_nav_item">Additional Navigation Bar Item</string>
     <string name="none">None</string>
     <string name="empty_recommendations">No recommendations yet! Start by watching or liking some titles, and we’ll tailor suggestions just for you.</string>
+    <string name="no_list_description">No description entered.</string>
+    <string name="items">%d items</string>
 </resources>

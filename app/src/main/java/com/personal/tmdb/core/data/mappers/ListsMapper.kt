@@ -1,11 +1,13 @@
 package com.personal.tmdb.core.data.mappers
 
+import com.personal.tmdb.R
 import com.personal.tmdb.core.data.models.ListDetailsDto
 import com.personal.tmdb.core.data.models.ListResult
 import com.personal.tmdb.core.data.models.ListsResponseDto
 import com.personal.tmdb.core.domain.models.ListDetailsInfo
 import com.personal.tmdb.core.domain.models.ListInfo
 import com.personal.tmdb.core.domain.models.ListsResponseInfo
+import com.personal.tmdb.core.domain.util.UiText
 import com.personal.tmdb.core.domain.util.convertStringToDateTime
 import com.personal.tmdb.core.domain.util.toBoolean
 
@@ -45,12 +47,12 @@ fun ListDetailsDto.toListDetailsInfo(): ListDetailsInfo {
         averageRating = averageRating?.toFloat(),
         backdropPath = backdropPath,
         createdBy = createdBy,
-        description = description?.takeIf { it.isNotEmpty() },
+        description = if (description.isNullOrEmpty()) UiText.StringResource(R.string.no_list_description) else UiText.DynamicString(description),
         id = id,
         iso31661 = iso31661,
         iso6391 = iso6391,
         itemCount = itemCount,
-        name = name?.takeIf { it.isNotEmpty() },
+        name = if (name.isNullOrEmpty()) UiText.StringResource(R.string.empty) else UiText.DynamicString(name),
         page = page,
         posterPath = posterPath,
         public = public,
